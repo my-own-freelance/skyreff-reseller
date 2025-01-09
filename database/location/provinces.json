@@ -1,0 +1,274 @@
+[
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347121"
+        },
+        "id": "64",
+        "nama": "KALIMANTAN TIMUR",
+        "timeZone": 8
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347122"
+        },
+        "id": "65",
+        "nama": "KALIMANTAN UTARA",
+        "timeZone": 8
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934712c"
+        },
+        "id": "94",
+        "nama": "PAPUA",
+        "timeZone": 9
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934710b"
+        },
+        "id": "11",
+        "nama": "ACEH",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347111"
+        },
+        "id": "17",
+        "nama": "BENGKULU",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347116"
+        },
+        "id": "32",
+        "nama": "JAWA BARAT",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934711d"
+        },
+        "id": "53",
+        "nama": "NUSA TENGGARA TIMUR",
+        "timeZone": 8
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347124"
+        },
+        "id": "72",
+        "nama": "SULAWESI TENGAH",
+        "timeZone": 8
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934711a"
+        },
+        "id": "36",
+        "nama": "BANTEN",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934710d"
+        },
+        "id": "13",
+        "nama": "SUMATERA BARAT",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934710e"
+        },
+        "id": "14",
+        "nama": "RIAU",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934711e"
+        },
+        "id": "61",
+        "nama": "KALIMANTAN BARAT",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347129"
+        },
+        "id": "81",
+        "nama": "MALUKU",
+        "timeZone": 9
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347115"
+        },
+        "id": "31",
+        "nama": "DKI JAKARTA",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347110"
+        },
+        "id": "16",
+        "nama": "SUMATERA SELATAN",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347119"
+        },
+        "id": "35",
+        "nama": "JAWA TIMUR",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934711b"
+        },
+        "id": "51",
+        "nama": "BALI",
+        "timeZone": 8
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347123"
+        },
+        "id": "71",
+        "nama": "SULAWESI UTARA",
+        "timeZone": 8
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347125"
+        },
+        "id": "73",
+        "nama": "SULAWESI SELATAN",
+        "timeZone": 8
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347126"
+        },
+        "id": "74",
+        "nama": "SULAWESI TENGGARA",
+        "timeZone": 8
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934711c"
+        },
+        "id": "52",
+        "nama": "NUSA TENGGARA BARAT",
+        "timeZone": 8
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347114"
+        },
+        "id": "21",
+        "nama": "KEPULAUAN RIAU",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347120"
+        },
+        "id": "63",
+        "nama": "KALIMANTAN SELATAN",
+        "timeZone": 8
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347128"
+        },
+        "id": "76",
+        "nama": "SULAWESI BARAT",
+        "timeZone": 8
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934712b"
+        },
+        "id": "91",
+        "nama": "PAPUA BARAT",
+        "timeZone": 9
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347112"
+        },
+        "id": "18",
+        "nama": "LAMPUNG",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347118"
+        },
+        "id": "34",
+        "nama": "DI YOGYAKARTA",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934710c"
+        },
+        "id": "12",
+        "nama": "SUMATERA UTARA",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347113"
+        },
+        "id": "19",
+        "nama": "KEPULAUAN BANGKA BELITUNG",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347127"
+        },
+        "id": "75",
+        "nama": "GORONTALO",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff5409347117"
+        },
+        "id": "33",
+        "nama": "JAWA TENGAH",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934711f"
+        },
+        "id": "62",
+        "nama": "KALIMANTAN TENGAH",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934710f"
+        },
+        "id": "15",
+        "nama": "JAMBI",
+        "timeZone": 7
+    },
+    {
+        "_id": {
+            "$oid": "5e5005024d44ff540934712a"
+        },
+        "id": "82",
+        "nama": "MALUKU UTARA",
+        "timeZone": 9
+    }
+]
