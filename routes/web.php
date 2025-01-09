@@ -19,12 +19,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get("/logout", [AuthController::class, "logout"])->name("logout");
+
 // AUTH
 Route::group(["middleware" => "guest"], function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
 });
 
 // DASHBOARD
-Route::group(["prefix" => "admin"], function () {
+Route::group(["middleware" => "auth:web", "prefix" => "admin"], function () {
     Route::get("/", [DashboardController::class, "index"])->name("dashboard");
 });
