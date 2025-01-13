@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\ProductCategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\RewardController;
+use App\Http\Controllers\Dashboard\WebConfigController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,8 @@ Route::group(["middleware" => "check.auth"], function () {
 
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "api.check.role:ADMIN"], function () {
+        Route::post("/config/create-update", [WebConfigController::class, "saveUpdateData"])->name('web.update-config');
+
         // PREFIX MASTER
         Route::group(["prefix" => "master"], function () {
             // BANNER

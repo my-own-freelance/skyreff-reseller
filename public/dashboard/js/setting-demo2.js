@@ -25,7 +25,7 @@ $('.changeLogoHeaderColor').on('click', function(){
 		$('.logo-header').attr('data-background-color', $(this).attr('data-color'));
 		let color = $(this).attr('data-color');
 		$.ajax({
-			url: '/api/admin/custom-template/create-update',
+			url: '/api/config/create-update',
 			method: 'POST',
 			header: {
 				'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ $('.changeTopBarColor').on('click', function(){
 		$('.main-header .navbar-header').attr('data-background-color', $(this).attr('data-color'));
 		let color = $(this).attr('data-color');
 		$.ajax({
-			url: '/api/admin/custom-template/create-update',
+			url: '/api/config/create-update',
 			method: 'POST',
 			header: {
 				'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ $('.changeSideBarColor').on('click', function(){
 		$('.sidebar').attr('data-background-color', $(this).attr('data-color'));
 		let color = $(this).attr('data-color');
 		$.ajax({
-			url: '/api/admin/custom-template/create-update',
+			url: '/api/config/create-update',
 			method: 'POST',
 			header: {
 				'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ $('.changeBackgroundColor').on('click', function(){
 	$('body').attr('data-background-color', $(this).attr('data-color'));
 	let color = $(this).attr('data-color');
 		$.ajax({
-			url: '/api/admin/custom-template/create-update',
+			url: '/api/config/create-update',
 			method: 'POST',
 			header: {
 				'Content-Type': 'application/json',
