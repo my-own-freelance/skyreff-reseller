@@ -8,7 +8,7 @@
         <div class="sidebar-content">
             <ul class="nav nav-primary">
                 <li class="nav-item ml-3 {{ $routename == 'dashboard' ? 'active' : '' }}">
-                    <a href="{{ route('dashboard') }}" aria-expanded="false">
+                    <a href="{{ route('dashboard.admin') }}" aria-expanded="false">
                         <i class="fas fa-home"></i>
                         <p>Dashboard</p>
                     </a>
@@ -17,7 +17,13 @@
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>
                     </span>
-                    <h4 class="text-section">ADMIN</h4>
+                    <h4 class="text-section">MASTER</h4>
+                </li>
+                <li class="nav-item ml-3 {{ $routename == 'banner' ? 'active' : '' }}">
+                    <a href="{{ route('banner') }}">
+                        <i class="fas fa-image"></i>
+                        <p>Banner</p>
+                    </a>
                 </li>
                 {{-- <li class="nav-section">
                     <span class="sidebar-mini-icon">

@@ -28,7 +28,8 @@
         <div class="main-header">
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="{{ $logoColor }}">
-                <a href="{{ route('dashboard') }}" class="logo">
+                <a href="{{ $user->role == 'ADMIN' ? route('dashboard.admin') : route('dashboard.reseller') }}"
+                    class="logo">
                     <h4 class="text-white mt-3" style="font-weight: 800!important">SKYREFF RESELLER</h4>
                 </a>
                 <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse"

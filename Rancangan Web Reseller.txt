@@ -16,6 +16,42 @@ Login Page :
  * Level Reseller ( Hidden Auto level 1 )
 
 ---------------------------------------------------------------------------------------------
+list menu admin : 
+    - MASTER
+        - BANNER
+        - INFORMATION
+        - KATEGORI PRODUCT
+        - PRODUCT
+        - REWARD
+         
+    - TRANSACTION
+        - PRODUCT
+        - CLAIM COMMISSION
+        - REWARD
+        - COMPENSATION
+        - UPGRADE ACCOUNT
+
+    - MANAGE
+        - ADMIN
+        - WAITING RESELLER
+        - RESELLER REGULAR
+        - RESELLER VIP
+
+    - DATA CENTER
+        - REKAP TRX
+        - REKAP COMMISSION
+        - REKAP COMPENSATION
+        - REKAP REWARD
+
+list menu resellet : 
+    - TRANSACTION
+        - PRODUCT
+        - CLAIM COMMISSION
+        - REWARD
+        - COMPENSATION
+        - UPGRADE ACCOUNT
+
+
 Laman Administrator :
 
 - Dashboard Trafik

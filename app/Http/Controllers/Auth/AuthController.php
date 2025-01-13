@@ -61,12 +61,13 @@ class AuthController extends Controller
                 return response()->json([
                     "status" => "success",
                     "message" => "Login Sukses",
+                    "redirect_url" => $user->role == "ADMIN" ? route('dashboard.admin') : route('dashboard.reseller')
                 ]);
             }
 
             return response()->json([
                 "status" => "error",
-                "message" => "Username / Password salah"
+                "message" => "Username / Password salah",
             ], 400);
         } catch (\Exception $err) {
             return response()->json([

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,15 @@ Route::group(["middleware" => "guest"], function () {
 });
 
 // DASHBOARD
-Route::group(["middleware" => "auth:web", "prefix" => "admin"], function () {
-    Route::get("/", [DashboardController::class, "index"])->name("dashboard");
+Route::group(["middleware" => "auth:web"], function () {
+    Route::get("/admin", [DashboardController::class, "index"])->name("dashboard.admin");
+    Route::get("/reseller", [DashboardController::class, "index"])->name("dashboard.reseller");
+
+    // ONLY ADMIN ACCESS
+    Route::group(["middleware" => "api.check.role:ADMIN"], function () {
+        // PREFIX MASTER
+        Route::group(["prefix" => "master"], function () {
+            Route::get("/banner", [BannerController::class, 'index'])->name('banner');
+        });
+    });
 });
