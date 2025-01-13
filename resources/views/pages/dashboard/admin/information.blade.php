@@ -176,7 +176,7 @@
                         $("#subject").val(d.subject);
                         $("#message").val(d.message);
                         $("#type").val(d.type);
-                        $("#is_active").val(d.is_active);
+                        $("#is_active").val(d.is_active).change();
                     })
                 },
                 error: function(err) {

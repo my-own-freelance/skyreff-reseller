@@ -27,7 +27,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="5" class="text-center"><small>Tidak Ada Data</small></td>
+                                    <td colspan="3" class="text-center"><small>Tidak Ada Data</small></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -120,7 +120,7 @@
                         let d = res.data;
                         $("#id").val(d.id);
                         $("#title").val(d.title);
-                        $("#is_active").val(d.is_active);
+                        $("#is_active").val(d.is_active).change();
                     })
                 },
                 error: function(err) {

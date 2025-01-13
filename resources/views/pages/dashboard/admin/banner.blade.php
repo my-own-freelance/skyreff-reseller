@@ -30,7 +30,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="4" class="text-center"><small>Tidak Ada Data</small></td>
+                                    <td colspan="5" class="text-center"><small>Tidak Ada Data</small></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -159,7 +159,7 @@
                         $("#id").val(d.id);
                         $("#title").val(d.title);
                         $("#excerpt").val(d.excerpt);
-                        $("#is_active").val(d.is_active);
+                        $("#is_active").val(d.is_active).change();
                         $("#image").attr("required", false);
                     })
                 },

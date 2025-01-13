@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('amount')->default(0);
             $table->integer('commission')->default(0);
             $table->integer('qty')->default(1);
+            $table->integer('profit')->default(0);
             $table->enum('status', ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
             $table->enum('payment_type', ['TRANSFER', 'DEBT'])->default('TRANSFER');
             $table->string('proof_of_payment')->nullable(); // upload bukti pembayaran jika type nya tf
