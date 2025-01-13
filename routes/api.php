@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\BannerController;
+use App\Http\Controllers\Dashboard\InformationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,16 @@ Route::group(["middleware" => "check.auth"], function () {
                 Route::post("update", [BannerController::class, "update"])->name('banner.update');
                 Route::post("update-status", [BannerController::class, "updateStatus"])->name('banner.change-status');
                 Route::delete("delete", [BannerController::class, "destroy"])->name('banner.destroy');
+            });
+
+            // INFORMATION
+            Route::group(["prefix" => "information"], function () {
+                Route::get("datatable", [InformationController::class, "dataTable"])->name('information.datatable');
+                Route::get("{id}/detail", [InformationController::class, "getDetail"])->name('information.detail');
+                Route::post("create", [InformationController::class, "create"])->name('information.create');
+                Route::post("update", [InformationController::class, "update"])->name('information.update');
+                Route::post("update-status", [InformationController::class, "updateStatus"])->name('information.change-status');
+                Route::delete("delete", [InformationController::class, "destroy"])->name('information.destroy');
             });
         });
     });

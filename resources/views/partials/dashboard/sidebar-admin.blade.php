@@ -25,6 +25,12 @@
                         <p>Banner</p>
                     </a>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'information' ? 'active' : '' }}">
+                    <a href="{{ route('information') }}">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Information</p>
+                    </a>
+                </li>
                 {{-- <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>

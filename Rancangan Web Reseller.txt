@@ -18,7 +18,7 @@ Login Page :
 ---------------------------------------------------------------------------------------------
 list menu admin : 
     - MASTER
-        - BANNER
+        - BANNER (ok)
         - INFORMATION
         - KATEGORI PRODUCT
         - PRODUCT
