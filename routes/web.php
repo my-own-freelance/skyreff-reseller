@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\InformationController;
+use App\Http\Controllers\Dashboard\ProductCategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,6 +40,7 @@ Route::group(["middleware" => "auth:web"], function () {
         Route::group(["prefix" => "master"], function () {
             Route::get("/banner", [BannerController::class, 'index'])->name('banner');
             Route::get("/information", [InformationController::class, 'index'])->name('information');
+            Route::get("/product-category", [ProductCategoryController::class, 'index'])->name('product-category');
         });
     });
 });

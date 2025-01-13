@@ -2,37 +2,27 @@
 @section('title', $title)
 @push('styles')
     <link rel="stylesheet" href="{{ asset('/dashboard/css/toggle-status.css') }}">
-    <style>
-        .wrap-text {
-            max-width: 500px;
-            word-wrap: break-word;
-            white-space: normal;
-        }
-    </style>
 @endpush
 @section('content')
     <div class="row mb-5">
-        <div class="col-md-12" id="boxTable">
+        <div class="col-md-7" id="boxTable">
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <h5 class="text-uppercase title">List Informasi</h5>
+                        <h5 class="text-uppercase title">List Kategori Produk</h5>
                     </div>
                     <div class="card-header-right">
                         <button class="btn btn-mini btn-info mr-1" onclick="return refreshData();">Refresh</button>
-                        <button class="btn btn-mini btn-primary" onclick="return addData();">Tambah Data</button>
                     </div>
                 </div>
                 <div class="card-block">
                     <div class="table-responsive mt-3">
-                        <table class="table table-striped table-bordered nowrap dataTable" id="informationDataTable">
+                        <table class="table table-striped table-bordered nowrap dataTable" id="product-categoryDataTable">
                             <thead>
                                 <tr>
                                     <th class="all">#</th>
-                                    <th class="all">Tipe</th>
+                                    <th class="all">Judul</th>
                                     <th class="all">Status</th>
-                                    <th class="all">Subject</th>
-                                    <th class="all">Message</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -45,45 +35,25 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5 col-sm-12" style="display: none" data-action="update" id="formEditable">
+        <div class="col-md-5 col-sm-12" data-action="add" id="formEditable">
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
                         <h5>Tambah / Edit Data</h5>
-                    </div>
-                    <div class="card-header-right">
-                        <button class="btn btn-sm btn-warning" onclick="return closeForm(this)" id="btnCloseForm">
-                            <i class="ion-android-close"></i>
-                        </button>
                     </div>
                 </div>
                 <div class="card-block">
                     <form>
                         <input class="form-control" id="id" type="hidden" name="id" />
                         <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <input class="form-control" id="subject" type="text" name="subject"
-                                placeholder="masukkan subject informasi" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <input class="form-control" id="message" type="text" name="message"
-                                placeholder="masukkan message" />
-                        </div>
-                        <div class="form-group">
-                            <label for="type">Tipe</label>
-                            <select class="form-control form-control" id="type" name="type" required>
-                                <option value="">Pilih Tipe</option>
-                                <option value="P">Primary</option>
-                                <option value="I">Info</option>
-                                <option value="W">Warning</option>
-                                <option value="D">Danger</option>
-                            </select>
+                            <label for="title">Judul</label>
+                            <input class="form-control" id="title" type="text" name="title"
+                                placeholder="masukkan nama kategori" required />
                         </div>
                         <div class="form-group">
                             <label for="is_active">Status</label>
                             <select class="form-control form-control" id="is_active" name="is_active" required>
-                                <option value= "">Pilih Status</option>
+                                <option value="">Pilih Status</option>
                                 <option value="Y">Publish</option>
                                 <option value="N">Draft</option>
                             </select>
@@ -112,8 +82,8 @@
         })
 
         function dataTable() {
-            const url = "{{ route('information.datatable') }}";
-            dTable = $("#informationDataTable").DataTable({
+            const url = "{{ route('product-category.datatable') }}";
+            dTable = $("#product-categoryDataTable").DataTable({
                 searching: true,
                 orderng: true,
                 lengthChange: true,
@@ -127,19 +97,9 @@
                 columns: [{
                     data: "action"
                 }, {
-                    data: "type"
+                    data: "title"
                 }, {
                     data: "is_active"
-                }, {
-                    data: "subject"
-                }, {
-                    data: "message",
-                    "render": function(data, type, row, meta) {
-                        if (type === 'display') {
-                            return `<div class="wrap-text">${data}</div>`;
-                        }
-                        return data;
-                    }
                 }],
                 pageLength: 10,
             });
@@ -150,32 +110,16 @@
         }
 
 
-        function addData() {
-            $("#formEditable").attr('data-action', 'add').fadeIn(200);
-            $("#boxTable").removeClass("col-md-12").addClass("col-md-7");
-            $("#title").focus();
-        }
-
-        function closeForm() {
-            $("#formEditable").slideUp(200, function() {
-                $("#boxTable").removeClass("col-md-7").addClass("col-md-12");
-                $("#reset").click();
-            })
-        }
-
         function getData(id) {
             $.ajax({
-                url: "{{ route('information.detail', ['id' => ':id']) }}".replace(':id', id),
+                url: "{{ route('product-category.detail', ['id' => ':id']) }}".replace(':id', id),
                 method: "GET",
                 dataType: "json",
                 success: function(res) {
                     $("#formEditable").attr("data-action", "update").fadeIn(200, function() {
-                        $("#boxTable").removeClass("col-md-12").addClass("col-md-7");
                         let d = res.data;
                         $("#id").val(d.id);
-                        $("#subject").val(d.subject);
-                        $("#message").val(d.message);
-                        $("#type").val(d.type);
+                        $("#title").val(d.title);
                         $("#is_active").val(d.is_active);
                     })
                 },
@@ -191,16 +135,12 @@
             e.preventDefault();
             let formData = new FormData();
             formData.append("id", parseInt($("#id").val()));
-            formData.append("subject", $("#subject").val());
-            formData.append('message', $("#message").val());
-            formData.append("type", $("#type").val());
+            formData.append("title", $("#title").val());
             formData.append("is_active", $("#is_active").val());
 
             let data = {
                 id: parseInt($("#id").val()),
-                subject: $("#subject").val(),
-                message: $("#message").val(),
-                type: $("#type").val(),
+                title: $("#title").val(),
                 is_active: $("#is_active").val()
             }
 
@@ -220,7 +160,7 @@
 
         function saveData(data, action) {
             $.ajax({
-                url: action == "update" ? "{{ route('information.update') }}" : "{{ route('information.create') }}",
+                url: action == "update" ? "{{ route('product-category.update') }}" : "{{ route('product-category.create') }}",
                 contentType: false,
                 processData: false,
                 method: "POST",
@@ -229,7 +169,7 @@
                     console.log("Loading...")
                 },
                 success: function(res) {
-                    closeForm();
+                    $("#reset").click();
                     showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
                     refreshData();
                 },
@@ -245,7 +185,7 @@
             let c = confirm("Apakah anda yakin untuk menghapus data ini ?");
             if (c) {
                 $.ajax({
-                    url: "{{ route('information.destroy') }}",
+                    url: "{{ route('product-category.destroy') }}",
                     method: "DELETE",
                     data: {
                         id: id
@@ -268,7 +208,7 @@
 
         function updateStatusData(data) {
             $.ajax({
-                url: "{{ route('information.change-status') }}",
+                url: "{{ route('product-category.change-status') }}",
                 contentType: false,
                 processData: false,
                 method: "POST",

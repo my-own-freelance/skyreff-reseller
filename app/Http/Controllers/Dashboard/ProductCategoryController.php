@@ -3,29 +3,27 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Information;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
-class InformationController extends Controller
+class ProductCategoryController extends Controller
 {
     public function index()
     {
-        $title = "Master Informasi";
-        return view("pages.dashboard.admin.information", compact("title"));
+        $title = "Master Kategori";
+        return view("pages.dashboard.admin.product-category", compact("title"));
     }
 
     // HANDLER API
     public function dataTable(Request $request)
     {
-        $query = Information::query();
+        $query = ProductCategory::query();
 
         if ($request->query("search")) {
             $searchValue = $request->query("search")['value'];
             $query->where(function ($query) use ($searchValue) {
-                $query->where('subject', 'like', '%' . $searchValue . '%')
-                    ->Orwhere('message', 'like', '%' . $searchValue . '%');
+                $query->where('title', 'like', '%' . $searchValue . '%');
             });
         }
 
@@ -67,35 +65,13 @@ class InformationController extends Controller
                 </div>';
 
 
-            $subject = "<p>" . Str::limit(strip_tags($item->subject), 100) . "</p>";
-            $message = "<p>" . Str::limit(strip_tags($item->message), 150) . "</p>";
-            $type = "";
-            switch ($item->type) {
-                case "P":
-                    $type = "<span class='badge badge-primary'>Primary</span>";
-                    break;
-                case "I":
-                    $type = "<span class='badge badge-info'>Information</span>";
-                    break;
-                case "W":
-                    $type = "<span class='badge badge-warning'>Warning</span>";
-                    break;
-                case "D":
-                    $type = "<span class='badge badge-danger'>Danger</span>";
-                    break;
-                default:
-                    $type = "<span class='badge badge-info'>Information</span>";
-                    break;
-            }
-            $item['type'] = $type;
+
             $item['action'] = $action;
             $item['is_active'] = $is_active;
-            $item['subject'] = $subject;
-            $item['message'] = $message;
             return $item;
         });
 
-        $total = Information::count();
+        $total = ProductCategory::count();
         return response()->json([
             'draw' => $request->query('draw'),
             'recordsFiltered' => $recordsFiltered,
@@ -107,9 +83,9 @@ class InformationController extends Controller
     public function getDetail($id)
     {
         try {
-            $information = Information::find($id);
+            $productCategory = ProductCategory::find($id);
 
-            if (!$information) {
+            if (!$productCategory) {
                 return response()->json([
                     "status" => "error",
                     "message" => "Data tidak ditemukan",
@@ -118,7 +94,7 @@ class InformationController extends Controller
 
             return response()->json([
                 "status" => "success",
-                "data" => $information
+                "data" => $productCategory
             ]);
         } catch (\Exception $err) {
             return response()->json([
@@ -133,17 +109,12 @@ class InformationController extends Controller
         try {
             $data = $request->all();
             $rules = [
-                "subject" => "required|string",
-                "message" => "required|string",
-                "type" => "required|string|in:P,I,W,D",
+                "title" => "required|string",
                 "is_active" => "required|string|in:Y,N",
             ];
 
             $messages = [
-                "subject.required" => "Subject harus diisi",
-                "message.required" => "Message harus diisi",
-                "type.required" => "Type informasi harus diisi",
-                "type.in" => "Type informasi tidak sesuai",
+                "title.required" => "Judul harus diisi",
                 "is_active.required" => "Status harus diisi",
                 "is_active.in" => "Status tidak sesuai",
             ];
@@ -158,7 +129,7 @@ class InformationController extends Controller
 
             unset($data['id']);
 
-            Information::create($data);
+            ProductCategory::create($data);
             return response()->json([
                 "status" => "success",
                 "message" => "Data berhasil dibuat"
@@ -177,19 +148,14 @@ class InformationController extends Controller
             $data = $request->all();
             $rules = [
                 "id" => "required|integer",
-                "subject" => "required|string",
-                "message" => "required|string",
-                "type" => "required|string|in:P,I,W,D",
+                "title" => "required|string",
                 "is_active" => "required|string|in:Y,N",
             ];
 
             $messages = [
                 "id.required" => "Data ID harus diisi",
                 "id.integer" => "Type ID tidak sesuai",
-                "subject.required" => "Subject harus diisi",
-                "message.required" => "Message harus diisi",
-                "type.required" => "Type informasi harus diisi",
-                "type.in" => "Type informasi tidak sesuai",
+                "title.required" => "Judul harus diisi",
                 "is_active.required" => "Status harus diisi",
                 "is_active.in" => "Status tidak sesuai",
             ];
@@ -202,15 +168,15 @@ class InformationController extends Controller
                 ], 400);
             }
 
-            $information = Information::find($data['id']);
-            if (!$information) {
+            $productCategory = ProductCategory::find($data['id']);
+            if (!$productCategory) {
                 return response()->json([
                     "status" => "error",
                     "message" => "Data tidak ditemukan"
                 ], 404);
             }
 
-            $information->update($data);
+            $productCategory->update($data);
             return response()->json([
                 "status" => "success",
                 "message" => "Data berhasil diperbarui"
@@ -247,14 +213,14 @@ class InformationController extends Controller
                 ], 400);
             }
 
-            $information = Information::find($data['id']);
-            if (!$information) {
+            $productCategory = ProductCategory::find($data['id']);
+            if (!$productCategory) {
                 return response()->json([
                     "status" => "error",
                     "message" => "Data tidak ditemukan"
                 ], 404);
             }
-            $information->update($data);
+            $productCategory->update($data);
             return response()->json([
                 "status" => "success",
                 "message" => "Status berhasil diperbarui"
@@ -283,15 +249,15 @@ class InformationController extends Controller
             }
 
             $id = $request->id;
-            $information = Information::find($id);
-            if (!$information) {
+            $productCategory = ProductCategory::find($id);
+            if (!$productCategory) {
                 return response()->json([
                     "status" => "error",
                     "message" => "Data tidak ditemukan"
                 ], 404);
             }
 
-            $information->delete();
+            $productCategory->delete();
             return response()->json([
                 "status" => "success",
                 "message" => "Data berhasil dihapus"

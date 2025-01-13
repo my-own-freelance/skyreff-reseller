@@ -31,6 +31,12 @@
                         <p>Information</p>
                     </a>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'product-category' ? 'active' : '' }}">
+                    <a href="{{ route('product-category') }}">
+                        <i class="fas fa-tags"></i>
+                        <p>Kategori Produk</p>
+                    </a>
+                </li>
                 {{-- <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>

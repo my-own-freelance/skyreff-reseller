@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\InformationController;
+use App\Http\Controllers\Dashboard\ProductCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,16 @@ Route::group(["middleware" => "check.auth"], function () {
                 Route::post("update", [InformationController::class, "update"])->name('information.update');
                 Route::post("update-status", [InformationController::class, "updateStatus"])->name('information.change-status');
                 Route::delete("delete", [InformationController::class, "destroy"])->name('information.destroy');
+            });
+
+            // PRODUCT CATEGORY
+            Route::group(["prefix" => "product-category"], function () {
+                Route::get("datatable", [ProductCategoryController::class, "dataTable"])->name('product-category.datatable');
+                Route::get("{id}/detail", [ProductCategoryController::class, "getDetail"])->name('product-category.detail');
+                Route::post("create", [ProductCategoryController::class, "create"])->name('product-category.create');
+                Route::post("update", [ProductCategoryController::class, "update"])->name('product-category.update');
+                Route::post("update-status", [ProductCategoryController::class, "updateStatus"])->name('product-category.change-status');
+                Route::delete("delete", [ProductCategoryController::class, "destroy"])->name('product-category.destroy');
             });
         });
     });
