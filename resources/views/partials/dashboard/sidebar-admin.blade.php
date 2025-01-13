@@ -43,6 +43,12 @@
                         <p>Produk</p>
                     </a>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'reward' ? 'active' : '' }}">
+                    <a href="{{ route('reward') }}">
+                        <i class="fas fa-trophy"></i>
+                        <p>Reward</p>
+                    </a>
+                </li>
                 {{-- <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>

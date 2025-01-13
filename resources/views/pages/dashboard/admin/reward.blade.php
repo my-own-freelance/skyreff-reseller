@@ -2,13 +2,6 @@
 @section('title', $title)
 @push('styles')
     <link rel="stylesheet" href="{{ asset('/dashboard/css/toggle-status.css') }}">
-    <style>
-        .wrap-text {
-            max-width: 500px;
-            word-wrap: break-word;
-            white-space: normal;
-        }
-    </style>
 @endpush
 @section('content')
     <div class="row mb-5">
@@ -16,7 +9,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <h5 class="text-uppercase title">List Informasi</h5>
+                        <h5 class="text-uppercase title">List Reward</h5>
                     </div>
                     <div class="card-header-right">
                         <button class="btn btn-mini btn-info mr-1" onclick="return refreshData();">Refresh</button>
@@ -25,19 +18,21 @@
                 </div>
                 <div class="card-block">
                     <div class="table-responsive mt-3">
-                        <table class="table table-striped table-bordered nowrap dataTable" id="informationDataTable">
+                        <table class="table table-striped table-bordered nowrap dataTable" id="rewardDataTable">
                             <thead>
                                 <tr>
                                     <th class="all">#</th>
-                                    <th class="all">Tipe</th>
+                                    <th class="all">Gambar</th>
+                                    <th class="all">Judul</th>
+                                    <th class="all">Type</th>
+                                    <th class="all">Stock</th>
+                                    <th class="all">Durasi</th>
                                     <th class="all">Status</th>
-                                    <th class="all">Subject</th>
-                                    <th class="all">Message</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="5" class="text-center"><small>Tidak Ada Data</small></td>
+                                    <td colspan="7" class="text-center"><small>Tidak Ada Data</small></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -61,25 +56,14 @@
                     <form>
                         <input class="form-control" id="id" type="hidden" name="id" />
                         <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <input class="form-control" id="subject" type="text" name="subject"
-                                placeholder="masukkan subject informasi" required />
+                            <label for="title">Judul</label>
+                            <input class="form-control" id="title" type="text" name="title"
+                                placeholder="masukkan judul" required />
                         </div>
                         <div class="form-group">
-                            <label for="message">Message</label>
-                            <input class="form-control" id="message" type="text" name="message"
-                                placeholder="masukkan message" />
-                        </div>
-                        <div class="form-group">
-                            <label for="type">Tipe</label>
-                            <select class="form-control form-control" id="type" name="type" required>
-                                <option value="">Pilih Tipe</option>
-                                <option value="P">Primary</option>
-                                <option value="I">Info</option>
-                                <option value="S">Success</option>
-                                <option value="W">Warning</option>
-                                <option value="D">Danger</option>
-                            </select>
+                            <label for="qty">Qty</label>
+                            <input class="form-control" id="qty" type="number" name="qty"
+                                placeholder="masukkan jumlah reward" min='0' required />
                         </div>
                         <div class="form-group">
                             <label for="is_active">Status</label>
@@ -88,6 +72,40 @@
                                 <option value="Y">Publish</option>
                                 <option value="N">Draft</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Tipe</label>
+                            <select class="form-control form-control" id="type" name="type" required>
+                                <option value="">Pilih Tipe</option>
+                                <option value="G">Global</option>
+                                <option value="V">VIP</option>
+                            </select>
+                        </div>
+                        <div id="fResellerList" class="form-group" style="display: none">
+                            <label for="reseller_list">Reseller <span class="text-muted">(pilih yg bisa claim
+                                    reward)</span></label>
+                            <div class="select2-input">
+                                <select id="reseller_list" name="reseller_list[]" class="form-control" multiple="multiple">
+                                    <option value="">Pilih Reseller</option>
+                                    @foreach ($resellers as $reseller)
+                                        <option value = "{{ $reseller->id }}">{{ $reseller->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="start_date">Tanggal Mulai</label>
+                            <input type="datetime-local" id="start_date" name="start_date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end_date">Tanggal Akhir</label>
+                            <input type="datetime-local" id="end_date" name="end_date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="image">Gambar</label>
+                            <input class="form-control" id="image" type="file" name="image"
+                                placeholder="upload gambar" />
+                            <small class="text-danger">Max ukuran 2MB</small>
                         </div>
                         <div class="form-group">
                             <button class="btn btn-sm btn-primary" type="submit" id="submit">
@@ -105,16 +123,21 @@
 @endsection
 @push('scripts')
     <script src="{{ asset('/dashboard/js/plugin/datatables/datatables.min.js') }}"></script>
+    <script src="{{ asset('dashboard/js/plugin/select2/select2.full.min.js') }}"></script>
     <script>
         let dTable = null;
+
+        $('#reseller_list').select2({
+            theme: "bootstrap"
+        });
 
         $(function() {
             dataTable();
         })
 
         function dataTable() {
-            const url = "{{ route('information.datatable') }}";
-            dTable = $("#informationDataTable").DataTable({
+            const url = "{{ route('reward.datatable') }}";
+            dTable = $("#rewardDataTable").DataTable({
                 searching: true,
                 orderng: true,
                 lengthChange: true,
@@ -128,19 +151,17 @@
                 columns: [{
                     data: "action"
                 }, {
+                    data: "image"
+                }, {
+                    data: "title"
+                }, {
                     data: "type"
                 }, {
+                    data: "stock"
+                }, {
+                    data: "duration"
+                }, {
                     data: "is_active"
-                }, {
-                    data: "subject"
-                }, {
-                    data: "message",
-                    "render": function(data, type, row, meta) {
-                        if (type === 'display') {
-                            return `<div class="wrap-text">${data}</div>`;
-                        }
-                        return data;
-                    }
                 }],
                 pageLength: 10,
             });
@@ -152,9 +173,13 @@
 
 
         function addData() {
-            $("#formEditable").attr('data-action', 'add').fadeIn(200);
+            $("#formEditable").attr('data-action', 'add').fadeIn(200, function() {
+                $("#reset").click();
+                $("#image").attr("required", true);
+                $("#title").focus();
+                $('#fResellerList').slideUp()
+            });
             $("#boxTable").removeClass("col-md-12").addClass("col-md-7");
-            $("#title").focus();
         }
 
         function closeForm() {
@@ -166,7 +191,7 @@
 
         function getData(id) {
             $.ajax({
-                url: "{{ route('information.detail', ['id' => ':id']) }}".replace(':id', id),
+                url: "{{ route('reward.detail', ['id' => ':id']) }}".replace(':id', id),
                 method: "GET",
                 dataType: "json",
                 success: function(res) {
@@ -174,10 +199,17 @@
                         $("#boxTable").removeClass("col-md-12").addClass("col-md-7");
                         let d = res.data;
                         $("#id").val(d.id);
-                        $("#subject").val(d.subject);
-                        $("#message").val(d.message);
-                        $("#type").val(d.type);
+                        $("#title").val(d.title);
+                        $("#qty").val(d.qty);
                         $("#is_active").val(d.is_active).change();
+                        $("#type").val(d.type).change();
+                        if (d.type == 'V') {
+                            $('#fResellerList').fadeIn()
+                            $("#reseller_list").val(JSON.parse(d.reseller_list)).change();
+                        }
+                        $("#start_date").val(d.start_date);
+                        $("#end_date").val(d.end_date);
+                        $("#image").attr("required", false);
                     })
                 },
                 error: function(err) {
@@ -192,19 +224,18 @@
             e.preventDefault();
             let formData = new FormData();
             formData.append("id", parseInt($("#id").val()));
-            formData.append("subject", $("#subject").val());
-            formData.append('message', $("#message").val());
-            formData.append("type", $("#type").val());
+            formData.append("title", $("#title").val());
+            formData.append('qty', $("#qty").val());
             formData.append("is_active", $("#is_active").val());
-
-            let data = {
-                id: parseInt($("#id").val()),
-                subject: $("#subject").val(),
-                message: $("#message").val(),
-                type: $("#type").val(),
-                is_active: $("#is_active").val()
+            formData.append('type', $("#type").val());
+            formData.append('start_date', $("#start_date").val());
+            formData.append('end_date', $("#end_date").val());
+            if ($("#type").val() == "V") {
+                formData.append("reseller_list", JSON.stringify($("#reseller_list").val()));
             }
 
+            formData.append("image", document.getElementById("image").files[0]);
+            console.log("reseller :", $("#reseller_list").val());
             saveData(formData, $("#formEditable").attr("data-action"));
             return false;
         });
@@ -221,7 +252,7 @@
 
         function saveData(data, action) {
             $.ajax({
-                url: action == "update" ? "{{ route('information.update') }}" : "{{ route('information.create') }}",
+                url: action == "update" ? "{{ route('reward.update') }}" : "{{ route('reward.create') }}",
                 contentType: false,
                 processData: false,
                 method: "POST",
@@ -246,7 +277,7 @@
             let c = confirm("Apakah anda yakin untuk menghapus data ini ?");
             if (c) {
                 $.ajax({
-                    url: "{{ route('information.destroy') }}",
+                    url: "{{ route('reward.destroy') }}",
                     method: "DELETE",
                     data: {
                         id: id
@@ -269,7 +300,7 @@
 
         function updateStatusData(data) {
             $.ajax({
-                url: "{{ route('information.change-status') }}",
+                url: "{{ route('reward.change-status') }}",
                 contentType: false,
                 processData: false,
                 method: "POST",
@@ -288,5 +319,15 @@
                 }
             })
         }
+
+        $('#type').change(function() {
+            let type = $(this).val();
+
+            if (type == 'V') {
+                $('#fResellerList').fadeIn()
+            } else {
+                $('#fResellerList').slideUp()
+            }
+        })
     </script>
 @endpush

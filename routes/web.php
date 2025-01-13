@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\ProductCategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\RewardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,6 +44,7 @@ Route::group(["middleware" => "auth:web"], function () {
             Route::get("/information", [InformationController::class, 'index'])->name('information');
             Route::get("/product-category", [ProductCategoryController::class, 'index'])->name('product-category');
             Route::get("/product", [ProductController::class, 'index'])->name('product');
+            Route::get("/reward", [RewardController::class, 'index'])->name('reward');
         });
     });
 });

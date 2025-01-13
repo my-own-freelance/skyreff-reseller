@@ -21,7 +21,7 @@ list menu admin :
         - BANNER (ok)
         - INFORMATION (ok)
         - KATEGORI PRODUCT (ok)
-        - PRODUCT
+        - PRODUCT (ok)
         - REWARD
          
     - TRANSACTION

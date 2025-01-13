@@ -3,29 +3,32 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Information;
+use App\Models\Reward;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class InformationController extends Controller
+class RewardController extends Controller
 {
     public function index()
     {
-        $title = "Master Informasi";
-        return view("pages.dashboard.admin.information", compact("title"));
+        $title = "Master Reward";
+        $resellers = User::where("role", "RESELLER")->get();
+        return view("pages.dashboard.admin.reward", compact("title", "resellers"));
     }
 
     // HANDLER API
     public function dataTable(Request $request)
     {
-        $query = Information::query();
+        $query = Reward::query();
 
         if ($request->query("search")) {
             $searchValue = $request->query("search")['value'];
             $query->where(function ($query) use ($searchValue) {
-                $query->where('subject', 'like', '%' . $searchValue . '%')
-                    ->Orwhere('message', 'like', '%' . $searchValue . '%');
+                $query->where('title', 'like', '%' . $searchValue . '%');
             });
         }
 
@@ -66,39 +69,36 @@ class InformationController extends Controller
                     </div>
                 </div>';
 
-
-            $subject = "<p>" . Str::limit(strip_tags($item->subject), 100) . "</p>";
-            $message = "<p>" . Str::limit(strip_tags($item->message), 150) . "</p>";
-            $type = "";
-            switch ($item->type) {
-                case "P":
-                    $type = "<span class='badge badge-primary'>Primary</span>";
-                    break;
-                case "I":
-                    $type = "<span class='badge badge-info'>Information</span>";
-                    break;
-                case "S":
-                    $type = "<span class='badge badge-success'>Success</span>";
-                    break;
-                case "W":
-                    $type = "<span class='badge badge-warning'>Warning</span>";
-                    break;
-                case "D":
-                    $type = "<span class='badge badge-danger'>Danger</span>";
-                    break;
-                default:
-                    $type = "<span class='badge badge-info'>Information</span>";
-                    break;
-            }
-            $item['type'] = $type;
+            $image = '<div class="thumbnail">
+                        <div class="thumb">
+                            <img src="' . Storage::url($item->image) . '" alt="" width="250px" height="250px" 
+                            class="img-fluid img-thumbnail" alt="' . $item->title . '">
+                        </div>
+                    </div>';
+            $stock = '<small>
+                    <strong>Sisa</strong> :' . $item->qty . '
+                    <br>
+                    <strong>Di Klaim</strong> :' . $item->claim . '
+                    <br>
+                </small>';
+            $duration = '<small>
+                    <strong>Start</strong> :' . Carbon::parse($item->start_date)->format('d F Y, h:i A') . '
+                    <br>
+                    <strong>End</strong> :' . Carbon::parse($item->end_date)->format('d F Y, h:i A') . '
+                    <br>
+                </small>';
+            $title = "<p>" . Str::limit(strip_tags($item->title), 100) . "</p>";
             $item['action'] = $action;
+            $item['image'] = $image;
+            $item['stock'] = $stock;
+            $item["duration"] = $duration;
             $item['is_active'] = $is_active;
-            $item['subject'] = $subject;
-            $item['message'] = $message;
+            $item['title'] = $title;
+            $item['type'] = $item->type == "G" ? "<small class='badge badge-primary'>Global</small>" : "<small class='badge badge-success'>Public</small>";
             return $item;
         });
 
-        $total = Information::count();
+        $total = Reward::count();
         return response()->json([
             'draw' => $request->query('draw'),
             'recordsFiltered' => $recordsFiltered,
@@ -110,18 +110,21 @@ class InformationController extends Controller
     public function getDetail($id)
     {
         try {
-            $information = Information::find($id);
+            $reward = Reward::find($id);
 
-            if (!$information) {
+            if (!$reward) {
                 return response()->json([
                     "status" => "error",
                     "message" => "Data tidak ditemukan",
                 ], 404);
             }
 
+            $reward->start_date = Carbon::parse($reward->start_date)->format('Y-m-d\TH:i');
+            $reward->end_date = Carbon::parse($reward->end_date)->format('Y-m-d\TH:i');
+
             return response()->json([
                 "status" => "success",
-                "data" => $information
+                "data" => $reward
             ]);
         } catch (\Exception $err) {
             return response()->json([
@@ -136,19 +139,32 @@ class InformationController extends Controller
         try {
             $data = $request->all();
             $rules = [
-                "subject" => "required|string",
-                "message" => "required|string",
-                "type" => "required|string|in:P,I,S,W,D",
+                "title" => "required|string",
+                "qty" => "required|integer|min:1",
                 "is_active" => "required|string|in:Y,N",
+                "type" => "required|string|in:G,V",
+                "image" => "required|image|max:2048|mimes:giv,svg,jpeg,png,jpg",
+                "start_date" => "required|date_format:Y-m-d\TH:i",
+                "end_date" => "required|date_format:Y-m-d\TH:i"
             ];
 
             $messages = [
-                "subject.required" => "Subject harus diisi",
-                "message.required" => "Message harus diisi",
-                "type.required" => "Type informasi harus diisi",
-                "type.in" => "Type informasi tidak sesuai",
+                "title.required" => "Judul harus diisi",
+                "qty.required" => "Quantity harus diisi",
+                "qty.integer" => "Quantity tidak valid",
+                "qty.min" => "Quantity minimal 1",
                 "is_active.required" => "Status harus diisi",
                 "is_active.in" => "Status tidak sesuai",
+                "type.required" => "Type harus diisi",
+                "type.in" => "Type tidak sesuai",
+                "image.required" => "Gambar harus di isi",
+                "image.image" => "Gambar yang di upload tidak valid",
+                "image.max" => "Ukuran gambar maximal 2MB",
+                "image.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                "start_date.required" => "Tanggal mulai harus diisi",
+                "start_date.date_format" => "Format Tanggal Mulai tidak sesuai. Gunakan format Y-m-d H:i:s",
+                "end_date.required" => "Tanggal akhir harus diisi",
+                "end_date.date_format" => "Format Tanggal Akhir tidak sesuai. Gunakan format Y-m-d H:i:s",
             ];
 
             $validator = Validator::make($data, $rules, $messages);
@@ -159,14 +175,29 @@ class InformationController extends Controller
                 ], 400);
             }
 
+            if ($request->file('image')) {
+                $data['image'] = $request->file('image')->store('assets/reward', 'public');
+            }
             unset($data['id']);
 
-            Information::create($data);
+            $startDate = Carbon::parse($request->start_date);
+            $endDate = Carbon::parse($request->end_date);
+
+            $data["start_date"] = $startDate;
+            $data["end_date"] = $endDate;
+
+            Reward::create($data);
             return response()->json([
                 "status" => "success",
                 "message" => "Data berhasil dibuat"
             ]);
         } catch (\Exception $err) {
+            if ($request->file("image")) {
+                $uploadedImg = "public/assets/reward" . $request->image->hashName();
+                if (Storage::exists($uploadedImg)) {
+                    Storage::delete($uploadedImg);
+                }
+            }
             return response()->json([
                 "status" => "error",
                 "message" => $err->getMessage(),
@@ -180,21 +211,38 @@ class InformationController extends Controller
             $data = $request->all();
             $rules = [
                 "id" => "required|integer",
-                "subject" => "required|string",
-                "message" => "required|string",
-                "type" => "required|string|in:P,I,S,W,D",
+                "title" => "required|string",
+                "qty" => "required|integer|min:0",
                 "is_active" => "required|string|in:Y,N",
+                "type" => "required|string|in:G,V",
+                "image" => "nullable",
+                "start_date" => "required|date_format:Y-m-d\TH:i",
+                "end_date" => "required|date_format:Y-m-d\TH:i"
             ];
+
+            if ($request->file('image')) {
+                $rules['image'] .= '|image|max:2048|mimes:giv,svg,jpeg,png,jpg';
+            }
 
             $messages = [
                 "id.required" => "Data ID harus diisi",
                 "id.integer" => "Type ID tidak sesuai",
-                "subject.required" => "Subject harus diisi",
-                "message.required" => "Message harus diisi",
-                "type.required" => "Type informasi harus diisi",
-                "type.in" => "Type informasi tidak sesuai",
+                "title.required" => "Judul harus diisi",
+                "qty.required" => "Quantity harus diisi",
+                "qty.integer" => "Quantity tidak valid",
+                "qty.min" => "Quantity tidak boleh minus",
                 "is_active.required" => "Status harus diisi",
                 "is_active.in" => "Status tidak sesuai",
+                "type.required" => "Type harus diisi",
+                "type.in" => "Type tidak sesuai",
+                "image.required" => "Gambar harus di isi",
+                "image.image" => "Gambar yang di upload tidak valid",
+                "image.max" => "Ukuran gambar maximal 2MB",
+                "image.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                "start_date.required" => "Tanggal mulai harus diisi",
+                "start_date.date_format" => "Format Tanggal Mulai tidak sesuai. Gunakan format Y-m-d H:i:s",
+                "end_date.required" => "Tanggal akhir harus diisi",
+                "end_date.date_format" => "Format Tanggal Akhir tidak sesuai. Gunakan format Y-m-d H:i:s",
             ];
 
             $validator = Validator::make($data, $rules, $messages);
@@ -205,20 +253,42 @@ class InformationController extends Controller
                 ], 400);
             }
 
-            $information = Information::find($data['id']);
-            if (!$information) {
+            $reward = Reward::find($data['id']);
+            if (!$reward) {
                 return response()->json([
                     "status" => "error",
                     "message" => "Data tidak ditemukan"
                 ], 404);
             }
 
-            $information->update($data);
+            // delete undefined data image
+            unset($data["image"]);
+            if ($request->file("image")) {
+                $oldImagePath = "public/" . $reward->image;
+                if (Storage::exists($oldImagePath)) {
+                    Storage::delete($oldImagePath);
+                }
+                $data["image"] = $request->file("image")->store("assets/reward", "public");
+            }
+
+            $startDate = Carbon::parse($request->start_date);
+            $endDate = Carbon::parse($request->end_date);
+
+            $data["start_date"] = $startDate;
+            $data["end_date"] = $endDate;
+
+            $reward->update($data);
             return response()->json([
                 "status" => "success",
                 "message" => "Data berhasil diperbarui"
             ]);
         } catch (\Exception $err) {
+            if ($request->file("image")) {
+                $uploadedImg = "public/assets/reward" . $request->image->hashName();
+                if (Storage::exists($uploadedImg)) {
+                    Storage::delete($uploadedImg);
+                }
+            }
             return response()->json([
                 "status" => "error",
                 "message" => $err->getMessage(),
@@ -250,14 +320,14 @@ class InformationController extends Controller
                 ], 400);
             }
 
-            $information = Information::find($data['id']);
-            if (!$information) {
+            $reward = Reward::find($data['id']);
+            if (!$reward) {
                 return response()->json([
                     "status" => "error",
                     "message" => "Data tidak ditemukan"
                 ], 404);
             }
-            $information->update($data);
+            $reward->update($data);
             return response()->json([
                 "status" => "success",
                 "message" => "Status berhasil diperbarui"
@@ -286,15 +356,19 @@ class InformationController extends Controller
             }
 
             $id = $request->id;
-            $information = Information::find($id);
-            if (!$information) {
+            $reward = Reward::find($id);
+            if (!$reward) {
                 return response()->json([
                     "status" => "error",
                     "message" => "Data tidak ditemukan"
                 ], 404);
             }
+            $oldImagePath = "public/" . $reward->image;
+            if (Storage::exists($oldImagePath)) {
+                Storage::delete($oldImagePath);
+            }
 
-            $information->delete();
+            $reward->delete();
             return response()->json([
                 "status" => "success",
                 "message" => "Data berhasil dihapus"

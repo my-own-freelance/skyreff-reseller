@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\ProductCategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\RewardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -69,6 +70,16 @@ Route::group(["middleware" => "check.auth"], function () {
                 Route::post("update", [ProductController::class, "update"])->name('product.update');
                 Route::post("update-status", [ProductController::class, "updateStatus"])->name('product.change-status');
                 Route::delete("delete", [ProductController::class, "destroy"])->name('product.destroy');
+            });
+
+            // REWARD
+            Route::group(["prefix" => "reward"], function () {
+                Route::get("datatable", [RewardController::class, "dataTable"])->name('reward.datatable');
+                Route::get("{id}/detail", [RewardController::class, "getDetail"])->name('reward.detail');
+                Route::post("create", [RewardController::class, "create"])->name('reward.create');
+                Route::post("update", [RewardController::class, "update"])->name('reward.update');
+                Route::post("update-status", [RewardController::class, "updateStatus"])->name('reward.change-status');
+                Route::delete("delete", [RewardController::class, "destroy"])->name('reward.destroy');
             });
         });
     });

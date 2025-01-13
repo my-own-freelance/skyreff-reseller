@@ -133,9 +133,9 @@
                 success: function(res) {
                     showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
                     if (res.message == "Login Sukses") {
-                        // setTimeout(() => {
-                        //     window.location.href = res.redirect_url
-                        // }, 1500)
+                        setTimeout(() => {
+                            window.location.href = res.redirect_url
+                        }, 1500)
                     } else {
                         setTimeout(() => {
                             location.reload();

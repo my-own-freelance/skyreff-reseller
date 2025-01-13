@@ -199,6 +199,7 @@
 @push('scripts')
     <script src="{{ asset('/dashboard/js/plugin/datatables/datatables.min.js') }}"></script>
     <script src="{{ asset('/dashboard/js/plugin/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('dashboard/js/plugin/select2/select2.full.min.js') }}"></script>
 
     <script>
         $('#summernote').summernote({
@@ -206,6 +207,10 @@
             fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New'],
             tabsize: 2,
             height: 300
+        });
+
+        $('#fProductCategoryId,#fStatus,#product_category_id,#is_active').select2({
+            theme: "bootstrap"
         });
 
         function formatToRupiah(amount) {

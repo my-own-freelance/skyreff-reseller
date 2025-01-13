@@ -363,7 +363,7 @@ class ProductController extends Controller
             ]);
         } catch (\Exception $err) {
             if ($request->file("image")) {
-                $uploadedImg = "public/assets/banner" . $request->image->hashName();
+                $uploadedImg = "public/assets/product" . $request->image->hashName();
                 if (Storage::exists($uploadedImg)) {
                     Storage::delete($uploadedImg);
                 }

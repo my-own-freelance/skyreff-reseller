@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('subject');
             $table->text('message');
-            $table->enum('type', ['P', 'I', 'W', 'D'])->default('I'); // untuk pewarnaan backround alert (primary/info/warning/danger)
+            $table->enum('type', ['P', 'I', 'S', 'W', 'D'])->default('I'); // untuk pewarnaan backround alert (primary/info/success/warning/danger)
             $table->enum('is_active', ['Y','N'])->default('N');
             $table->timestamps();
             $table->softDeletes();
