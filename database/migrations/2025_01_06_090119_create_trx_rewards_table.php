@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('trx_rewards', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', ['PENDING', 'SUCCESS', 'REJECT'])->default('PENDING');
+            $table->enum('status', ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
             $table->string('proof_of_acception')->nullable(); // bukti reward diberikan oleh admin
             $table->string('remark')->nullable(); // alasan admin reject
             $table->unsignedBigInteger('user_id');

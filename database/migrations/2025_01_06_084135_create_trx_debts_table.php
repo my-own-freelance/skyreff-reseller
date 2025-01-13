@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('amount')->nullable();
             $table->enum('type', ['D', 'P'])->default('D'); // D = debt . P = pay
-            $table->enum('status', ['PENDING', 'SUCCESS', 'REJECT'])->default('PENDING');
+            $table->enum('status', ['PENDING', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
             $table->string('proof_of_payment')->nullable(); // upload bukti pembayaran piutang
             $table->string('remark')->nullable(); // keterangan untuk admin ketika reject trx
             $table->unsignedBigInteger('trx_product_id');

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('trx_compensation', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT'])->default('PENDING');
+            $table->enum('status', ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
             $table->string('description'); // keterangan kendala / keluhan
             $table->string('proof_of_constrain')->nullable(); // upload bukti kendala / keluhan
             $table->string('proof_of_solution')->nullable(); // upload bukti solusi dari admin

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('amount')->default(0);
             $table->string('bank_name');
             $table->string('bank_account');
-            $table->enum('status', ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT'])->default('PENDING');
+            $table->enum('status', ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
             $table->string('proof_of_payment')->nullable(); // bukti bayar oleh admin
             $table->string('remark')->nullable();
             $table->unsignedBigInteger('user_id');
