@@ -5,11 +5,9 @@
     $sidebarColor = $config && $config->sidebar_color ? $config->sidebar_color : 'white';
     $bgColor = $config && $config->bd_color ? $config->bd_color : 'bg1';
     $webTitle = $config && $config->web_title ? $config->web_title : 'Web Properti';
-    $webLogo =
-        $config && $config->web_logo
-            ? url('/') . Storage::url($config->web_logo)
-            : asset('skyreff-logo.jpeg');
+    $webLogo = $config && $config->web_logo ? url('/') . Storage::url($config->web_logo) : asset('skyreff-logo.jpeg');
     $webDesciption = $config && $config->web_description ? $config->web_description : '';
+    $user = Auth::user();
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -53,7 +51,11 @@
             {{-- end navbar header --}}
         </div>
 
-        @include('partials.dashboard.sidebar')
+        @if ($user->role == 'ADMIN')
+            @include('partials.dashboard.sidebar-admin')
+        @else
+            @include('partials.dashboard.sidebar-reseller')
+        @endif
 
         <div class="main-panel">
             <div class="container">

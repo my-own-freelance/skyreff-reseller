@@ -1,0 +1,224 @@
+TABEL BANKS :
+- id
+- title
+- account
+- created_at
+- updated_at
+- deleted_at
+
+TABLE BANNERS :
+- id
+- title
+- excerpt
+- image
+- is_active (enum [Y, N] . default N)
+- created_at
+- updated_at
+- deleted_at
+
+TABLE INFORMATIONS :
+- id
+- subject
+- messages
+- type (enum ['P', 'I', 'W', 'D'] . default 'i') untuk pewarnaan backround alert (primary/info/warning/danger)
+- is_active (enum [Y, N] . default N)
+- created_at
+- updated_at
+- deleted_at
+
+TABEL PROVINCES :
+- id
+- name
+- key
+- timeZone
+- created_at
+- updated_at
+- deleted_at
+	
+TABEL DISTRICTS :
+- id
+- name
+- key
+- province_id
+- created_at
+- updated_at																																																																																																																																																	
+- deleted_at
+
+TABLE SUB_DISTRICTS :
+- id
+- name
+- key
+- district_id
+- created_at
+- updated_at
+- deleted_at
+
+TABLE USERS : 
+- id
+- code (auto generate 6 digit a-z)
+- name
+- username
+- password
+- phone_number
+- is_active (enum [Y, N] . default N)
+- role (enum ['ADMIN', 'RESELLER'] . default reseller)
+- bank_type (BRI, BCA, BNI, DANA, OVO)
+- bank_account														
+- level (enum ['REGULAR', '	VIP'] . default 'REGULAR')
+- debt_limit (limit hutang)
+- total_debt (total hutang)
+- commission
+- image
+- province_id
+- district_id
+- sub_district_id
+- address
+- created_at
+- updated_at
+- deleted_at	
+
+TABLE PRODUCT_CATEGORIES :
+- id
+- title
+- is_active (enum ['Y', 'N'] . default 'Y')
+- created_at
+- updated_at
+- deleted_at
+
+TABLE PRODUCTS :
+- id
+- title
+- code (auto generate 6 digit a-z)
+- purchase_price (harge beli)
+- selling_price (harga jual)
+- commission_regular (komisi reseller regular)
+- commission_vip (komisi reseller vip)
+- is_active (enum ['Y', 'N'] . default 'Y')
+- stock
+- image
+- excerpt
+- description
+- product_category_id
+- created_at
+- updated_at
+- deleted_at																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															
+
+TABLE PRODUCT_IMAGES : 
+- id
+- image
+- product_id
+- created_at
+- updated_at
+- deleted_at
+
+TABLE REWARD :
+- id
+- title
+- stock
+- image
+- is_active (enum [Y, N] . default N)
+- type (enum [G, V] . default G) G = global . V = vip
+- reseller_list (jika type == vip . maka field ini diisi json array id reseller yg bisa melakukan claim reward)
+- start_date
+- end_date
+- created_at
+- updated_at
+- deleted_at
+
+
+// ketika trx disukseskan oleh admin, buat data mutasi komisi dan upadate saldo komisi
+TABLE TRX_PRODUCTS : 
+- id
+- code (auto generate 12 digit a-z)
+- amount
+- commission
+- qty
+- status (enum ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT'] . default 'PENDING')
+- payment_type (enum ['TRANSFER', 'DEBT'] . default 'TRANSFER')
+- proof_of_payment (upload bukti pembayaran jika type nya tf)
+- proof_of_return (upload bukti pengembalian uang kita sudah terlanjut di tf dan admin menolak transaksi)
+- remark (keterangan untuk admin ketika reject trx)
+- product_id
+- user_id
+- bank_id
+- created_at
+- updated_at
+- deleted_at
+
+
+// tabel ini diisi ketika customer trx produk dengan metode piutang ketika status masih trx pending
+// staus awal reseller_debts adalah pending dan akan success ketika trx nya di sukseskan oleh admin
+// ketika status trx di reject, hapus data piutang dan total piutang di reseller di kurangi 
+
+TABLE TRX_DEBTS
+- id
+- amount
+- type (enum ['D','P']) D = debt . P = pay
+- status (enum ['PENDING','SUCCESS', 'REJECT'] . default 'PENDING')
+- proof_of_payment (upload bukti pembayaran)	
+- remark
+- trx_product_id
+- bank_id
+- created_at
+- updated_at
+- deleted_at
+
+// ketika di sukseskan oleh admin, buat data mutasi . jika di tolak, balikan saldo komisi ke reseller																																																																																																																																																																																																																																																																																																																																																										
+TABLE TRX_COMMISSIONS :
+- id
+- amount
+- bank_name
+- bank_account
+- status (enum ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT'] . default 'PENDING')
+- proof_of_payment (bukti pembayaran oleh admin)
+- remark
+- user_id
+- created_at
+- updated_at
+- deleted_at
+
+TABLE TRX_COMPENSATIONS :
+- id
+- status (enum ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT'] . default 'PENDING')
+- description (keterangan kendala)
+- proof_of_constrain (upload bukti kendala)
+- proof_of_solution (upload bukti solusi dari admin)
+- remark (catatan dari admin)
+- trx_product_id
+- user_id
+- created_at
+- updated_at
+- deleted_at
+
+TABLE TRX_UPGRADES : (untuk request upgrade account)
+- id
+- status (enum ['PENDING','SUCCESS', 'REJECT'] . default 'PENDING')
+- remark
+- user_id
+- created_at
+- updated_at
+- deleted_at
+
+TABLE TRX_REWARD :
+- id
+- status (enum ['PENDING','SUCCESS', 'REJECT'] . default 'PENDING')
+- proof_of_acception (bukti kirim jika berupa barang)
+- remark
+- user_id
+- reward_id
+- created_at
+- updated_at
+- deleted_at
+
+TABLE MUTATIONS : 
+- id
+- amount
+- type (enum ['C', 'W']) C = commission . W = Widhraw
+- first_commission
+- last_commission
+- trx_product_id
+- trx_commission_id
+- created_at
+- updated_at
+- deleted_at
+ 

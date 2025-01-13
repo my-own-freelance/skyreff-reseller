@@ -3,7 +3,7 @@
     $webLogo =
         $config && $config->web_logo
             ? url('/') . Storage::url($config->web_logo)
-            : asset('skyreff-logon.jpeg');
+            : asset('skyreff-logo.jpeg');
 @endphp
 <!DOCTYPE html>
 <html lang="en">

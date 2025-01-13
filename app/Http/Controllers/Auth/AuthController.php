@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Models\WebConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -25,28 +27,9 @@ class AuthController extends Controller
     }
 
     // API
-
-    function validateCaptcha($captchaResponse)
-    {
-        $secretKey = env('recaptcha2.secret');
-        $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
-
-        $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $captchaResponse);
-        $responseKeys = json_decode($response, true);
-        return $responseKeys;
-        return isset($responseKeys["success"]) && $responseKeys["success"] === true;
-    }
-
-
     public function validateLogin(Request $request)
     {
         try {
-            $captchaResponse = $request->input('g-recaptcha-response');
-
-            if (!$this->validateCaptcha($captchaResponse)) {
-                return response()->json(['message' => 'Captcha tidak valid.'], 422);
-            }
-
             $rules = [
                 "username" => "required|string",
                 "password" => "required|string",
@@ -70,7 +53,7 @@ class AuthController extends Controller
             if ($user && $user->is_active != "Y") {
                 return response()->json([
                     "status" => "error",
-                    "message" => "Akun tidak aktif"
+                    "message" => "Akun tidak aktif, silahkan hubungi admin"
                 ], 400);
             }
 
@@ -92,10 +75,60 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
     public function logout(Request $request)
     {
         Auth::logout();
 
         return redirect()->route('login');
+    }
+
+    public function register(Request $request)
+    {
+        try {
+            $rules = [
+                "name" => "required|string",
+                "username" => "required|string|unique:users",
+                "password" => "required|string|min:5",
+                "passwordConfirm" => "required|string|same:password"
+            ];
+
+            $messages = [
+                "name.required" => "Nama harus diisi",
+                "username.required" => "Username harus diisi",
+                "username.unique" => "Username sudah digunakan",
+                "password.required" => "Password harus diisi",
+                "password.min" => "Password minimal 5 karakter",
+                "passwordConfirm.required" => "Password harus diisi",
+                "passwordConfirm.same" => "Password Confirm tidak sesuai"
+            ];
+
+            $validator = Validator::make($request->all(), $rules, $messages);
+            if ($validator->fails()) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => $validator->errors()->first(),
+                ], 400);
+            }
+
+            $user = new User();
+            $user->code = "RES" . strtoupper(Str::random(7));
+            $user->name = $request->name;
+            $user->username = $request->username;
+            $user->password = Hash::make($request->password);
+            $user->is_active = "N";
+            $user->role = "RESELLER";
+            $user->save();
+
+            return response()->json([
+                "status" => "success",
+                "message" => "Registrasi berhasil, silahkan hubungi admin untuk aktivasi akun"
+            ]);
+        } catch (\Exception $err) {
+            return response()->json([
+                "status" => "error",
+                "message" => $err->getMessage()
+            ], 500);
+        }
     }
 }

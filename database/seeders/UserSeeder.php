@@ -14,13 +14,22 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $superadmin = User::create([
-            "code" => "sa12345",
-            "name" => "superadmin",
-            "username" => "superadmin",
+        // User::create([
+        //     "code" => "sa12345",
+        //     "name" => "superadmin",
+        //     "username" => "superadmin",
+        //     "password" => Hash::make("rahasia"),
+        //     "is_active" => "Y",
+        //     "role" => "ADMIN"
+        // ]);
+
+        User::create([
+            "code" => "re12345",
+            "name" => "reseller",
+            "username" => "reseller",
             "password" => Hash::make("rahasia"),
             "is_active" => "Y",
-            "role" => "ADMIN"
+            "role" => "RESELLER"
         ]);
     }
 }

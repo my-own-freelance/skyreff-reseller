@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\WebConfig;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -16,6 +17,8 @@ class DashboardController extends Controller
             $title = $config->web_title;
         }
 
-        return view("pages.dashboard.index", compact("title"));
+        $user = Auth::user();
+        $pageUrl = $user->role == "ADMIN" ? "pages.dashboard.admin.index" : "pages.dashboard.reseller.index";
+        return view($pageUrl, compact("title"));
     }
 }

@@ -24,9 +24,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="g-recaptcha" data-sitekey="{{ env('recaptcha2.key') }}"></div>
-                    </div>
                     <div class="form-group form-action-d-flex mb-3">
                         {{-- <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="rememberme">
@@ -36,37 +33,86 @@
                             Log In
                         </button>
                     </div>
-                    {{-- <div class="login-account">
+                    <div class="login-account">
                         <span class="msg">Belum punya akun ?</span>
-                        <a href="#" id="show-signup" class="link">Register</a>
-                    </div> --}}
+                        <a href="#" id="show-signup" class="link">Daftar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="container container-signup container-transparent animated fadeIn">
+            <form id="formRegister">
+                <h3 class="text-center">Sign Up</h3>
+                <div class="login-form">
+                    <div class="form-group">
+                        <label for="rName" class="placeholder"><b>Nama Lengkap</b></label>
+                        <input id="rName" name="rName" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rUsername" class="placeholder"><b>Username</b></label>
+                        <input id="rUsername" name="rUsername" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rPassword" class="placeholder"><b>Password</b></label>
+                        <div class="position-relative">
+                            <input id="rPassword" name="rPassword" type="password" class="form-control" required>
+                            <div class="show-password">
+                                <i class="icon-eye"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="rPasswordConfirm" class="placeholder"><b>Password Konfirmasi</b></label>
+                        <div class="position-relative">
+                            <input id="rPasswordConfirm" name="rPasswordConfirm" type="password" class="form-control"
+                                required>
+                            <div class="show-password">
+                                <i class="icon-eye"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-sub m-0">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="agree" id="agree">
+                            <label class="custom-control-label" for="agree">Saya setuju dengan syarat dan
+                                ketentuan</label>
+                        </div>
+                    </div>
+                    <div class="row form-action">
+                        <div class="col-md-6">
+                            <a href="#" id="show-signin" class="btn btn-danger btn-link w-100 fw-bold">Batal</a>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-secondary w-100 fw-bold">Daftar</button>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 @endsection
 @push('scripts')
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
         $("#formLogin").submit(function(e) {
             e.preventDefault();
 
-            let captchaResponse = grecaptcha.getResponse();
-            if (!captchaResponse) {
-                showMessage("danger", "flaticon-error", "Peringatan", "Silakan selesaikan reCAPTCHA.");
-                return;
-            }
-
-            let dataToSend = $(this).serialize() + "&g-recaptcha-response=" + captchaResponse;
+            let dataToSend = $(this).serialize();
             submitAuth(dataToSend, "login");
             return false;
         })
 
         $("#formRegister").submit(function(e) {
+            console.log("sini")
             e.preventDefault();
 
             const agree = $("#agree").prop('checked');
-            let dataToSend = $(this).serialize();
+            let dataToSend = {
+                name: $("#rName").val(),
+                username: $("#rUsername").val(),
+                password: $("#rPassword").val(),
+                passwordConfirm: $("#rPasswordConfirm").val()
+            }
+
             if (agree) {
                 submitAuth(dataToSend, "register")
             } else {
@@ -78,7 +124,7 @@
 
         function submitAuth(data, type) {
             $.ajax({
-                url: "/api/auth/login/validate",
+                url: type == "login" ? "/api/auth/login" : "/api/auth/register",
                 method: "POST",
                 data: data,
                 beforeSend: function() {
@@ -91,10 +137,9 @@
                             window.location.href = "{{ route('dashboard') }}"
                         }, 1500)
                     } else {
-                        // setTimeout(() => {
-
-                        //     location.reload();
-                        // }, 1500)
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500)
                     }
                 },
                 error: function(err) {

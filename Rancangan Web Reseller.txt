@@ -1,0 +1,112 @@
+Rancangan Website Reseller
+
+Login Page :
+
+- Laman Login
+ * Username
+ * Password
+
+- Laman Register
+ * Username
+ * Password
+ * Nama Lengkap
+ * Alamat
+ * Jenis Rekening
+ * Nomor Rekening
+ * Level Reseller ( Hidden Auto level 1 )
+
+---------------------------------------------------------------------------------------------
+Laman Administrator :
+
+- Dashboard Trafik
+ * Jumlah Transaksi Harian
+ * Jumlah Total Transaksi Keseluruhan
+ * Jumlah Transaksi Pending
+ * Jumlah Transaksi Ditolak
+ * Jumlah Transaksi Sukses																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																	
+ * Total Penjualan ( Rp )
+ * Total Claim Fee ( Rp )
+ * Total Declined ( Rp )
+ * Total Compensation ( Rp )																						
+ * Total Income ( Rp )																						
+ * Cek Stok Akrab ( Trigger pakai api nanti dikasih )
+ * Total Produk Online ( Aktif )
+ * Total Produk Offline ( Non Aktif )
+
+- Dashboard Produk
+ * Banner Gambar ( Dimensi Auto )
+ * Informasi Terkini
+ * Pricelist Tabel Produk ( Bisa custom mau nampilkan produk kategori apa )
+
+- Banner
+ * Laman Upload Gambar ( Gambar, Nama, Keterangan, Status Aktif / Non Aktif )
+ * Laman Tambah Pengumuman ( Isi Pengumuman )
+ * List Banner aktif ( CRUD )
+
+- Kategori
+ * Laman Tambah Kategori ( Nama, Status Aktif / Non Aktif )
+ * List Kategori ( CRUD )
+
+- Produk
+ * Laman Tambah Produk ( Nama, Kategori, Keterangan, Harga Asli, Harga Jual, Fee 1, Fee 2, Status Aktif / Non Aktif ) # Fee 1 utk reseller level 1, Fee 2 utk reseller level 2
+ * List Produk Per Kategori ( CRUD, Checklist Action )
+
+- Transaksi
+ * List Transaksi Pending ( Produk, Reseller Name, Time Trx In, Bukti TF, Fee, Button Process / Decline ->  Admin Isi Keterangan Penolakan )
+ * List Transaksi Proses ( Produk, Reseller Name, Time Trx In, Time Trx Processed, Bukti TF, Fee, Button Success / Decline ->  Admin Isi Keterangan Penolakan )
+ * List Transaksi Sukses ( Produk, Reseller Name, Time Trx In, Time Trx Processed, Time Trx Success, Bukti TF, Fee )
+ * List Transaksi Declined ( Produk, Reseller Name, Time Trx In, Time Trx Declined, Bukti TF, Fee, Keterangan Penolakan )
+
+- Request
+ * List Request Claim Fee ( Reseller Name, Total Fee Requested, Jenis Rekening, Nomor Rekening, Button Accept -> Admin upload gambar bukti tf fee & keterangan / Decline -> Admin Isi Keterangan )
+ * List Request Declined Trx ( Reseller Name, Produk, Bukti TF, Keterangan Ditolak, Button Accept -> Admin upload bukti tf /  Decline -> Admin isi keterangan )
+ * List Request Upgrade Account ( Reseller Name, Detail -> Link to Profile Reseller, Lama Bergabung, Button Accept -> auto change reseller account level 1 to 2 /  Decline -> Admin isi keterangan )
+ * List Request Reward ( Reseller Name, Keterangan Reward, Pengiriman Reward, Button Accept / Decline -> Admin isi keterangan )
+ * List Request Compensation ( Reseller Name, Trx Requested -> link with trx data, Keterangan, Bukti Kendala, Button Accept -> Admin isi nominal utk data arsip /  Decline -> Admin isi keterangan )
+
+- Reward		
+ * Admin Notes ( Kolom catatan utk admin )
+ * Laman Tambah Reward ( Nama Reward, Keterangan, Time Start, Time End, For All / Specified -> Select Reseller yg akan menerima broadcast )
+ * List Reward ( CRUD )
+ * List Reseller Claimed ( Reseller, Claimed Time, Reward Name )
+
+- Account Data
+ * Administrator Active ( CRUD )
+ * Reseller Waiting ( Detail reseller registered, Button Activate / Delete )
+ * Reseller Reguler Aktif ( CRUD )
+ * Reseller VIP ( CRUD )																						
+
+- Datacenter
+ * Laman Rekap Transaksi
+ * Laman Rekap Fee
+ * Laman Rekap Compensation
+ * Laman Rekap Reward																																											
+
+---------------------------------------------------------------------------------------------
+
+Laman Reseller
+
+- Dashboard
+ * Banner Gambar ( Dimensi Auto )
+ * Informasi Terkini
+ * Pricelist Tabel Produk ( Bisa custom mau nampilkan produk kategori apa )
+ * Cek Stok Akrab ( trigger pakai Api nanti dikasih )
+
+- Transaction Page
+ * Tambah Transaksi ( List Kategori, Nama Produk -> with search featured, upload bukti TF, Button Send Request )
+ * List Transaksi Terkirim ( Detail Transaksi, Status Transaksi, Time Trx In, Time Trx Processed )
+ * List Transaksi Gagal ( Detail Transaksi, Keterangan, Button Request Cashback -> Auto send request with data needed to admin )
+ * List Transaksi Berhasil ( Detail Transaksi, Fee, Button Compensation Request -> Reseller isi alasan, upload bukti kendala )
+
+- Fee & Reward
+ * Laman Total Fee ( Button Request Tarik -> Masukan nominal penarikan / tarik semua )
+ * List History Penarikan Fee
+ * Laman Lucky Wish ( Tampil Nama Reward & Keterangan) dan Button Try Your Luck ( Only 1 reseller can claim, jika sudah ada yg claim maka reseller lain saat klik button akan dpt notif belum beruntung serta menampilkan nama reseller yg dapat reward )
+ * List History Lucky Wish ( Tampilkan history all claimed reward from reseller or other lucky reseller )
+
+- Account
+ * Laman Detail Profil ( Have button to request Upgrade )
+ 
+ 
+ 
+
