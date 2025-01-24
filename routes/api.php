@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\LocationController;
 use App\Http\Controllers\Dashboard\ProductCategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\ProductImageController;
 use App\Http\Controllers\Dashboard\ResellerController;
 use App\Http\Controllers\Dashboard\RewardController;
 use App\Http\Controllers\Dashboard\WebConfigController;
@@ -85,6 +86,13 @@ Route::group(["middleware" => "check.auth"], function () {
                 Route::delete("delete", [ProductController::class, "destroy"])->name('product.destroy');
             });
 
+            // PRODUCT IMAGES
+            Route::group(["prefix" => "product-image"], function () {
+                Route::get("{product_id}/list", [ProductImageController::class, 'list'])->name('product-image.list');
+                Route::post("create", [ProductImageController::class, "create"])->name('product-image.create');
+                Route::delete('delete', [ProductImageController::class, 'destroy'])->name('product-image.destroy');
+            });
+
             // REWARD
             Route::group(["prefix" => "reward"], function () {
                 Route::get("datatable", [RewardController::class, "dataTable"])->name('reward.datatable');
@@ -107,7 +115,6 @@ Route::group(["middleware" => "check.auth"], function () {
                 Route::post("update-status", [ResellerController::class, "updateStatus"])->name('reseller.change-status');
                 Route::post("restore", [ResellerController::class, "restore"])->name('reseller.restore');
                 Route::delete("soft-delete", [ResellerController::class, "softDelete"])->name('reseller.soft-delete');
-                // Route::delete("delete", [ResellerController::class, "destroy"])->name('reseller.destroy');
             });
         });
     });

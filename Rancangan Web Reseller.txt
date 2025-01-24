@@ -23,7 +23,7 @@ list menu admin :
         - KATEGORI PRODUCT (ok)
         - PRODUCT (ok)
             - PRODUCT DETAIL
-            - PRODUCT GALLERY
+            - PRODUCT GALLERY (ok)
         - REWARD (ok)
          
     - TRANSACTION

@@ -8,6 +8,41 @@
             word-wrap: break-word;
             white-space: normal;
         }
+
+         /* PRODUCT IMAGE */
+         .image-wrapper {
+            position: relative !important;
+            max-width: 300px;
+            height: 300px;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #767676;
+            box-sizing: border-box;
+        }
+
+        .delete-button i {
+            color: white;
+        }
+
+        /* END PRODUCT IMAGE */
+
     </style>
 @endpush
 @section('content')
@@ -194,6 +229,68 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-12" style="display: none" id="formProductImage">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-left">
+                        <h5>GALLERY PROPERTY</h5>
+                    </div>
+                    <div class="card-header-right">
+                        <button class="btn btn-sm btn-primary" onclick="return addFormImage()">
+                            <i class="icon-plus text-white"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning" onclick="return closeForm(this)">
+                            <i class="ion-android-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12" id="boxproductImage">
+                            <div class="row" id="productImage">
+                                {{-- rendered image list --}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12" style="display: none" data-action="update" id="formAddImage">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-header-left">
+                                        <h5>Tambah</h5>
+                                    </div>
+                                    <div class="card-header-right">
+                                        <button class="btn btn-sm btn-warning" onclick="return closeFormImage(this)"
+                                            id="btnCloseForm">
+                                            <i class="ion-android-close"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-block">
+                                    <form>
+                                        <input class="form-control" id="product_id" type="hidden" name="id" />
+                                        <div class="form-group">
+                                            <label for="property_image">Gambar</label>
+                                            <input class="form-control" id="property_image" type="file"
+                                                name="property_image[]" multiple placeholder="upload gambar" required />
+                                            <small class="text-danger">Max ukuran 5MB</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" type="submit" id="submitImage">
+                                                <i class="ti-save"></i><span>Simpan</span>
+                                            </button>
+                                            <button class="btn btn-sm btn-default" id="resetImage" type="reset"
+                                                style="margin-left : 10px;"><span>Reset</span>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection
 @push('scripts')
@@ -309,10 +406,13 @@
 
         function closeForm() {
             $("#formEditable").slideUp(200, function() {
-                $("#boxTable").removeClass("col-md-7").addClass("col-md-12");
+                $("#boxTable").removeClass("col-md-7").addClass("col-md-12").fadeIn(200);
                 $("#reset").click();
                 $("#summernote").summernote('code', "");
+
             })
+            // view product image
+            $("#formProductImage").slideUp(200);
         }
 
         function getData(id) {
@@ -457,5 +557,123 @@
                 }
             })
         }
+
+
+        // CRUD GALLERY IMAGE PROPERTY
+        function addGallery(product_id) {
+            $("#formProductImage").fadeIn(200, function() {
+                $("#boxTable").slideUp(200);
+                galleryList(product_id)
+            })
+        }
+
+        function addFormImage() {
+            $("#formAddImage").fadeIn(200, function() {
+                $("#boxproductImage").removeClass("col-md-12").addClass("col-md-8")
+            })
+        }
+
+        function closeFormImage() {
+            $("#formAddImage").slideUp(200, function() {
+                $("#boxproductImage").removeClass("col-md-8").addClass("col-md-12");
+                $("#resetImage").click();
+            })
+        }
+
+        $("#formAddImage form").submit(function(e) {
+            e.preventDefault();
+            let formData = new FormData();
+            formData.append("product_id", $("#product_id").val());
+            let files = document.getElementById("property_image").files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append("images[]", files[i]);
+            }
+            saveproductImage(formData);
+            return false;
+        });
+
+        function saveproductImage(data, action) {
+            $.ajax({
+                url: "{{ route('product-image.create') }}",
+                contentType: false,
+                processData: false,
+                method: "POST",
+                data: data,
+                beforeSend: function() {
+                    console.log("Loading...")
+                },
+                success: function(res) {
+                    closeFormImage();
+                    showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
+                    galleryList($("#product_id").val());
+                },
+                error: function(err) {
+                    console.log("error :", err);
+                    showMessage("danger", "flaticon-error", "Peringatan", err.message || err.responseJSON
+                        ?.message);
+                }
+            })
+        }
+
+        function removeProductImage(id) {
+            let c = confirm("Apakah anda yakin untuk menghapus data ini ?");
+            if (c) {
+                $.ajax({
+                    url: "{{ route('product-image.destroy') }}",
+                    method: "DELETE",
+                    data: {
+                        id: id
+                    },
+                    beforeSend: function() {
+                        console.log("Loading...")
+                    },
+                    success: function(res) {
+                        galleryList($("#product_id").val());
+                        showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
+                    },
+                    error: function(err) {
+                        console.log("error :", err);
+                        showMessage("danger", "flaticon-error", "Peringatan", err.message || err.responseJSON
+                            ?.message);
+                    }
+                })
+            }
+        }
+
+        function galleryList(product_id) {
+            $.ajax({
+                url: "{{ route('product-image.list', ['product_id' => ':product_id']) }}".replace(':product_id', product_id),
+                header: {
+                    "Content-Type": "application/json",
+                },
+                method: "GET",
+                success: function(res) {
+                    $("#productImage").empty();
+                    $("#title").html(res.title);
+                    $("#product_id").val(product_id);
+                    $.each(res.data, function(index, item) {
+                        const elImage = $(`
+                            <div class='col col-md-3 col-sm-6 col-12'>
+                                <div class='image-wrapper mb-3 border' style='padding:5px!important;'>
+                                    <img src='${item.image}' alt='Gambar 1' class='img-fluid'>
+                                    <button class='btn delete-button' onclick='return removeProductImage("${item.id}")' href='javascript:void(0);'>
+                                        <i class='fas fa-trash ml-1'></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `);
+                        $("#productImage").append(elImage);
+                    });
+                },
+                error: function(err) {
+                    console.log("error :", err);
+                    showMessage("danger", "flaticon-danger", "Peringatan", err.message || err.responseJSON
+                        ?.message);
+                    $("#productImage").empty();
+                }
+
+            })
+        }
+        // END CRUD GALLERY IMAGE PROPERTY
     </script>
 @endpush
