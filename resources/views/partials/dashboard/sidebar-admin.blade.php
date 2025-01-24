@@ -49,6 +49,18 @@
                         <p>Reward</p>
                     </a>
                 </li>
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">MANAGE</h4>
+                </li>
+                <li class="nav-item ml-3 {{ $routename == 'reseller' ? 'active' : '' }}">
+                    <a href="{{ route('reseller') }}">
+                        <i class="fas fa-user-tag"></i>
+                        <p>Reseller</p>
+                    </a>
+                </li>
                 {{-- <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>

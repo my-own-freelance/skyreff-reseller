@@ -53,6 +53,10 @@
                         <input id="rUsername" name="rUsername" type="text" class="form-control" required>
                     </div>
                     <div class="form-group">
+                        <label for="rPhoneNumber" class="placeholder"><b>Telpon</b></label>
+                        <input id="rPhoneNumber" name="rPhoneNumber" type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
                         <label for="rPassword" class="placeholder"><b>Password</b></label>
                         <div class="position-relative">
                             <input id="rPassword" name="rPassword" type="password" class="form-control" required>
@@ -109,6 +113,7 @@
             let dataToSend = {
                 name: $("#rName").val(),
                 username: $("#rUsername").val(),
+                phone_number: $("#rPhoneNumber").val(),
                 password: $("#rPassword").val(),
                 passwordConfirm: $("#rPasswordConfirm").val()
             }

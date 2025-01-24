@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\ProductCategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\RewardController;
+use App\Http\Controllers\Dashboard\ResellerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,6 +46,18 @@ Route::group(["middleware" => "auth:web"], function () {
             Route::get("/product-category", [ProductCategoryController::class, 'index'])->name('product-category');
             Route::get("/product", [ProductController::class, 'index'])->name('product');
             Route::get("/reward", [RewardController::class, 'index'])->name('reward');
+        });
+
+        // PREFIX MANAGE
+        Route::group(["prefix" => "manage"], function () {
+            // RESELLER
+            Route::group(["prefix" => "reseller"], function () {
+                Route::get("/", [ResellerController::class, 'indexReseller'])->name("reseller");
+                Route::get("/waiting", [ResellerController::class, 'resellerWaiting'])->name("reseller.waiting");
+                Route::get("/regular", [ResellerController::class, 'resellerRegular'])->name("reseller.regular");
+                Route::get("/vip", [ResellerController::class, 'resellerVip'])->name("reseller.vip");
+                Route::get("/deleted", [ResellerController::class, 'resellerDeleted'])->name("reseller.deleted");
+            });
         });
     });
 });

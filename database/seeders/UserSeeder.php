@@ -29,7 +29,8 @@ class UserSeeder extends Seeder
             "username" => "reseller",
             "password" => Hash::make("rahasia"),
             "is_active" => "Y",
-            "role" => "RESELLER"
+            "role" => "RESELLER",
+            "level" => "REGULAR"
         ]);
     }
 }

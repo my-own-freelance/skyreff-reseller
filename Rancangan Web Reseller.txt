@@ -22,7 +22,9 @@ list menu admin :
         - INFORMATION (ok)
         - KATEGORI PRODUCT (ok)
         - PRODUCT (ok)
-        - REWARD
+            - PRODUCT DETAIL
+            - PRODUCT GALLERY
+        - REWARD (ok)
          
     - TRANSACTION
         - PRODUCT
@@ -33,9 +35,9 @@ list menu admin :
 
     - MANAGE
         - ADMIN
-        - WAITING RESELLER
-        - RESELLER REGULAR
-        - RESELLER VIP
+        - WAITING RESELLER (ok)
+        - RESELLER REGULAR (ok)
+        - RESELLER VIP (ok)
 
     - DATA CENTER
         - REKAP TRX

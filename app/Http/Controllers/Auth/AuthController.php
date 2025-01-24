@@ -90,6 +90,7 @@ class AuthController extends Controller
             $rules = [
                 "name" => "required|string",
                 "username" => "required|string|unique:users",
+                "phone_number" => "required|string",
                 "password" => "required|string|min:5",
                 "passwordConfirm" => "required|string|same:password"
             ];
@@ -98,6 +99,7 @@ class AuthController extends Controller
                 "name.required" => "Nama harus diisi",
                 "username.required" => "Username harus diisi",
                 "username.unique" => "Username sudah digunakan",
+                "phone_number.required" => "Telpon harus diisi",
                 "password.required" => "Password harus diisi",
                 "password.min" => "Password minimal 5 karakter",
                 "passwordConfirm.required" => "Password harus diisi",
@@ -117,8 +119,10 @@ class AuthController extends Controller
             $user->name = $request->name;
             $user->username = $request->username;
             $user->password = Hash::make($request->password);
+            $user->phone_number = $request->phone_number;
             $user->is_active = "N";
             $user->role = "RESELLER";
+            $user->level = "REGULAR";
             $user->save();
 
             return response()->json([
