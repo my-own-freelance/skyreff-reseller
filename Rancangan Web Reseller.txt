@@ -20,10 +20,10 @@ list menu admin :
     - MASTER
         - BANNER (ok)
         - INFORMATION (ok)
-        - KATEGORI PRODUCT (ok)
-        - PRODUCT (ok)
+        - KATEGORI PRODUCT (ok) -> upload image
+        - PRODUCT (ok) -> tidak usah upload image
             - PRODUCT DETAIL
-            - PRODUCT GALLERY (ok)
+            - PRODUCT GALLERY (ok) (reject)
         - REWARD (ok)
          
     - TRANSACTION

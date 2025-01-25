@@ -21,6 +21,7 @@
                             <thead>
                                 <tr>
                                     <th class="all">#</th>
+                                    <th class="all">Gambar</th>
                                     <th class="all">Judul</th>
                                     <th class="all">Status</th>
                                 </tr>
@@ -57,6 +58,12 @@
                                 <option value="Y">Publish</option>
                                 <option value="N">Draft</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="image">Gambar</label>
+                            <input class="form-control" id="image" type="file" name="image"
+                                placeholder="upload gambar" />
+                            <small class="text-danger">Max ukuran 2MB</small>
                         </div>
                         <div class="form-group">
                             <button class="btn btn-sm btn-primary" type="submit" id="submit">
@@ -96,6 +103,8 @@
                 ajax: url,
                 columns: [{
                     data: "action"
+                },{
+                    data: "image"
                 }, {
                     data: "title"
                 }, {
@@ -137,12 +146,13 @@
             formData.append("id", parseInt($("#id").val()));
             formData.append("title", $("#title").val());
             formData.append("is_active", $("#is_active").val());
+            formData.append("image", document.getElementById("image").files[0]);
 
-            let data = {
-                id: parseInt($("#id").val()),
-                title: $("#title").val(),
-                is_active: $("#is_active").val()
-            }
+            // let data = {
+            //     id: parseInt($("#id").val()),
+            //     title: $("#title").val(),
+            //     is_active: $("#is_active").val()
+            // }
 
             saveData(formData, $("#formEditable").attr("data-action"));
             return false;

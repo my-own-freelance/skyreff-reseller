@@ -10,7 +10,7 @@
         }
 
          /* PRODUCT IMAGE */
-         .image-wrapper {
+        /* .image-wrapper {
             position: relative !important;
             max-width: 300px;
             height: 300px;
@@ -39,7 +39,7 @@
 
         .delete-button i {
             color: white;
-        }
+        } */
 
         /* END PRODUCT IMAGE */
 
@@ -207,12 +207,12 @@
                             <input class="form-control" id="stock" type="number" min='0' name="stock"
                                 placeholder="masukkan stok" required />
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="image">Gambar</label>
                             <input class="form-control" id="image" type="file" name="image"
                                 placeholder="upload gambar" />
                             <small class="text-danger">Max ukuran 2MB</small>
-                        </div>
+                        </div> --}}
                         <div class="form-group">
                             <label for="description">Dekripsi</label>
                             <div id="summernote" name="description"></div>
@@ -230,7 +230,7 @@
             </div>
         </div>
 
-        <div class="col-md-12" style="display: none" id="formProductImage">
+        {{-- <div class="col-md-12" style="display: none" id="formProductImage">
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
@@ -249,7 +249,7 @@
                     <div class="row">
                         <div class="col-md-12" id="boxproductImage">
                             <div class="row" id="productImage">
-                                {{-- rendered image list --}}
+                                <!-- rendered image list -->
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12" style="display: none" data-action="update" id="formAddImage">
@@ -289,7 +289,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
     </div>
 @endsection
@@ -400,7 +400,7 @@
         function addData() {
             $("#formEditable").attr('data-action', 'add').fadeIn(200);
             $("#boxTable").removeClass("col-md-12").addClass("col-md-7");
-            $("#image").attr("required", true);
+            // $("#image").attr("required", true);
             $("#title").focus();
         }
 
@@ -435,7 +435,7 @@
                         $("#commission_vip").val(formatToRupiah(d.commission_vip));
                         $("#is_active").val(d.is_active).change();
                         $("#stock").val(d.stock);
-                        $("#image").attr("required", false);
+                        // $("#image").attr("required", false);
                         $("#summernote").summernote('code', d.description);
 
                     })
@@ -458,7 +458,7 @@
             formData.append('product_category_id', $("#product_category_id").val());
             formData.append("is_active", $("#is_active").val());
             formData.append("stock", $("#stock").val());
-            formData.append("image", document.getElementById("image").files[0]);
+            // formData.append("image", document.getElementById("image").files[0]);
             formData.append("description", $("#summernote").summernote('code'));
 
             if (!isNaN(removeRupiahFormat($('#purchase_price').val()))) {
@@ -559,121 +559,121 @@
         }
 
 
-        // CRUD GALLERY IMAGE PROPERTY
-        function addGallery(product_id) {
-            $("#formProductImage").fadeIn(200, function() {
-                $("#boxTable").slideUp(200);
-                galleryList(product_id)
-            })
-        }
+        // // CRUD GALLERY IMAGE PROPERTY
+        // function addGallery(product_id) {
+        //     $("#formProductImage").fadeIn(200, function() {
+        //         $("#boxTable").slideUp(200);
+        //         galleryList(product_id)
+        //     })
+        // }
 
-        function addFormImage() {
-            $("#formAddImage").fadeIn(200, function() {
-                $("#boxproductImage").removeClass("col-md-12").addClass("col-md-8")
-            })
-        }
+        // function addFormImage() {
+        //     $("#formAddImage").fadeIn(200, function() {
+        //         $("#boxproductImage").removeClass("col-md-12").addClass("col-md-8")
+        //     })
+        // }
 
-        function closeFormImage() {
-            $("#formAddImage").slideUp(200, function() {
-                $("#boxproductImage").removeClass("col-md-8").addClass("col-md-12");
-                $("#resetImage").click();
-            })
-        }
+        // function closeFormImage() {
+        //     $("#formAddImage").slideUp(200, function() {
+        //         $("#boxproductImage").removeClass("col-md-8").addClass("col-md-12");
+        //         $("#resetImage").click();
+        //     })
+        // }
 
-        $("#formAddImage form").submit(function(e) {
-            e.preventDefault();
-            let formData = new FormData();
-            formData.append("product_id", $("#product_id").val());
-            let files = document.getElementById("property_image").files;
-            for (let i = 0; i < files.length; i++) {
-                formData.append("images[]", files[i]);
-            }
-            saveproductImage(formData);
-            return false;
-        });
+        // $("#formAddImage form").submit(function(e) {
+        //     e.preventDefault();
+        //     let formData = new FormData();
+        //     formData.append("product_id", $("#product_id").val());
+        //     let files = document.getElementById("property_image").files;
+        //     for (let i = 0; i < files.length; i++) {
+        //         formData.append("images[]", files[i]);
+        //     }
+        //     saveproductImage(formData);
+        //     return false;
+        // });
 
-        function saveproductImage(data, action) {
-            $.ajax({
-                url: "{{ route('product-image.create') }}",
-                contentType: false,
-                processData: false,
-                method: "POST",
-                data: data,
-                beforeSend: function() {
-                    console.log("Loading...")
-                },
-                success: function(res) {
-                    closeFormImage();
-                    showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
-                    galleryList($("#product_id").val());
-                },
-                error: function(err) {
-                    console.log("error :", err);
-                    showMessage("danger", "flaticon-error", "Peringatan", err.message || err.responseJSON
-                        ?.message);
-                }
-            })
-        }
+        // function saveproductImage(data, action) {
+        //     $.ajax({
+        //         url: "{{ route('product-image.create') }}",
+        //         contentType: false,
+        //         processData: false,
+        //         method: "POST",
+        //         data: data,
+        //         beforeSend: function() {
+        //             console.log("Loading...")
+        //         },
+        //         success: function(res) {
+        //             closeFormImage();
+        //             showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
+        //             galleryList($("#product_id").val());
+        //         },
+        //         error: function(err) {
+        //             console.log("error :", err);
+        //             showMessage("danger", "flaticon-error", "Peringatan", err.message || err.responseJSON
+        //                 ?.message);
+        //         }
+        //     })
+        // }
 
-        function removeProductImage(id) {
-            let c = confirm("Apakah anda yakin untuk menghapus data ini ?");
-            if (c) {
-                $.ajax({
-                    url: "{{ route('product-image.destroy') }}",
-                    method: "DELETE",
-                    data: {
-                        id: id
-                    },
-                    beforeSend: function() {
-                        console.log("Loading...")
-                    },
-                    success: function(res) {
-                        galleryList($("#product_id").val());
-                        showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
-                    },
-                    error: function(err) {
-                        console.log("error :", err);
-                        showMessage("danger", "flaticon-error", "Peringatan", err.message || err.responseJSON
-                            ?.message);
-                    }
-                })
-            }
-        }
+        // function removeProductImage(id) {
+        //     let c = confirm("Apakah anda yakin untuk menghapus data ini ?");
+        //     if (c) {
+        //         $.ajax({
+        //             url: "{{ route('product-image.destroy') }}",
+        //             method: "DELETE",
+        //             data: {
+        //                 id: id
+        //             },
+        //             beforeSend: function() {
+        //                 console.log("Loading...")
+        //             },
+        //             success: function(res) {
+        //                 galleryList($("#product_id").val());
+        //                 showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
+        //             },
+        //             error: function(err) {
+        //                 console.log("error :", err);
+        //                 showMessage("danger", "flaticon-error", "Peringatan", err.message || err.responseJSON
+        //                     ?.message);
+        //             }
+        //         })
+        //     }
+        // }
 
-        function galleryList(product_id) {
-            $.ajax({
-                url: "{{ route('product-image.list', ['product_id' => ':product_id']) }}".replace(':product_id', product_id),
-                header: {
-                    "Content-Type": "application/json",
-                },
-                method: "GET",
-                success: function(res) {
-                    $("#productImage").empty();
-                    $("#title").html(res.title);
-                    $("#product_id").val(product_id);
-                    $.each(res.data, function(index, item) {
-                        const elImage = $(`
-                            <div class='col col-md-3 col-sm-6 col-12'>
-                                <div class='image-wrapper mb-3 border' style='padding:5px!important;'>
-                                    <img src='${item.image}' alt='Gambar 1' class='img-fluid'>
-                                    <button class='btn delete-button' onclick='return removeProductImage("${item.id}")' href='javascript:void(0);'>
-                                        <i class='fas fa-trash ml-1'></i>
-                                    </button>
-                                </div>
-                            </div>
-                        `);
-                        $("#productImage").append(elImage);
-                    });
-                },
-                error: function(err) {
-                    console.log("error :", err);
-                    showMessage("danger", "flaticon-danger", "Peringatan", err.message || err.responseJSON
-                        ?.message);
-                    $("#productImage").empty();
-                }
+        // function galleryList(product_id) {
+        //     $.ajax({
+        //         url: "{{ route('product-image.list', ['product_id' => ':product_id']) }}".replace(':product_id', product_id),
+        //         header: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         method: "GET",
+        //         success: function(res) {
+        //             $("#productImage").empty();
+        //             $("#title").html(res.title);
+        //             $("#product_id").val(product_id);
+        //             $.each(res.data, function(index, item) {
+        //                 const elImage = $(`
+        //                     <div class='col col-md-3 col-sm-6 col-12'>
+        //                         <div class='image-wrapper mb-3 border' style='padding:5px!important;'>
+        //                             <img src='${item.image}' alt='Gambar 1' class='img-fluid'>
+        //                             <button class='btn delete-button' onclick='return removeProductImage("${item.id}")' href='javascript:void(0);'>
+        //                                 <i class='fas fa-trash ml-1'></i>
+        //                             </button>
+        //                         </div>
+        //                     </div>
+        //                 `);
+        //                 $("#productImage").append(elImage);
+        //             });
+        //         },
+        //         error: function(err) {
+        //             console.log("error :", err);
+        //             showMessage("danger", "flaticon-danger", "Peringatan", err.message || err.responseJSON
+        //                 ?.message);
+        //             $("#productImage").empty();
+        //         }
 
-            })
-        }
-        // END CRUD GALLERY IMAGE PROPERTY
+        //     })
+        // }
+        // // END CRUD GALLERY IMAGE PROPERTY
     </script>
 @endpush

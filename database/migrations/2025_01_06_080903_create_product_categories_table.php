@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->enum('is_active', ['Y', 'N'])->default('N');
+            $table->string('image');
             $table->timestamps();
             $table->softDeletes();
         });

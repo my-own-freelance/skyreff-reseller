@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductCategoryController extends Controller
@@ -64,10 +65,19 @@ class ProductCategoryController extends Controller
                     </div>
                 </div>';
 
+            $image = '<div class="thumbnail">
+                <div class="thumb">
+                    <img src="' . Storage::url($item->image) . '" alt="" width="250px" height="250px" 
+                    class="img-fluid img-thumbnail" alt="' . $item->title . '">
+                </div>
+            </div>';
+
 
 
             $item['action'] = $action;
             $item['is_active'] = $is_active;
+            $item['image'] = $image;
+
             return $item;
         });
 
@@ -111,12 +121,17 @@ class ProductCategoryController extends Controller
             $rules = [
                 "title" => "required|string",
                 "is_active" => "required|string|in:Y,N",
+                "image" => "required|image|max:2048|mimes:giv,svg,jpeg,png,jpg",
             ];
 
             $messages = [
                 "title.required" => "Judul harus diisi",
                 "is_active.required" => "Status harus diisi",
                 "is_active.in" => "Status tidak sesuai",
+                "image.required" => "Gambar harus di isi",
+                "image.image" => "Gambar yang di upload tidak valid",
+                "image.max" => "Ukuran gambar maximal 2MB",
+                "image.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
             ];
 
             $validator = Validator::make($data, $rules, $messages);
@@ -127,6 +142,9 @@ class ProductCategoryController extends Controller
                 ], 400);
             }
 
+            if ($request->file('image')) {
+                $data['image'] = $request->file('image')->store('assets/product-category', 'public');
+            }
             unset($data['id']);
 
             ProductCategory::create($data);
@@ -135,6 +153,13 @@ class ProductCategoryController extends Controller
                 "message" => "Data berhasil dibuat"
             ]);
         } catch (\Exception $err) {
+            if ($request->file("image")) {
+                $uploadedImg = "public/assets/product-category" . $request->image->hashName();
+                if (Storage::exists($uploadedImg)) {
+                    Storage::delete($uploadedImg);
+                }
+            }
+            
             return response()->json([
                 "status" => "error",
                 "message" => $err->getMessage(),
@@ -150,7 +175,12 @@ class ProductCategoryController extends Controller
                 "id" => "required|integer",
                 "title" => "required|string",
                 "is_active" => "required|string|in:Y,N",
+                "image" => "nullable",
             ];
+
+            if ($request->file('image')) {
+                $rules['image'] .= '|image|max:2048|mimes:giv,svg,jpeg,png,jpg';
+            }
 
             $messages = [
                 "id.required" => "Data ID harus diisi",
@@ -158,6 +188,9 @@ class ProductCategoryController extends Controller
                 "title.required" => "Judul harus diisi",
                 "is_active.required" => "Status harus diisi",
                 "is_active.in" => "Status tidak sesuai",
+                "image.image" => "Gambar yang di upload tidak valid",
+                "image.max" => "Ukuran gambar maximal 2MB",
+                "image.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
             ];
 
             $validator = Validator::make($data, $rules, $messages);
@@ -176,12 +209,29 @@ class ProductCategoryController extends Controller
                 ], 404);
             }
 
+            // delete undefined data image
+            unset($data["image"]);
+            if ($request->file("image")) {
+                $oldImagePath = "public/" . $productCategory->image;
+                if (Storage::exists($oldImagePath)) {
+                    Storage::delete($oldImagePath);
+                }
+                $data["image"] = $request->file("image")->store("assets/product-category", "public");
+            }
+
             $productCategory->update($data);
             return response()->json([
                 "status" => "success",
                 "message" => "Data berhasil diperbarui"
             ]);
         } catch (\Exception $err) {
+            if ($request->file("image")) {
+                $uploadedImg = "public/assets/product-category" . $request->image->hashName();
+                if (Storage::exists($uploadedImg)) {
+                    Storage::delete($uploadedImg);
+                }
+            }
+
             return response()->json([
                 "status" => "error",
                 "message" => $err->getMessage(),
@@ -255,6 +305,11 @@ class ProductCategoryController extends Controller
                     "status" => "error",
                     "message" => "Data tidak ditemukan"
                 ], 404);
+            }
+
+            $oldImagePath = "public/" . $productCategory->image;
+            if (Storage::exists($oldImagePath)) {
+                Storage::delete($oldImagePath);
             }
 
             $productCategory->delete();

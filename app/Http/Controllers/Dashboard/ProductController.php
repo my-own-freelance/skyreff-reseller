@@ -23,8 +23,20 @@ class ProductController extends Controller
     public function dataTable(Request $request)
     {
         $query = Product::with(["ProductCategory" => function ($query) {
-            $query->select("id", "title");
+            $query->select("id", "title", "image");
         }]);
+
+        $user = $user = auth()->user();
+
+        // JIKA YG LOGIN RESELLER, TAMPILKAN HANYA PRODUK AKTIF DAN YG CATEGORINYA MASIH AKTIF SAJA
+        if ($user->role == "RESELLER") {
+            $query = Product::where("is_active", "Y")
+                ->whereHas("ProductCategory", function ($query) {
+                    $query->where("is_active", "Y");
+                })->with(["ProductCategory" => function ($query) {
+                    $query->select("id", "title", "image");
+                }]);
+        }
 
         if ($request->query("search")) {
             $searchValue = $request->query("search")['value'];
@@ -84,7 +96,7 @@ class ProductController extends Controller
 
             $image = '<div class="thumbnail">
                         <div class="thumb">
-                            <img src="' . Storage::url($item->image) . '" alt="" width="250px" height="250px" 
+                            <img src="' . Storage::url($item->ProductCategory->image) . '" alt="" width="250px" height="250px" 
                             class="img-fluid img-thumbnail" alt="' . $item->title . '">
                         </div>
                     </div>';
@@ -170,7 +182,7 @@ class ProductController extends Controller
                 "commission_vip" => "integer",
                 "is_active" => "required|string|in:Y,N",
                 "stock" => "required|integer|min:1",
-                "image" => "required|image|max:2048|mimes:giv,svg,jpeg,png,jpg",
+                // "image" => "required|image|max:2048|mimes:giv,svg,jpeg,png,jpg",
                 "excerpt" => "required|string|max:250",
                 "description" => "required|string",
                 "product_category_id" => "required|integer"
@@ -191,10 +203,10 @@ class ProductController extends Controller
                 "stock.required" => "Stock harus diisi",
                 "stock.integer" => "Stock tidak valid",
                 "stock.min" => "Stock minimal 1",
-                "image.required" => "Gambar harus di isi",
-                "image.image" => "Gambar yang di upload tidak valid",
-                "image.max" => "Ukuran gambar maximal 2MB",
-                "image.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                // "image.required" => "Gambar harus di isi",
+                // "image.image" => "Gambar yang di upload tidak valid",
+                // "image.max" => "Ukuran gambar maximal 2MB",
+                // "image.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
                 "excerpt.required" => "Kutipan harus diisi",
                 "excerpt.max" => "Kutipan harus kurang dari 250 karakter",
                 "description.required" => "Deskripsi harus diisi",
@@ -210,9 +222,9 @@ class ProductController extends Controller
                 ], 400);
             }
 
-            if ($request->file('image')) {
-                $data['image'] = $request->file('image')->store('assets/product', 'public');
-            }
+            // if ($request->file('image')) {
+            //     $data['image'] = $request->file('image')->store('assets/product', 'public');
+            // }
             unset($data['id']);
             $data["code"] = strtoupper(Str::random(10));
 
@@ -245,12 +257,12 @@ class ProductController extends Controller
                 "message" => "Data berhasil dibuat"
             ]);
         } catch (\Exception $err) {
-            if ($request->file("image")) {
-                $uploadedImg = "public/assets/product" . $request->image->hashName();
-                if (Storage::exists($uploadedImg)) {
-                    Storage::delete($uploadedImg);
-                }
-            }
+            // if ($request->file("image")) {
+            //     $uploadedImg = "public/assets/product" . $request->image->hashName();
+            //     if (Storage::exists($uploadedImg)) {
+            //         Storage::delete($uploadedImg);
+            //     }
+            // }
             return response()->json([
                 "status" => "error",
                 "message" => $err->getMessage(),
@@ -322,15 +334,15 @@ class ProductController extends Controller
                 ], 404);
             }
 
-            // delete undefined data image
-            unset($data["image"]);
-            if ($request->file("image")) {
-                $oldImagePath = "public/" . $product->image;
-                if (Storage::exists($oldImagePath)) {
-                    Storage::delete($oldImagePath);
-                }
-                $data["image"] = $request->file("image")->store("assets/product", "public");
-            }
+            // // delete undefined data image
+            // unset($data["image"]);
+            // if ($request->file("image")) {
+            //     $oldImagePath = "public/" . $product->image;
+            //     if (Storage::exists($oldImagePath)) {
+            //         Storage::delete($oldImagePath);
+            //     }
+            //     $data["image"] = $request->file("image")->store("assets/product", "public");
+            // }
 
             // jika code nya di custom
             if ($request->code && $request->code != "" && $request->code != $product->code) {
@@ -362,12 +374,12 @@ class ProductController extends Controller
                 "message" => "Data berhasil diperbarui"
             ]);
         } catch (\Exception $err) {
-            if ($request->file("image")) {
-                $uploadedImg = "public/assets/product" . $request->image->hashName();
-                if (Storage::exists($uploadedImg)) {
-                    Storage::delete($uploadedImg);
-                }
-            }
+            // if ($request->file("image")) {
+            //     $uploadedImg = "public/assets/product" . $request->image->hashName();
+            //     if (Storage::exists($uploadedImg)) {
+            //         Storage::delete($uploadedImg);
+            //     }
+            // }
             return response()->json([
                 "status" => "error",
                 "message" => $err->getMessage(),
@@ -442,10 +454,10 @@ class ProductController extends Controller
                     "message" => "Data tidak ditemukan"
                 ], 404);
             }
-            $oldImagePath = "public/" . $product->image;
-            if (Storage::exists($oldImagePath)) {
-                Storage::delete($oldImagePath);
-            }
+            // $oldImagePath = "public/" . $product->image;
+            // if (Storage::exists($oldImagePath)) {
+            //     Storage::delete($oldImagePath);
+            // }
 
             $product->delete();
             return response()->json([
