@@ -124,7 +124,7 @@ Laman Administrator :
 
 Laman Reseller
 
-- Dashboard
+- Dashboard (ok)
  * Banner Gambar ( Dimensi Auto )
  * Informasi Terkini
  * Pricelist Tabel Produk ( Bisa custom mau nampilkan produk kategori apa )
