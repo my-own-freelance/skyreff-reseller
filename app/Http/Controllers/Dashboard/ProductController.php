@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -16,7 +17,15 @@ class ProductController extends Controller
     {
         $title = "Master Produk";
         $categories = ProductCategory::all();
-        return view("pages.dashboard.admin.product", compact("title", "categories"));
+        $user = Auth::user();
+        $pageUrl = "pages.dashboard.admin.product";
+
+        if ($user->role == "RESELLER") {
+            $categories = ProductCategory::where("is_active", "Y")->get();
+            $pageUrl = "pages.dashboard.reseller.product";
+        }
+
+        return view($pageUrl, compact("title", "categories"));
     }
 
     // HANDLER API
@@ -63,70 +72,90 @@ class ProductController extends Controller
             ->limit($request->query('length'))
             ->get();
 
-        $output = $data->map(function ($item) {
+        $output = $data->map(function ($item) use ($user) {
+            $action_edit = $user->role == "ADMIN" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"edit\");' href='javascript:void(0);' title='Edit'>Edit</a>" : "";
+            $action_delete = $user->role == "ADMIN" ? "<a class='dropdown-item' onclick='return removeData(\"{$item->id}\");' href='javascript:void(0)' title='Hapus'>Hapus</a>" : "";
+            $action_checkout = $user->role == "RESELLER" ? "<a class='dropdown-item' onclick='return checkout(\"{$item->id}\");' href='javascript:void(0)' title='Checkout'>Checkout</a>" : "";
             $action = " <div class='dropdown-primary dropdown open'>
                             <button class='btn btn-sm btn-primary dropdown-toggle waves-effect waves-light' id='dropdown-{$item->id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'>
                                 Aksi
                             </button>
                             <div class='dropdown-menu' aria-labelledby='dropdown-{$item->id}' data-dropdown-out='fadeOut'>
-                                <a class='dropdown-item' onclick='return getData(\"{$item->id}\");' href='javascript:void(0);' title='Edit'>Edit</a>
-                                <a class='dropdown-item' onclick='return addGallery(\"{$item->id}\");' href='javascript:void(0)' title='Tambah Gallery'>Tambah Gallery</a>                                <a class='dropdown-item' onclick='return removeData(\"{$item->id}\");' href='javascript:void(0)' title='Hapus'>Hapus</a>
+                                <a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"detail\");' href='javascript:void(0);' title='Detail'>Detail</a>
+                                " . $action_edit . "
+                                " . $action_delete . "
+                                " . $action_checkout . "
                             </div>
                         </div>";
 
-            $is_active = $item->is_active == 'Y' ? '
-                <div class="text-center">
-                    <span class="label-switch">Publish</span>
-                </div>
-                <div class="input-row">
-                    <div class="toggle_status on">
-                        <input type="checkbox" onclick="return updateStatus(\'' . $item->id . '\', \'Draft\');" />
-                        <span class="slider"></span>
+            // ADDITIONAL FIELD FOR ROLE ADMIN
+            if ($user->role == "ADMIN") {
+                $is_active = $item->is_active == 'Y' ? '
+                    <div class="text-center">
+                        <span class="label-switch">Publish</span>
                     </div>
-                </div>' :
-                '<div class="text-center">
-                    <span class="label-switch">Draft</span>
-                </div>
-                <div class="input-row">
-                    <div class="toggle_status off">
-                        <input type="checkbox" onclick="return updateStatus(\'' . $item->id . '\', \'Publish\');" />
-                        <span class="slider"></span>
+                    <div class="input-row">
+                        <div class="toggle_status on">
+                            <input type="checkbox" onclick="return updateStatus(\'' . $item->id . '\', \'Draft\');" />
+                            <span class="slider"></span>
+                        </div>
+                    </div>' :
+                    '<div class="text-center">
+                        <span class="label-switch">Draft</span>
                     </div>
-                </div>';
-
-            $image = '<div class="thumbnail">
-                        <div class="thumb">
-                            <img src="' . Storage::url($item->ProductCategory->image) . '" alt="" width="250px" height="250px" 
-                            class="img-fluid img-thumbnail" alt="' . $item->title . '">
+                    <div class="input-row">
+                        <div class="toggle_status off">
+                            <input type="checkbox" onclick="return updateStatus(\'' . $item->id . '\', \'Publish\');" />
+                            <span class="slider"></span>
                         </div>
                     </div>';
-            $title = "<small> 
-                        <strong>Judul</strong> :" . Str::limit(strip_tags($item->title), 100) .  "
-                        <br>
-                        <strong>Code</strong> :" . $item->code . "
-                        <br>
-                    </small>";
-            $excerpt = "<p>" . Str::limit(strip_tags($item->excerpt), 150) . "</p>";
-            $price = '<small>
+
+                $price = '<small>
                         <strong>Harga Beli</strong> : Rp. ' . number_format($item->purchase_price, 0, ',', '.') . '
                         <br>
                         <strong>Harga Jual</strong> : Rp. ' . number_format($item->selling_price, 0, ',', '.') . '
                         <br>
                     </small>';
-            $commission = '<small>
+                $commission = '<small>
                         <strong>Regular</strong> : Rp. ' . number_format($item->commission_regular, 0, ',', '.') . '
                         <br>
                         <strong>VIP</strong> : Rp. ' . number_format($item->commission_vip, 0, ',', '.') . '
                         <br>
                     </small>';
+
+
+                $item['is_active'] = $is_active;
+                $item['price'] = $price;
+                $item['commission'] = $commission;
+            } else {
+                $item['price'] = '<strong> Rp. ' . number_format($item->selling_price, 0, ',', '.') . '</strong>';
+                $commission = $user->level == "REGULAR" ? $item->commission_regular : $item->commission_vip;
+                $item['commission'] = '<strong> Rp. ' . number_format($commission, 0, ',', '.') . '</strong>';
+            }
+
+
+            $image = '<div class="thumbnail">
+                        <div class="thumb">
+                            <img src="' . Storage::url($item->ProductCategory->image) . '" alt="" width="150px" height="100px" 
+                            class="img-fluid img-thumbnail" alt="' . $item->title . '">
+                        </div>
+                    </div>';
+
+            $excerpt = "<p>" . Str::limit(strip_tags($item->excerpt), 150) . "</p>";
+
+            $title = "<small> 
+                    <strong>Judul</strong> :" . Str::limit(strip_tags($item->title), 100) .  "
+                    <br>
+                    <strong>Code</strong> :" . $item->code . "
+                    <br>
+                </small>";
+
             $item['action'] = $action;
-            $item['is_active'] = $is_active;
             $item['image'] = $image;
-            $item['title'] = $title;
             $item['excerpt'] = $excerpt;
-            $item['price'] = $price;
-            $item['commission'] = $commission;
+            $item['title'] = $title;
             $item['category'] = $item->ProductCategory->title;
+
 
             unset($item['description']);
             unset($item['purchase_price']);
@@ -137,7 +166,19 @@ class ProductController extends Controller
             return $item;
         });
 
-        $total = Product::count();
+        $queryTotal = Product::query();
+
+        if ($user->role == "RESELLER") {
+            $queryTotal->where("is_active", "Y")
+                ->whereHas("ProductCategory", function ($query) {
+                    $query->where("is_active", "Y");
+                })->with(["ProductCategory" => function ($query) {
+                    $query->select("id", "title", "image");
+                }]);
+        }
+
+        $total = $queryTotal->count();
+
         return response()->json([
             'draw' => $request->query('draw'),
             'recordsFiltered' => $recordsFiltered,
@@ -149,7 +190,9 @@ class ProductController extends Controller
     public function getDetail($id)
     {
         try {
-            $product = Product::find($id);
+            $product = Product::with(["ProductCategory" => function ($query) {
+                $query->select("id", "title", "image");
+            }])->where("id", $id)->first();
 
             if (!$product) {
                 return response()->json([
@@ -157,6 +200,25 @@ class ProductController extends Controller
                     "message" => "Data tidak ditemukan",
                 ], 404);
             }
+
+            $product['category'] = $product->ProductCategory->title;
+
+            $user = auth()->user();
+            if ($user->role == "ADMIN") {
+                // $product[""] = 
+            } else {
+                $product['price'] = $product->selling_price;
+                $product['commission'] = $user->level == "REGULAR" ? $product->commission_regular : $product->commission_vip;
+                $product['image'] = Storage::url($product->ProductCategory->image);
+
+                unset($product['purchase_price']);
+                unset($product['selling_price']);
+                unset($product['commission_regular']);
+                unset($product['commission_vip']);
+                unset($product['ProductCategory']);
+            }
+
+
 
             return response()->json([
                 "status" => "success",

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Dashboard\BankController;
 use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\LocationController;
@@ -40,12 +41,25 @@ Route::group(["middleware" => "guest"], function () {
 Route::group(["middleware" => "check.auth"], function () {
     // ADMIN AND RESELLER ACCESS
 
+    // GLOBAL ACCESS
+    Route::get("/master/product/datatable", [ProductController::class, "dataTable"])->name('product.datatable');
+    Route::get("/master/product/{id}/detail", [ProductController::class, "getDetail"])->name('product.detail');
+
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "api.check.role:ADMIN"], function () {
         Route::post("/config/create-update", [WebConfigController::class, "saveUpdateData"])->name('web.update-config');
 
         // PREFIX MASTER
         Route::group(["prefix" => "master"], function () {
+            // BANK
+            Route::group(["prefix" => "bank"], function () {
+                Route::get("datatable", [BankController::class, "dataTable"])->name('bank.datatable');
+                Route::get("{id}/detail", [BankController::class, "getDetail"])->name('bank.detail');
+                Route::post("create", [BankController::class, "create"])->name('bank.create');
+                Route::post("update", [BankController::class, "update"])->name('bank.update');
+                Route::delete("delete", [BankController::class, "destroy"])->name('bank.destroy');
+            });
+
             // BANNER
             Route::group(["prefix" => "banner"], function () {
                 Route::get("datatable", [BannerController::class, "dataTable"])->name('banner.datatable');
@@ -78,8 +92,8 @@ Route::group(["middleware" => "check.auth"], function () {
 
             // PRODUCT
             Route::group(["prefix" => "product"], function () {
-                Route::get("datatable", [ProductController::class, "dataTable"])->name('product.datatable');
-                Route::get("{id}/detail", [ProductController::class, "getDetail"])->name('product.detail');
+                // Route::get("datatable", [ProductController::class, "dataTable"])->name('product.datatable');
+                // Route::get("{id}/detail", [ProductController::class, "getDetail"])->name('product.detail');
                 Route::post("create", [ProductController::class, "create"])->name('product.create');
                 Route::post("update", [ProductController::class, "update"])->name('product.update');
                 Route::post("update-status", [ProductController::class, "updateStatus"])->name('product.change-status');
@@ -87,11 +101,11 @@ Route::group(["middleware" => "check.auth"], function () {
             });
 
             // PRODUCT IMAGES
-            Route::group(["prefix" => "product-image"], function () {
-                Route::get("{product_id}/list", [ProductImageController::class, 'list'])->name('product-image.list');
-                Route::post("create", [ProductImageController::class, "create"])->name('product-image.create');
-                Route::delete('delete', [ProductImageController::class, 'destroy'])->name('product-image.destroy');
-            });
+            // Route::group(["prefix" => "product-image"], function () {
+            //     Route::get("{product_id}/list", [ProductImageController::class, 'list'])->name('product-image.list');
+            //     Route::post("create", [ProductImageController::class, "create"])->name('product-image.create');
+            //     Route::delete('delete', [ProductImageController::class, 'destroy'])->name('product-image.destroy');
+            // });
 
             // REWARD
             Route::group(["prefix" => "reward"], function () {

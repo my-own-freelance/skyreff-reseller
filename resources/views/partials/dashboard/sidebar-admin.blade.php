@@ -19,6 +19,12 @@
                     </span>
                     <h4 class="text-section">MASTER</h4>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'bank' ? 'active' : '' }}">
+                    <a href="{{ route('bank') }}">
+                        <i class="fas fa-building"></i>
+                        <p>Bank</p>
+                    </a>
+                </li>
                 <li class="nav-item ml-3 {{ $routename == 'banner' ? 'active' : '' }}">
                     <a href="{{ route('banner') }}">
                         <i class="fas fa-image"></i>

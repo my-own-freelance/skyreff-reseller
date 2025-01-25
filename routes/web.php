@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Dashboard\BankController;
 use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\InformationController;
@@ -37,14 +38,17 @@ Route::group(["middleware" => "auth:web"], function () {
     Route::get("/admin", [DashboardController::class, "index"])->name("dashboard.admin");
     Route::get("/reseller", [DashboardController::class, "index"])->name("dashboard.reseller");
 
+    // GLOBAL ACCESS
+    Route::get("/master/products", [ProductController::class, 'index'])->name('product');
+
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "api.check.role:ADMIN"], function () {
         // PREFIX MASTER
         Route::group(["prefix" => "master"], function () {
+            Route::get("/bank", [BankController::class, 'index'])->name('bank');
             Route::get("/banner", [BannerController::class, 'index'])->name('banner');
             Route::get("/information", [InformationController::class, 'index'])->name('information');
             Route::get("/product-category", [ProductCategoryController::class, 'index'])->name('product-category');
-            Route::get("/product", [ProductController::class, 'index'])->name('product');
             Route::get("/reward", [RewardController::class, 'index'])->name('reward');
         });
 
@@ -60,4 +64,7 @@ Route::group(["middleware" => "auth:web"], function () {
             });
         });
     });
+
+    // ONLY RESELLER
+
 });

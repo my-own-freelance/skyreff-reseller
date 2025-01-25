@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <h5 class="text-uppercase title">List Kategori Produk</h5>
+                        <h5 class="text-uppercase title">List Bank</h5>
                     </div>
                     <div class="card-header-right">
                         <button class="btn btn-mini btn-info mr-1" onclick="return refreshData();">Refresh</button>
@@ -17,18 +17,17 @@
                 </div>
                 <div class="card-block">
                     <div class="table-responsive mt-3">
-                        <table class="table table-striped table-bordered nowrap dataTable" id="product-categoryDataTable">
+                        <table class="table table-striped table-bordered nowrap dataTable" id="bankDataTable">
                             <thead>
                                 <tr>
                                     <th class="all">#</th>
-                                    <th class="all">Gambar</th>
-                                    <th class="all">Judul</th>
-                                    <th class="all">Status</th>
+                                    <th class="all">Nama Bank</th>
+                                    <th class="all">No Rekening</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="4" class="text-center"><small>Tidak Ada Data</small></td>
+                                    <td colspan="3" class="text-center"><small>Tidak Ada Data</small></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -47,23 +46,14 @@
                     <form>
                         <input class="form-control" id="id" type="hidden" name="id" />
                         <div class="form-group">
-                            <label for="title">Judul</label>
+                            <label for="title">Nama Bank</label>
                             <input class="form-control" id="title" type="text" name="title"
-                                placeholder="masukkan nama kategori" required />
+                                placeholder="masukkan nama bank" required />
                         </div>
                         <div class="form-group">
-                            <label for="is_active">Status</label>
-                            <select class="form-control form-control" id="is_active" name="is_active" required>
-                                <option value="">Pilih Status</option>
-                                <option value="Y">Publish</option>
-                                <option value="N">Draft</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="image">Gambar</label>
-                            <input class="form-control" id="image" type="file" name="image"
-                                placeholder="upload gambar" />
-                            <small class="text-danger">Max ukuran 2MB</small>
+                            <label for="account">No Rekening</label>
+                            <input class="form-control" id="account" type="text" name="account"
+                                placeholder="masukkan nomor rekening" required />
                         </div>
                         <div class="form-group">
                             <button class="btn btn-sm btn-primary" type="submit" id="submit">
@@ -89,8 +79,8 @@
         })
 
         function dataTable() {
-            const url = "{{ route('product-category.datatable') }}";
-            dTable = $("#product-categoryDataTable").DataTable({
+            const url = "{{ route('bank.datatable') }}";
+            dTable = $("#bankDataTable").DataTable({
                 searching: true,
                 orderng: true,
                 lengthChange: true,
@@ -103,12 +93,10 @@
                 ajax: url,
                 columns: [{
                     data: "action"
-                },{
-                    data: "image"
                 }, {
                     data: "title"
                 }, {
-                    data: "is_active"
+                    data: "account"
                 }],
                 pageLength: 10,
             });
@@ -121,7 +109,7 @@
 
         function getData(id) {
             $.ajax({
-                url: "{{ route('product-category.detail', ['id' => ':id']) }}".replace(':id', id),
+                url: "{{ route('bank.detail', ['id' => ':id']) }}".replace(':id', id),
                 method: "GET",
                 dataType: "json",
                 success: function(res) {
@@ -129,7 +117,7 @@
                         let d = res.data;
                         $("#id").val(d.id);
                         $("#title").val(d.title);
-                        $("#is_active").val(d.is_active).change();
+                        $("#account").val(d.account).change();
                     })
                 },
                 error: function(err) {
@@ -145,32 +133,15 @@
             let formData = new FormData();
             formData.append("id", parseInt($("#id").val()));
             formData.append("title", $("#title").val());
-            formData.append("is_active", $("#is_active").val());
-            formData.append("image", document.getElementById("image").files[0]);
-
-            // let data = {
-            //     id: parseInt($("#id").val()),
-            //     title: $("#title").val(),
-            //     is_active: $("#is_active").val()
-            // }
+            formData.append("account", $("#account").val());
 
             saveData(formData, $("#formEditable").attr("data-action"));
             return false;
         });
 
-        function updateStatus(id, status) {
-            let c = confirm(`Anda yakin ingin mengubah status ke ${status} ?`)
-            if (c) {
-                let dataToSend = new FormData();
-                dataToSend.append("is_active", status == "Draft" ? "N" : "Y");
-                dataToSend.append("id", id);
-                updateStatusData(dataToSend);
-            }
-        }
-
         function saveData(data, action) {
             $.ajax({
-                url: action == "update" ? "{{ route('product-category.update') }}" : "{{ route('product-category.create') }}",
+                url: action == "update" ? "{{ route('bank.update') }}" : "{{ route('bank.create') }}",
                 contentType: false,
                 processData: false,
                 method: "POST",
@@ -196,7 +167,7 @@
             let c = confirm("Apakah anda yakin untuk menghapus data ini ?");
             if (c) {
                 $.ajax({
-                    url: "{{ route('product-category.destroy') }}",
+                    url: "{{ route('bank.destroy') }}",
                     method: "DELETE",
                     data: {
                         id: id
@@ -215,28 +186,6 @@
                     }
                 })
             }
-        }
-
-        function updateStatusData(data) {
-            $.ajax({
-                url: "{{ route('product-category.change-status') }}",
-                contentType: false,
-                processData: false,
-                method: "POST",
-                data: data,
-                beforeSend: function() {
-                    console.log("Loading...")
-                },
-                success: function(res) {
-                    showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
-                    refreshData();
-                },
-                error: function(err) {
-                    console.log("error :", err);
-                    showMessage("danger", "flaticon-error", "Peringatan", err.message || err.responseJSON
-                        ?.message);
-                }
-            })
-        }
+        }   
     </script>
 @endpush
