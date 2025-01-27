@@ -101,11 +101,11 @@ Route::group(["middleware" => "check.auth"], function () {
             });
 
             // PRODUCT IMAGES
-            // Route::group(["prefix" => "product-image"], function () {
-            //     Route::get("{product_id}/list", [ProductImageController::class, 'list'])->name('product-image.list');
-            //     Route::post("create", [ProductImageController::class, "create"])->name('product-image.create');
-            //     Route::delete('delete', [ProductImageController::class, 'destroy'])->name('product-image.destroy');
-            // });
+            Route::group(["prefix" => "product-image"], function () {
+                Route::get("{product_id}/list", [ProductImageController::class, 'list'])->name('product-image.list');
+                Route::post("create", [ProductImageController::class, "create"])->name('product-image.create');
+                Route::delete('delete', [ProductImageController::class, 'destroy'])->name('product-image.destroy');
+            });
 
             // REWARD
             Route::group(["prefix" => "reward"], function () {

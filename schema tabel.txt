@@ -133,6 +133,7 @@ TABLE TRX_PRODUCTS :
 - amount
 - commission
 - qty
+- total_amount
 - profit
 - status (enum ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT'] . default 'PENDING')
 - payment_type (enum ['TRANSFER', 'DEBT'] . default 'TRANSFER')

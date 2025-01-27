@@ -188,7 +188,7 @@
                                     <h5 class="title"><strong>Detail Tagihan</strong></h5>
                                 </div>
                                 <div class="separator-solid"></div>
-                                <div class="invoice-item mt-3">
+                                <div class="invoice-item mt-3" id="formCheckout">
                                     <form>
                                         <input class="form-control" id="cpProductId" type="hidden" name="id" />
                                         <div class="form-group" style="margin-bottom: -10px; margin-top: -10px">
@@ -225,8 +225,27 @@
                                             </select>
                                         </div>
 
-                                        <button class="btn btn-secondary btn-block mt-4" href="#"
-                                            onclick="return checkSubscription(&quot;assets-maps&quot;, this)"> <span
+                                        <div class="form-group" id="divCBank" style="display: none;">
+                                            <label for="cpBank">Bank Owner <span class="text-danger">*</span></label>
+                                            <select class="form-control form-control" id="cpBank" name="cpBank">
+                                                <option value = "">Pilih Bank Tujuan</option>
+                                                @forelse ($banks as $bank)
+                                                    <option value="{{ $bank->id }}">{{ $bank->title }} -
+                                                        {{ $bank->account }}</option>
+                                                @empty
+                                                @endforelse
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group" id="divCProofPay" style="display: none;">
+                                            <label for="cpProofPayment">Bukti Transfer</label>
+                                            <input class="form-control" id="cpProofPayment" type="file"
+                                                name="cpProofPayment" placeholder="upload gambar" />
+                                            <small class="text-danger">Max ukuran 2MB</small>
+                                        </div>
+
+
+                                        <button class="btn btn-secondary btn-block mt-4" type="submit"> <span
                                                 class="btn-label mr-2"><i class="far fa-credit-card"></i></span>Proses
                                             Pembayaran</button>
                                 </div>
@@ -272,7 +291,7 @@
         let productPrice = 0;
 
         // END GLOBAL VARIABEL
-        $("#fProductCategoryId").select2({
+        $("#fProductCategoryId, #cpBank").select2({
             theme: "bootstrap"
         })
 
@@ -288,11 +307,6 @@
         function removeRupiahFormat(rupiah) {
             return parseInt(rupiah.replace(/[^,\d]/g, ''), 10);
         }
-
-        $('#purchase_price, #selling_price, #commission_regular, #commission_vip').on('keyup', function() {
-            let value = $(this).val().replace(/[^,\d]/g, '');
-            $(this).val(formatToRupiah(value));
-        });
 
         let dTable = null;
 
@@ -365,62 +379,61 @@
             $("#boxDetail").slideUp(200);
         }
 
-
-        function getData(id, action) {
+        function loadCheckout(id) {
             $.ajax({
                 url: "{{ route('product.detail', ['id' => ':id']) }}".replace(':id', id),
                 method: "GET",
                 dataType: "json",
                 success: function(res) {
-                    let d = res.data;
-                    if (action == "detail") {
-                        loadDetail(d)
-                    }
+                    let data = res.data;
+                    $("#boxDetail").fadeIn(200, function() {
+                        $("#boxTable").slideUp(200);
+                        // RESET RENDERER WRAPPER
+                        $(".info-detail-wrapper").empty();
+                        $(".description-wrapper").empty();
+                        $("#divCheckout").empty();
+
+                        // INFORMASI UMUM PRODUK
+                        if (data.image) {
+                            $("#pProductImage").attr("src", data.image);
+                        }
+                        $("#pTitle").html(data.title);
+                        $("#pExcerpt").html(data.excerpt);
+
+                        // DETAIL PRODUK
+                        const availableStatus = data.is_active == "Y" ?
+                            '<div class="badge badge-success">Tersedia</div>' :
+                            '<div class="badge badge-danger">Tidak Tersedia</div>'
+
+                        $(".info-detail-wrapper").append(generateInfoDetail("Status", availableStatus));
+                        $(".info-detail-wrapper").append(generateInfoDetail("Code",
+                            `<strong>${data.code}</strong>`));
+                        $(".info-detail-wrapper").append(generateInfoDetail("Kategori", data.category));
+                        $(".info-detail-wrapper").append(generateInfoDetail("Harga",
+                            `Rp. ${formatToRupiah(data.price)}`));
+                        $(".info-detail-wrapper").append(generateInfoDetail("Komisi",
+                            `Rp. ${formatToRupiah(data.commission)}`));
+                        $(".info-detail-wrapper").append(generateInfoDetail("Stok",
+                            `${data.stock} Produk tersedia`));
+
+
+                        // DESCRIPTION PROPERTY
+                        $(".description-wrapper").append(data.description);
+
+                        // CART CHECKOUT
+                        $("#cpProductId").val(data.id);
+                        $("#cpPrice").val(`${formatToRupiah(data.price)}`);
+                        productPrice = data.price;
+                        $("#cpBank").attr("required", false);
+                        $("#cpProofPayment").attr("required", false);
+
+                    })
                 },
                 error: function(err) {
                     console.log("error :", err);
                     showMessage("warning", "flaticon-error", "Peringatan", err.message || err.responseJSON
                         ?.message);
                 }
-            })
-        }
-
-        function loadDetail(data) {
-            $("#boxDetail").fadeIn(200, function() {
-                $("#boxTable").slideUp(200);
-                // RESET RENDERER WRAPPER
-                $(".info-detail-wrapper").empty();
-                $(".description-wrapper").empty();
-                $("#divCheckout").empty();
-
-                // INFORMASI UMUM PRODUK
-                if (data.image) {
-                    $("#pProductImage").attr("src", data.image);
-                }
-                $("#pTitle").html(data.title);
-                $("#pExcerpt").html(data.excerpt);
-
-                // DETAIL PRODUK
-                const availableStatus = data.is_active == "Y" ?
-                    '<div class="badge badge-success">Tersedia</div>' :
-                    '<div class="badge badge-danger">Tidak Tersedia</div>'
-
-                $(".info-detail-wrapper").append(generateInfoDetail("Status", availableStatus));
-                $(".info-detail-wrapper").append(generateInfoDetail("Code", `<strong>${data.code}</strong>`));
-                $(".info-detail-wrapper").append(generateInfoDetail("Kategori", data.category));
-                $(".info-detail-wrapper").append(generateInfoDetail("Harga", `Rp. ${formatToRupiah(data.price)}`));
-                $(".info-detail-wrapper").append(generateInfoDetail("Komisi",
-                    `Rp. ${formatToRupiah(data.commission)}`));
-                $(".info-detail-wrapper").append(generateInfoDetail("Stok", `${data.stock} Produk tersedia`));
-
-
-                // DESCRIPTION PROPERTY
-                $(".description-wrapper").append(data.description);
-
-                // CART CHECKOUT
-                $("#cpProductId").val(data.id);
-                $("#cpPrice").val(`${formatToRupiah(data.price)}`);
-                productPrice = data.price;
             })
         }
 
@@ -440,5 +453,42 @@
             $("#cpTotalAmount").val(`${formatToRupiah(cpTotalAmount)}`)
 
         });
+
+        $('#cpPaymentType').change(function() {
+            let type = $(this).val();
+
+            if (type == 'DEBT') {
+                $('#divCBank').slideUp(200, function() {
+                    $("#cpBank").attr("required", false);
+                })
+                $('#divCProofPay').slideUp(200, function() {
+                    $("#cpProofPayment").attr("required", false);
+                })
+            } else {
+                $('#divCBank').fadeIn(200, function() {
+                    $("#cpBank").attr("required", true);
+                })
+                $('#divCProofPay').fadeIn(200, function() {
+                    $("#cpProofPayment").attr("required", true);
+                })
+            }
+        })
+
+
+        $("#formCheckout form").submit(function(e) {
+            e.preventDefault();
+            let paymentType = $("#cpPaymentType").val();
+            let formData = new FormData();
+            formData.append("product_id", $("#cpProductId").val());
+            formData.append("qty", $("$cpQty").val());
+            formData.append("payment_type", $paymentType);
+
+            if (paymentType == "TRANSFER") {
+                formData.append("bank_id", $("#cpBank"));
+                formData.append("proof_of_payment", document.getElementById("cpProofPayment").files[0]);
+            }
+
+            console.log("form data")
+        })
     </script>
 @endpush

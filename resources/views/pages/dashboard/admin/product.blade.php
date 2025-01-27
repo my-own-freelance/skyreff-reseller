@@ -11,35 +11,35 @@
 
         /* PRODUCT IMAGE */
         /* .image-wrapper {
-                    position: relative !important;
-                    max-width: 300px;
-                    height: 300px;
-                }
+                        position: relative !important;
+                        max-width: 300px;
+                        height: 300px;
+                    }
 
-                .image-wrapper img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: contain;
-                }
+                    .image-wrapper img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                    }
 
-                .delete-button {
-                    position: absolute;
-                    top: 10px;
-                    right: 10px;
-                    border-radius: 50%;
-                    width: 40px;
-                    height: 40px;
-                    padding: 0;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    background-color: #767676;
-                    box-sizing: border-box;
-                }
+                    .delete-button {
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        border-radius: 50%;
+                        width: 40px;
+                        height: 40px;
+                        padding: 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        background-color: #767676;
+                        box-sizing: border-box;
+                    }
 
-                .delete-button i {
-                    color: white;
-                } */
+                    .delete-button i {
+                        color: white;
+                    } */
 
         /* END PRODUCT IMAGE */
     </style>
@@ -421,13 +421,23 @@
                 dataType: "json",
                 success: function(res) {
                     let d = res.data;
-                    if (action == "edit") {
-                        loadUpdate(d)
-                    }
-
-                    if (action == "detail") {
-                        loadDetail(d)
-                    }
+                    $("#formEditable").attr("data-action", "update").fadeIn(200, function() {
+                        $("#boxTable").removeClass("col-md-12").addClass("col-md-7");
+                        let d = res.data;
+                        $("#id").val(d.id);
+                        $("#title").val(d.title);
+                        $("#excerpt").val(d.excerpt);
+                        $("#code").val(d.code);
+                        $("#product_category_id").val(d.product_category_id).change();
+                        $("#purchase_price").val(formatToRupiah(d.purchase_price));
+                        $("#selling_price").val(formatToRupiah(d.selling_price));
+                        $("#commission_regular").val(formatToRupiah(d.commission_regular));
+                        $("#commission_vip").val(formatToRupiah(d.commission_vip));
+                        $("#is_active").val(d.is_active).change();
+                        $("#stock").val(d.stock);
+                        // $("#image").attr("required", false);
+                        $("#summernote").summernote('code', d.description);
+                    })
                 },
                 error: function(err) {
                     console.log("error :", err);
@@ -435,30 +445,6 @@
                         ?.message);
                 }
             })
-        }
-
-        function loadUpdate(d) {
-            $("#formEditable").attr("data-action", "update").fadeIn(200, function() {
-                $("#boxTable").removeClass("col-md-12").addClass("col-md-7");
-                let d = res.data;
-                $("#id").val(d.id);
-                $("#title").val(d.title);
-                $("#excerpt").val(d.excerpt);
-                $("#code").val(d.code);
-                $("#product_category_id").val(d.product_category_id).change();
-                $("#purchase_price").val(formatToRupiah(d.purchase_price));
-                $("#selling_price").val(formatToRupiah(d.selling_price));
-                $("#commission_regular").val(formatToRupiah(d.commission_regular));
-                $("#commission_vip").val(formatToRupiah(d.commission_vip));
-                $("#is_active").val(d.is_active).change();
-                $("#stock").val(d.stock);
-                // $("#image").attr("required", false);
-                $("#summernote").summernote('code', d.description);
-            })
-        }
-
-        function loadDetail(d){
-
         }
 
         $("#formEditable form").submit(function(e) {
@@ -666,15 +652,15 @@
         //             $("#product_id").val(product_id);
         //             $.each(res.data, function(index, item) {
         //                 const elImage = $(`
-        //                     <div class='col col-md-3 col-sm-6 col-12'>
-        //                         <div class='image-wrapper mb-3 border' style='padding:5px!important;'>
-        //                             <img src='${item.image}' alt='Gambar 1' class='img-fluid'>
-        //                             <button class='btn delete-button' onclick='return removeProductImage("${item.id}")' href='javascript:void(0);'>
-        //                                 <i class='fas fa-trash ml-1'></i>
-        //                             </button>
-        //                         </div>
-        //                     </div>
-        //                 `);
+    //                     <div class='col col-md-3 col-sm-6 col-12'>
+    //                         <div class='image-wrapper mb-3 border' style='padding:5px!important;'>
+    //                             <img src='${item.image}' alt='Gambar 1' class='img-fluid'>
+    //                             <button class='btn delete-button' onclick='return removeProductImage("${item.id}")' href='javascript:void(0);'>
+    //                                 <i class='fas fa-trash ml-1'></i>
+    //                             </button>
+    //                         </div>
+    //                     </div>
+    //                 `);
         //                 $("#productImage").append(elImage);
         //             });
         //         },

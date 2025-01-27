@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('trx_products', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
-            $table->integer('amount')->default(0);
+            $table->integer('amount')->default(0); // harga per produk
             $table->integer('commission')->default(0);
             $table->integer('qty')->default(1);
+            $table->integer('total_amount')->default(0);
             $table->integer('profit')->default(0);
             $table->enum('status', ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
             $table->enum('payment_type', ['TRANSFER', 'DEBT'])->default('TRANSFER');

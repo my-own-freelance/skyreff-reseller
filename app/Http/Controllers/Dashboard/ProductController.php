@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bank;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
@@ -19,13 +20,14 @@ class ProductController extends Controller
         $categories = ProductCategory::all();
         $user = Auth::user();
         $pageUrl = "pages.dashboard.admin.product";
+        $banks = Bank::all();
 
         if ($user->role == "RESELLER") {
             $categories = ProductCategory::where("is_active", "Y")->get();
             $pageUrl = "pages.dashboard.reseller.product";
         }
 
-        return view($pageUrl, compact("title", "categories"));
+        return view($pageUrl, compact("title", "categories", "banks"));
     }
 
     // HANDLER API
@@ -73,23 +75,18 @@ class ProductController extends Controller
             ->get();
 
         $output = $data->map(function ($item) use ($user) {
-            $action_edit = $user->role == "ADMIN" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"edit\");' href='javascript:void(0);' title='Edit'>Edit</a>" : "";
-            $action_delete = $user->role == "ADMIN" ? "<a class='dropdown-item' onclick='return removeData(\"{$item->id}\");' href='javascript:void(0)' title='Hapus'>Hapus</a>" : "";
-            $action_checkout = $user->role == "RESELLER" ? "<a class='dropdown-item' onclick='return checkout(\"{$item->id}\");' href='javascript:void(0)' title='Checkout'>Checkout</a>" : "";
-            $action = " <div class='dropdown-primary dropdown open'>
-                            <button class='btn btn-sm btn-primary dropdown-toggle waves-effect waves-light' id='dropdown-{$item->id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'>
-                                Aksi
-                            </button>
-                            <div class='dropdown-menu' aria-labelledby='dropdown-{$item->id}' data-dropdown-out='fadeOut'>
-                                <a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"detail\");' href='javascript:void(0);' title='Detail'>Detail</a>
-                                " . $action_edit . "
-                                " . $action_delete . "
-                                " . $action_checkout . "
-                            </div>
-                        </div>";
-
             // ADDITIONAL FIELD FOR ROLE ADMIN
             if ($user->role == "ADMIN") {
+                $action = " <div class='dropdown-primary dropdown open'>
+                                <button class='btn btn-sm btn-primary dropdown-toggle waves-effect waves-light' id='dropdown-{$item->id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'>
+                                    Aksi
+                                </button>
+                                <div class='dropdown-menu' aria-labelledby='dropdown-{$item->id}' data-dropdown-out='fadeOut'>
+                                    <a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"edit\");' href='javascript:void(0);' title='Edit'>Edit</a>
+                                    <a class='dropdown-item' onclick='return removeData(\"{$item->id}\");' href='javascript:void(0)' title='Hapus'>Hapus</a>
+                                </div>
+                            </div>";
+
                 $is_active = $item->is_active == 'Y' ? '
                     <div class="text-center">
                         <span class="label-switch">Publish</span>
@@ -127,10 +124,15 @@ class ProductController extends Controller
                 $item['is_active'] = $is_active;
                 $item['price'] = $price;
                 $item['commission'] = $commission;
+            $item['action'] = $action;
+
             } else {
                 $item['price'] = '<strong> Rp. ' . number_format($item->selling_price, 0, ',', '.') . '</strong>';
                 $commission = $user->level == "REGULAR" ? $item->commission_regular : $item->commission_vip;
                 $item['commission'] = '<strong> Rp. ' . number_format($commission, 0, ',', '.') . '</strong>';
+                $item['action'] = "<button class='btn btn-sm btn-primary waves-light'  onclick='return loadCheckout(\"{$item->id}\");'>
+                                        Checkout
+                                    </button>";
             }
 
 
@@ -150,7 +152,6 @@ class ProductController extends Controller
                     <br>
                 </small>";
 
-            $item['action'] = $action;
             $item['image'] = $image;
             $item['excerpt'] = $excerpt;
             $item['title'] = $title;

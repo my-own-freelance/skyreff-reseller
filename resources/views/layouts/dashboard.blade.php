@@ -66,7 +66,9 @@
             </div>
             @include('partials.dashboard.footer')
         </div>
-        @include('partials.dashboard.custom-template')
+        @if ($user->role == 'ADMIN')
+            @include('partials.dashboard.custom-template')
+        @endif
     </div>
     @include('partials.dashboard.scripts')
     @stack('scripts')
