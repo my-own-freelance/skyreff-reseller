@@ -28,6 +28,13 @@ list menu admin :
          
     - TRANSACTION
         - PRODUCT
+            - list
+                - detail
+                - in process
+                - success
+                - reject
+                - print preview
+                - bukti refund
         - CLAIM COMMISSION
         - REWARD
         - COMPENSATION
@@ -48,6 +55,12 @@ list menu admin :
 list menu resellet : 
     - TRANSACTION
         - PRODUCT
+            - checkout (ok)
+            - list
+                - detail
+                - cancel
+                - print preview
+                - bukti refund
         - CLAIM COMMISSION
         - REWARD
         - COMPENSATION

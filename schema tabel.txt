@@ -55,7 +55,7 @@ TABLE SUB_DISTRICTS :
 
 TABLE USERS : 
 - id
-- code (auto generate 6 digit a-z)
+- code (auto generate 10 digit a-z)
 - name
 - username
 - password
@@ -67,7 +67,7 @@ TABLE USERS :
 - level (enum ['REGULAR', '	VIP'] . default 'REGULAR')
 - debt_limit (limit hutang)
 - total_debt (total hutang)
-- commission
+- commission (update setiap kali trx di sukseskan oleh admin)
 - image
 - province_id
 - district_id
@@ -88,7 +88,7 @@ TABLE PRODUCT_CATEGORIES :
 TABLE PRODUCTS :
 - id
 - title
-- code (auto generate 6 digit a-z)
+- code (auto generate 10 digit a-z)
 - purchase_price (harge beli)
 - selling_price (harga jual)
 - commission_regular (komisi reseller regular)
@@ -129,13 +129,13 @@ TABLE REWARD :
 // ketika trx disukseskan oleh admin, buat data mutasi komisi dan upadate saldo komisi
 TABLE TRX_PRODUCTS : 
 - id
-- code (auto generate 12 digit a-z)
+- code (auto generate 10 digit a-z)
 - amount
 - commission
 - qty
 - total_amount
 - profit
-- status (enum ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT'] . default 'PENDING')
+- status (enum ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT','CANCEL'] . default 'PENDING')
 - payment_type (enum ['TRANSFER', 'DEBT'] . default 'TRANSFER')
 - proof_of_payment (upload bukti pembayaran jika type nya tf)
 - proof_of_return (upload bukti pengembalian uang kita sudah terlanjut di tf dan admin menolak transaksi)

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->enum('level', ['REGULAR', 'VIP'])->nullable();
             $table->integer('debt_limit')->default(0);
             $table->integer('total_debt')->default(0);
-            $table->integer('comission')->default(0);
+            $table->integer('commission')->default(0);
             $table->string('image')->nullable();
             $table->rememberToken();
             $table->timestamps();

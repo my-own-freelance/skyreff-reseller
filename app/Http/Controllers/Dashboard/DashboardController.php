@@ -29,7 +29,7 @@ class DashboardController extends Controller
                 "banners" => Banner::where("is_active", "Y")->get(),
                 "trx_product" => TrxProduct::where("user_id", $user->id)->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
                 "debt_limit" => 'Rp. ' . number_format($reseller->debt_limit, 0, ',', '.'),
-                "debt_total" => 'Rp. ' . number_format($reseller->debt_total, 0, ',', '.'),
+                "total_debt" => 'Rp. ' . number_format($reseller->total_debt, 0, ',', '.'),
                 "commission" => 'Rp. ' . number_format($reseller->commission, 0, ',', '.'),
                 "wd_commission" => 'Rp. ' . number_format($wdCommisson, 0, ',', '.'),
             ];

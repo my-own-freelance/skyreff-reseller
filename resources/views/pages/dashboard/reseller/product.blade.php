@@ -480,15 +480,35 @@
             let paymentType = $("#cpPaymentType").val();
             let formData = new FormData();
             formData.append("product_id", $("#cpProductId").val());
-            formData.append("qty", $("$cpQty").val());
-            formData.append("payment_type", $paymentType);
+            formData.append("qty", $("#cpQty").val());
+            formData.append("payment_type", paymentType);
 
             if (paymentType == "TRANSFER") {
-                formData.append("bank_id", $("#cpBank"));
+                formData.append("bank_id", $("#cpBank").val());
                 formData.append("proof_of_payment", document.getElementById("cpProofPayment").files[0]);
             }
 
-            console.log("form data")
+            checkoutProduct(formData);
+            return false;
         })
+
+        function checkoutProduct(data) {
+            $.ajax({
+                url: "{{ route('trx-product.create')}}",
+                contentType: false,
+                processData: false,
+                method: "POST",
+                data: data,
+                success: function(res) {
+                    closeForm();
+                    showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
+                },
+                error: function(err) {
+                    console.log("error :", err);
+                    showMessage("danger", "flaticon-error", "Peringatan", err.message || err.responseJSON
+                        ?.message);
+                }
+            })
+        }
     </script>
 @endpush

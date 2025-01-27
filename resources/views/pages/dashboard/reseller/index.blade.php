@@ -42,14 +42,14 @@
                         <div class="card-body bubble-shadow">
                             <h1 class="mt-4">{{ $data['debt_limit'] }}</h1>
                             <h3 class="mt-3">Limit Pihutang</h3>
-                            <div class="pull-right mt-4"><small>Estimasi Income Bulan Ini</small></div>
+                            <div class="pull-right mt-4"><small>Total Limit Pihutang</small></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card card-dark bg-secondary2">
                         <div class="card-body skew-shadow">
-                            <h1 class="mt-4">{{ $data['debt_total'] }}</h1>
+                            <h1 class="mt-4">{{ $data['total_debt'] }}</h1>
                             <h3 class="mt-3">Total Hutang</h3>
                             <div class="pull-right"><a class="text-white" href="">
                                 <small class="fw-bold op-9">Bayar Sekarang<i class="fas fa-external-link-alt ml-2"></i></small>

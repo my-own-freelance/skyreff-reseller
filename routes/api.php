@@ -10,6 +10,7 @@ use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductImageController;
 use App\Http\Controllers\Dashboard\ResellerController;
 use App\Http\Controllers\Dashboard\RewardController;
+use App\Http\Controllers\Dashboard\TrxProductController;
 use App\Http\Controllers\Dashboard\WebConfigController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -129,6 +130,17 @@ Route::group(["middleware" => "check.auth"], function () {
                 Route::post("update-status", [ResellerController::class, "updateStatus"])->name('reseller.change-status');
                 Route::post("restore", [ResellerController::class, "restore"])->name('reseller.restore');
                 Route::delete("soft-delete", [ResellerController::class, "softDelete"])->name('reseller.soft-delete');
+            });
+        });
+    });
+
+    // ONLY RESELLER ACCESS
+    Route::group(["middleware" => "api.check.role:RESELLER"], function () {
+        // PREFIX TRANSACTION
+        Route::group(["prefix" => "transaction"], function () {
+            //  PRODUCT
+            Route::group(["prefix" => "product"], function () {
+                Route::post('/create', [TrxProductController::class, "create"])->name("trx-product.create");
             });
         });
     });
