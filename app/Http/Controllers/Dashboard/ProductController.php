@@ -33,51 +33,53 @@ class ProductController extends Controller
     // HANDLER API
     public function dataTable(Request $request)
     {
-        $query = Product::with(["ProductCategory" => function ($query) {
-            $query->select("id", "title", "image");
-        }]);
+        try {
 
-        $user = $user = auth()->user();
+            $query = Product::with(["ProductCategory" => function ($query) {
+                $query->select("id", "title", "image");
+            }]);
 
-        // JIKA YG LOGIN RESELLER, TAMPILKAN HANYA PRODUK AKTIF DAN YG CATEGORINYA MASIH AKTIF SAJA
-        if ($user->role == "RESELLER") {
-            $query = Product::where("is_active", "Y")
-                ->whereHas("ProductCategory", function ($query) {
-                    $query->where("is_active", "Y");
-                })->with(["ProductCategory" => function ($query) {
-                    $query->select("id", "title", "image");
-                }]);
-        }
+            $user = auth()->user();
 
-        if ($request->query("search")) {
-            $searchValue = $request->query("search")['value'];
-            $query->where(function ($query) use ($searchValue) {
-                $query->where('title', 'like', '%' . $searchValue . '%')
-                    ->Orwhere('code', 'like', '%' . $searchValue . '%')
-                    ->Orwhere('excerpt', 'like', '%' . $searchValue . '%');
-            });
-        }
+            // JIKA YG LOGIN RESELLER, TAMPILKAN HANYA PRODUK AKTIF DAN YG CATEGORINYA MASIH AKTIF SAJA
+            if ($user->role == "RESELLER") {
+                $query = Product::where("is_active", "Y")
+                    ->whereHas("ProductCategory", function ($query) {
+                        $query->where("is_active", "Y");
+                    })->with(["ProductCategory" => function ($query) {
+                        $query->select("id", "title", "image");
+                    }]);
+            }
 
-        // filter kategori
-        if ($request->query("product_category_id") && $request->query('product_category_id') != "") {
-            $query->where('product_category_id', $request->query('product_category_id'));
-        }
+            if ($request->query("search")) {
+                $searchValue = $request->query("search")['value'];
+                $query->where(function ($query) use ($searchValue) {
+                    $query->where('title', 'like', '%' . $searchValue . '%')
+                        ->Orwhere('code', 'like', '%' . $searchValue . '%')
+                        ->Orwhere('excerpt', 'like', '%' . $searchValue . '%');
+                });
+            }
 
-        // filter status
-        if ($request->query("is_active") && $request->query('is_active') != "") {
-            $query->where('is_active', $request->query('is_active'));
-        }
+            // filter kategori
+            if ($request->query("product_category_id") && $request->query('product_category_id') != "") {
+                $query->where('product_category_id', $request->query('product_category_id'));
+            }
 
-        $recordsFiltered = $query->count();
-        $data = $query->orderBy('id', 'desc')
-            ->skip($request->query('start'))
-            ->limit($request->query('length'))
-            ->get();
+            // filter status
+            if ($request->query("is_active") && $request->query('is_active') != "") {
+                $query->where('is_active', $request->query('is_active'));
+            }
 
-        $output = $data->map(function ($item) use ($user) {
-            // ADDITIONAL FIELD FOR ROLE ADMIN
-            if ($user->role == "ADMIN") {
-                $action = " <div class='dropdown-primary dropdown open'>
+            $recordsFiltered = $query->count();
+            $data = $query->orderBy('id', 'desc')
+                ->skip($request->query('start'))
+                ->limit($request->query('length'))
+                ->get();
+
+            $output = $data->map(function ($item) use ($user) {
+                // ADDITIONAL FIELD FOR ROLE ADMIN
+                if ($user->role == "ADMIN") {
+                    $action = " <div class='dropdown-primary dropdown open'>
                                 <button class='btn btn-sm btn-primary dropdown-toggle waves-effect waves-light' id='dropdown-{$item->id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'>
                                     Aksi
                                 </button>
@@ -87,7 +89,7 @@ class ProductController extends Controller
                                 </div>
                             </div>";
 
-                $is_active = $item->is_active == 'Y' ? '
+                    $is_active = $item->is_active == 'Y' ? '
                     <div class="text-center">
                         <span class="label-switch">Publish</span>
                     </div>
@@ -97,7 +99,7 @@ class ProductController extends Controller
                             <span class="slider"></span>
                         </div>
                     </div>' :
-                    '<div class="text-center">
+                        '<div class="text-center">
                         <span class="label-switch">Draft</span>
                     </div>
                     <div class="input-row">
@@ -107,13 +109,15 @@ class ProductController extends Controller
                         </div>
                     </div>';
 
-                $price = '<small>
+                    $price = '<small>
                         <strong>Harga Beli</strong> : Rp. ' . number_format($item->purchase_price, 0, ',', '.') . '
                         <br>
                         <strong>Harga Jual</strong> : Rp. ' . number_format($item->selling_price, 0, ',', '.') . '
                         <br>
+                        <strong>Profit</strong> : Rp. ' . number_format($item->selling_price - $item->purchase_price, 0, ',', '.') . '
+                        <br>
                     </small>';
-                $commission = '<small>
+                    $commission = '<small>
                         <strong>Regular</strong> : Rp. ' . number_format($item->commission_regular, 0, ',', '.') . '
                         <br>
                         <strong>VIP</strong> : Rp. ' . number_format($item->commission_vip, 0, ',', '.') . '
@@ -121,71 +125,80 @@ class ProductController extends Controller
                     </small>';
 
 
-                $item['is_active'] = $is_active;
-                $item['price'] = $price;
-                $item['commission'] = $commission;
-            $item['action'] = $action;
-
-            } else {
-                $item['price'] = '<strong> Rp. ' . number_format($item->selling_price, 0, ',', '.') . '</strong>';
-                $commission = $user->level == "REGULAR" ? $item->commission_regular : $item->commission_vip;
-                $item['commission'] = '<strong> Rp. ' . number_format($commission, 0, ',', '.') . '</strong>';
-                $item['action'] = "<button class='btn btn-sm btn-primary waves-light'  onclick='return loadCheckout(\"{$item->id}\");'>
+                    $item['is_active'] = $is_active;
+                    $item['price'] = $price;
+                    $item['commission'] = $commission;
+                    $item['action'] = $action;
+                } else {
+                    $item['price'] = '<strong> Rp. ' . number_format($item->selling_price, 0, ',', '.') . '</strong>';
+                    $commission = $user->level == "REGULAR" ? $item->commission_regular : $item->commission_vip;
+                    $item['commission'] = '<strong> Rp. ' . number_format($commission, 0, ',', '.') . '</strong>';
+                    $item['action'] = "<button class='btn btn-sm btn-primary waves-light'  onclick='return loadCheckout(\"{$item->id}\");'>
                                         Checkout
                                     </button>";
-            }
+                }
 
 
-            $image = '<div class="thumbnail">
+                $image = '<div class="thumbnail">
                         <div class="thumb">
                             <img src="' . Storage::url($item->ProductCategory->image) . '" alt="" width="150px" height="100px" 
                             class="img-fluid img-thumbnail" alt="' . $item->title . '">
                         </div>
                     </div>';
 
-            $excerpt = "<p>" . Str::limit(strip_tags($item->excerpt), 150) . "</p>";
+                $excerpt = "<p>" . Str::limit(strip_tags($item->excerpt), 150) . "</p>";
 
-            $title = "<small> 
+                $title = "<small> 
                     <strong>Judul</strong> :" . Str::limit(strip_tags($item->title), 100) .  "
                     <br>
                     <strong>Code</strong> :" . $item->code . "
                     <br>
                 </small>";
 
-            $item['image'] = $image;
-            $item['excerpt'] = $excerpt;
-            $item['title'] = $title;
-            $item['category'] = $item->ProductCategory->title;
+                $item['image'] = $image;
+                $item['excerpt'] = $excerpt;
+                $item['title'] = $title;
+                $item['category'] = $item->ProductCategory->title;
 
 
-            unset($item['description']);
-            unset($item['purchase_price']);
-            unset($item['selling_price']);
-            unset($item['commission_regular']);
-            unset($item['commission_vip']);
-            unset($item['ProductCategory']);
-            return $item;
-        });
+                unset($item['description']);
+                unset($item['purchase_price']);
+                unset($item['selling_price']);
+                unset($item['commission_regular']);
+                unset($item['commission_vip']);
+                unset($item['ProductCategory']);
+                return $item;
+            });
 
-        $queryTotal = Product::query();
+            $queryTotal = Product::query();
 
-        if ($user->role == "RESELLER") {
-            $queryTotal->where("is_active", "Y")
-                ->whereHas("ProductCategory", function ($query) {
-                    $query->where("is_active", "Y");
-                })->with(["ProductCategory" => function ($query) {
-                    $query->select("id", "title", "image");
-                }]);
+            if ($user->role == "RESELLER") {
+                $queryTotal->where("is_active", "Y")
+                    ->whereHas("ProductCategory", function ($query) {
+                        $query->where("is_active", "Y");
+                    })->with(["ProductCategory" => function ($query) {
+                        $query->select("id", "title", "image");
+                    }]);
+            }
+
+            $total = $queryTotal->count();
+
+            return response()->json([
+                'draw' => $request->query('draw'),
+                'recordsFiltered' => $recordsFiltered,
+                'recordsTotal' => $total,
+                'data' => $output,
+            ]);
+        } catch (\Throwable $err) {
+            return response()->json([
+                "status" => "error",
+                "message" => $err->getMessage(),
+                'draw' => $request->query('draw'),
+                'recordsFiltered' => 0,
+                'recordsTotal' => 0,
+                'data' => [],
+            ], 500);
         }
-
-        $total = $queryTotal->count();
-
-        return response()->json([
-            'draw' => $request->query('draw'),
-            'recordsFiltered' => $recordsFiltered,
-            'recordsTotal' => $total,
-            'data' => $output,
-        ]);
     }
 
     public function getDetail($id)

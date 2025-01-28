@@ -45,6 +45,7 @@ Route::group(["middleware" => "check.auth"], function () {
     // GLOBAL ACCESS
     Route::get("/master/product/datatable", [ProductController::class, "dataTable"])->name('product.datatable');
     Route::get("/master/product/{id}/detail", [ProductController::class, "getDetail"])->name('product.detail');
+    Route::get("/trx/product/datatable", [TrxProductController::class, "dataTable"])->name('trx-product.datatable');
 
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "api.check.role:ADMIN"], function () {

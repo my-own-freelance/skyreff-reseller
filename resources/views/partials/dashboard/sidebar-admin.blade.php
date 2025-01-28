@@ -59,6 +59,18 @@
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>
                     </span>
+                    <h4 class="text-section">Transaction</h4>
+                </li>
+                <li class="nav-item ml-3 {{ $routename == 'trx-product' ? 'active' : '' }}">
+                    <a href="{{ route('trx-product') }}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Product</p>
+                    </a>
+                </li>
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
                     <h4 class="text-section">MANAGE</h4>
                 </li>
                 <li class="nav-item ml-3 {{ $routename == 'reseller' ? 'active' : '' }}">

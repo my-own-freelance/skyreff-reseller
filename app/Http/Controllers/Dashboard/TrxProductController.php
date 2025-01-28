@@ -41,7 +41,7 @@ class TrxProductController extends Controller
 
             $query = TrxProduct::with([
                 "Product" => function ($query) {
-                    $query->select("id", "title", "code")
+                    $query->select("id", "title", "code", "product_category_id")
                         ->with("ProductCategory:id,title");
                 },
                 "User" => function ($query) {
@@ -61,7 +61,7 @@ class TrxProductController extends Controller
             // filter code trx
             if ($request->query("search")) {
                 $searchValue = $request->query("search")['value'];
-                $query->where('core', 'like', '%' . $searchValue . '%');
+                $query->where('code', 'like', '%' . $searchValue . '%');
             }
 
             // filter status
@@ -83,27 +83,31 @@ class TrxProductController extends Controller
             }
 
             // filter tanggal awal - tanggal akhir per bulan saat ini
-            $tglAwal = $request->query('tgll_awal');
+            $tglAwal = $request->query('tgl_awal');
             $tglAkhir = $request->query('tgl_akhir');
 
             if (!$tglAwal) {
-                $tglAwal = Carbon::now()->startOfDay()->utc();
+                $tglAwal = Carbon::now('UTC')->startOfMonth()->subHour(7)->toDateTimeString(); // dikurangi 7 jam mengikuti waktu utc
             }
 
             if (!$tglAkhir) {
-                $tglAkhir = Carbon::now()->endOfDay()->utc();
+                $tglAkhir = Carbon::now('UTC')->endOfMonth()->subHour(7)->toDateTimeString(); // dikurangi 7 jam mengikuti waktu utc
             }
 
             if ($request->query('tgl_awal') && $request->query('tgl_akhir')) {
-                $tglAwal = Carbon::createFromDate('d/m/Y', $request->query('tgl_awal'))->startOfDay()->utc();
-                $tglAkhir = Carbon::createFromDate('d/m/Y', $request->query('tgl_akhir'))->endOfDay()->utc();
+                $tglAwal = Carbon::createFromFormat('d/m/Y', $request->query('tgl_awal'), 'UTC')->startOfDay()->subHour(7)->toDateTimeString(); // dikurangi 7 jam mengikuti waktu utc
+                $tglAkhir = Carbon::createFromFormat('d/m/Y', $request->query('tgl_akhir'), 'UTC')->endOfDay()->subHour(7)->toDateTimeString(); // dikurangi 7 jam mengikuti waktu utc
             }
 
             $query->whereBetween('created_at', [$tglAwal, $tglAkhir]);
             $recordsFiltered = $query->count();
+            if ($request->query('start')) {
+                $query->skip($request->query('start'));
+            }
+            if ($request->query('length')) {
+                $query->limit($request->query('length'));
+            }
             $data = $query->orderBy('id', 'desc')
-                ->skip($request->query('start'))
-                ->limit($request->query('length'))
                 ->get();
 
             $output = $data->map(function ($item) use ($user) {
@@ -129,7 +133,6 @@ class TrxProductController extends Controller
                             </div>";
 
                     $item["action"] = $action;
-                    $item['profit'] = "<strong> : Rp. " . number_format($item->profit, 0, ',', '.') . "</strong>";
                 } else {
                     $action_cancel = $item->status == "PENDING" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", 'CANCEL');' href='javascript:void(0);' title='Cancel'>Cancel</a>" : "";
                     $action_print = $item->status == "SUCCESS" ? "<a class='dropdown-item' onclick='return printPreview(\"{$item->id}\");' href='javascript:void(0);' title='Print Preview'>Print Preview</a>" : "";
@@ -167,20 +170,41 @@ class TrxProductController extends Controller
                                 <br>
                             </small>";
 
+                $classStatus = "";
+                switch ($item["status"]) {
+                    case "PENDING":
+                        $classStatus = "badge-info";
+                        break;
+                    case "PROCESS":
+                        $classStatus = "badge-primary";
+                        break;
+                    case "SUCCESS":
+                        $classStatus = "badge-success";
+                        break;
+                    case "REJECT":
+                        $classStatus = "badge-danger";
+                        break;
+                    case "CANCEL":
+                        $classStatus = "badge-warning";
+                }
 
+                $item["status"] = "<span class='badge " . $classStatus . "'>" . $item["status"] . "</span>";
                 $item['product'] = $product;
                 $item['reseller'] = $reseller;
-                $item['amount'] = "<strong> : Rp. " . number_format($item->amount, 0, ',', '.') . "</strong>";
-                $item['total_amount'] = "<strong> : Rp. " . number_format($item->total_amount, 0, ',', '.') . "</strong>";
-                $item['commission'] = "<strong> : Rp. " . number_format($item->commission, 0, ',', '.') . "</strong>";
                 $item['payment_type'] = $item['payment_type'] == "TRANSFER" ? "TRANSFER BANK" : "PIHUTANG";
+                $item['created'] = Carbon::parse($item->created_at)->addHours(7)->format('Y-m-d H:i:s');
+                $item['updated'] = Carbon::parse($item->updated_at)->addHours(7)->format('Y-m-d H:i:s');
+                if($item['created'] == $item['updated']) {
+                    $item['updated'] = '';
+                }
 
                 unset($item['Product']);
                 unset($item['User']);
                 unset($item['Bank']);
+                return $item;
             });
 
-            $queryTotal = TrxProduct::count();
+            $queryTotal = TrxProduct::query();
             if ($user->role == "RESELLER") {
                 $query->where('user_id', $user->id);
             }
