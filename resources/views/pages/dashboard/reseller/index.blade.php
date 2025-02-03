@@ -57,6 +57,17 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="card card-dark bg-secondary2">
+                        <div class="card-body skew-shadow">
+                            <h1 class="mt-4">{{ $data['month_commission'] }}</h1>
+                            <h3 class="mt-3">Komisi Bulan Ini</h3>
+                            <div class="pull-right"><a class="text-white" href="">
+                                <small class="fw-bold op-9">Cek Mutasi<i class="fas fa-external-link-alt ml-2"></i></small>
+                            </a></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

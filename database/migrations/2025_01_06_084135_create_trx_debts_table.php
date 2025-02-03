@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id();
             $table->integer('amount')->nullable();
             $table->enum('type', ['D', 'P'])->default('D'); // D = debt . P = pay
+            $table->integer('first_debt')->default(0);
+            $table->integer('last_debt')->default(0);
             $table->enum('status', ['PENDING', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
             $table->string('proof_of_payment')->nullable(); // upload bukti pembayaran piutang
             $table->string('remark')->nullable(); // keterangan untuk admin ketika reject trx
             $table->unsignedBigInteger('trx_product_id');
-            $table->unsignedBigInteger('bank_id'); // diisi ketika bayar hutang via tf
+            $table->unsignedBigInteger('bank_id')->nullable(); // diisi ketika bayar hutang via tf
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
             $table->softDeletes();
 
@@ -31,6 +34,10 @@ return new class extends Migration
             $table->foreign('bank_id')
                 ->references('id')
                 ->on('banks')
+                ->onUpdate('cascade');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
                 ->onUpdate('cascade');
         });
     }

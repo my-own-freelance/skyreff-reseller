@@ -156,16 +156,19 @@ TABLE TRX_DEBTS
 - id
 - amount
 - type (enum ['D','P']) D = debt . P = pay
+- first_debt
+- last_debt
 - status (enum ['PENDING','SUCCESS', 'REJECT'] . default 'PENDING')
 - proof_of_payment (upload bukti pembayaran)	
 - remark
 - trx_product_id
 - bank_id
+- user_id
 - created_at
 - updated_at
 - deleted_at
 
-// ketika di sukseskan oleh admin, buat data mutasi . jika di tolak, balikan saldo komisi ke reseller																																																																																																																																																																																																																																																																																																																																																										
+// ketika di sukseskan oleh admin, buat data mutasi . jika di reject/cancel maka update total pihutang reseller jika metode bayarnya hutang																																																																																																																																																																																																																																																																																																																																																										
 TABLE TRX_COMMISSIONS :
 - id
 - amount
@@ -220,6 +223,7 @@ TABLE MUTATIONS :
 - last_commission
 - trx_product_id
 - trx_commission_id
+- user_id
 - created_at
 - updated_at
 - deleted_at

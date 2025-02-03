@@ -29,12 +29,12 @@ list menu admin :
     - TRANSACTION
         - PRODUCT
             - list
-                - detail
-                - in process
-                - success
-                - reject
-                - print preview
-                - bukti refund
+                - in process (ok)
+                - success (ok)
+                - reject (ok)
+                - bukti refund (ok)
+                - bukti tf (ok)
+                - alasan ditolak (ok)
         - CLAIM COMMISSION
         - REWARD
         - COMPENSATION
@@ -57,10 +57,10 @@ list menu resellet :
         - PRODUCT
             - checkout (ok)
             - list
-                - detail
-                - cancel
-                - print preview
-                - bukti refund
+                - cancel (ok)
+                - bukti refund (ok)
+                - bukti tf (ok)
+                - alasan ditolak (ok)
         - CLAIM COMMISSION
         - REWARD
         - COMPENSATION

@@ -2,6 +2,15 @@
 @section('title', $title)
 @push('styles')
     <link rel="stylesheet" href="{{ asset('/dashboard/css/toggle-status.css') }}">
+    <style>
+        #proofImg {
+            max-width: 100%;
+            max-height: 400px;
+            display: block;
+            margin: 0 auto;
+            object-fit: contain;
+        }
+    </style>
 @endpush
 @section('content')
     <div class="row mb-5">
@@ -9,7 +18,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <h5 class="text-uppercase title">List Transaksi Produk</h5>
+                        <h5 class="text-uppercase title">List Transaksi Produk - RESELLER</h5>
                     </div>
                     <div class="card-header-right">
                         <button class="btn btn-mini btn-info mr-1" onclick="return refreshData();">Refresh</button>
@@ -110,6 +119,29 @@
                             </tfoot>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL DETAIL --}}
+    <div class="modal fade" id="modalDetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDetailTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="reasonReject"></p>
+                    <p id="bankTarget"></p>
+                    <img alt="" id="proofImg">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -230,21 +262,14 @@
             return false
         })
 
-        function getData(id) {
+        function getData(id, status) {
             $.ajax({
-                url: "{{ route('banner.detail', ['id' => ':id']) }}".replace(':id', id),
+                url: "{{ route('trx-product.detail', ['id' => ':id']) }}".replace(':id', id),
                 method: "GET",
                 dataType: "json",
                 success: function(res) {
-                    $("#formEditable").attr("data-action", "update").fadeIn(200, function() {
-                        $("#boxTable").removeClass("col-md-12").addClass("col-md-7");
-                        let d = res.data;
-                        $("#id").val(d.id);
-                        $("#title").val(d.title);
-                        $("#excerpt").val(d.excerpt);
-                        $("#is_active").val(d.is_active).change();
-                        $("#image").attr("required", false);
-                    })
+                    let data = res.data;
+                    loadModelDetail(data, status);
                 },
                 error: function(err) {
                     console.log("error :", err);
@@ -252,6 +277,75 @@
                         ?.message);
                 }
             })
+        }
+
+        function loadModelDetail(data, status) {
+            const modal = $("#modalDetail");
+            modal.modal('show');
+            modal.off('shown.bs.modal').on('shown.bs.modal', function() {
+                if (status == "SHOW-REASON-REJECT") {
+                    $("#modalDetailTitle").html("ALASAN TRANSAKSI DITOLAK")
+                    $("#reasonReject").html(data.reason);
+                }
+
+                if (status == "SHOW-PROOF-PAYMENT") {
+                    $("#modalDetailTitle").html("BUKTI PEMBAYARAN TRANSFER")
+                    $("#bankTarget").html(`${data.payment_type} : ${data.bank_target}`);
+                    if (data.proof_of_payment) {
+                        $("#proofImg").attr("src", data.proof_of_payment);
+                    } else {
+                        $("#proofImg").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
+                    }
+                }
+
+                if (status == "SHOW-PROOF-RETURN") {
+                    $("#modalDetailTitle").html("ALASAN DITOLAK DAN BUKTI PENGEMBALIAN SALDO")
+                    $("#reasonReject").html(data.reason);
+                    if (data.proof_of_return) {
+                        $("#proofImg").attr("src", data.proof_of_return);
+                    } else {
+                        $("#proofImg").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
+                    }
+                }
+            });
+
+            return false;
+        }
+
+        $("#modalDetail").on("hidden.bs.modal", function() {
+            $("#reasonReject").html("");
+            $("#bankTarget").html("");
+            $("#proofImg").attr("src", "");
+        });
+
+        function changeStatus(id, status) {
+            let c = confirm(`Anda yakin untuk mengubah status transaksi menjadi '${status}' ?`)
+            if (c) {
+                let dataToSend = new FormData();
+                dataToSend.append("id", id);
+                dataToSend.append("status", status);
+
+                $.ajax({
+                    url: "{{ route('trx-product.change-status') }}",
+                    contentType: false,
+                    processData: false,
+                    method: "POST",
+                    data: dataToSend,
+                    beforeSend: function() {
+                        console.log("Loading...")
+                    },
+                    success: function(res) {
+                        showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
+                        refreshData();
+                    },
+                    error: function(err) {
+                        console.log("error :", err);
+                        showMessage("danger", "flaticon-error", "Peringatan", err.message || err.responseJSON
+                            ?.message);
+                    }
+                })
+            }
+            return false;
         }
     </script>
 @endpush

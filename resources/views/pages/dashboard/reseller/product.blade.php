@@ -245,9 +245,12 @@
                                         </div>
 
 
-                                        <button class="btn btn-secondary btn-block mt-4" type="submit"> <span
-                                                class="btn-label mr-2"><i class="far fa-credit-card"></i></span>Proses
-                                            Pembayaran</button>
+                                        <button class="btn btn-secondary btn-block mt-4" type="submit">
+                                            <span class="btn-label mr-2">
+                                                <i class="far fa-credit-card"></i>
+                                            </span>
+                                            Proses Pembayaran
+                                        </button>
                                 </div>
                             </div>
                         </div>
@@ -488,13 +491,17 @@
                 formData.append("proof_of_payment", document.getElementById("cpProofPayment").files[0]);
             }
 
-            checkoutProduct(formData);
+            let c = confirm("Anda yakin pesanan anda sudah sesuai ?")
+            if (c) {
+                checkoutProduct(formData);
+            }
+
             return false;
         })
 
         function checkoutProduct(data) {
             $.ajax({
-                url: "{{ route('trx-product.create')}}",
+                url: "{{ route('trx-product.create') }}",
                 contentType: false,
                 processData: false,
                 method: "POST",

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
+use App\Models\Mutation;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\TrxDebt;
 use App\Models\TrxProduct;
 use App\Models\User;
 use Carbon\Carbon;
@@ -47,9 +49,9 @@ class TrxProductController extends Controller
                 "User" => function ($query) {
                     $query->select("id", "code", "name");
                 },
-                "Bank" => function ($query) {
-                    $query->select("id", "title", "account");
-                }
+                // "Bank" => function ($query) {
+                //     $query->select("id", "title", "account");
+                // }
             ]);
 
             // filter by reseller ID
@@ -112,44 +114,52 @@ class TrxProductController extends Controller
 
             $output = $data->map(function ($item) use ($user) {
                 if ($user->role == "ADMIN") {
-                    $action_process = $item->status == "PENDING" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", 'PROCESS');' href='javascript:void(0);' title='In Process'>In Process</a>" : "";
-                    $action_success = $item->status == "PENDING" || $item->status == "PROCESS" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", 'SUCCESS');' href='javascript:void(0);' title='Success'>Success</a>" : "";
-                    $action_reject = $item->status == "PENDING" || $item->status == "PROCESS" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", 'REJECT');' href='javascript:void(0);' title='Reject'>Reject</a>" : "";
-                    $action_print = $item->status == "SUCCESS" ? "<a class='dropdown-item' onclick='return printPreview(\"{$item->id}\");' href='javascript:void(0);' title='Print Preview'>Print Preview</a>" : "";
-                    $action_show_proof_of_return = $item->status == "REJECT" && $item->payment_type == "TRANSFER" ? "<a class='dropdown-item' onclick='return showProofOfReturn(\"{$item->id}\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Refund</a>" : "";
+                    $action_process = $item->status == "PENDING" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", \"PROCESS\");' href='javascript:void(0);' title='In Process'>In Process</a>" : "";
+                    $action_success = $item->status == "PENDING" || $item->status == "PROCESS" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", \"SUCCESS\");' href='javascript:void(0);' title='Success'>Success</a>" : "";
+                    $action_reject = $item->status == "PENDING" || $item->status == "PROCESS" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", \"REJECT\", \"{$item->payment_type}\");' href='javascript:void(0);' title='Reject'>Reject</a>" : "";
+                    $action_reason =  $item->status == "REJECT" && $item->payment_type == "DEBT" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-REASON-REJECT\");' href='javascript:void(0);' title='Alasan Ditolak'>Alasan Ditolak</a>" : "";
+                    $action_show_proof_of_payment = $item->payment_type == "TRANSFER" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-PAYMENT\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Transfer</a>" : "";
+                    $action_show_proof_of_return = $item->status == "REJECT" && $item->payment_type == "TRANSFER" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-RETURN\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Refund</a>" : "";
 
                     $action = " <div class='dropdown-primary dropdown open'>
                                 <button class='btn btn-sm btn-primary dropdown-toggle waves-effect waves-light' id='dropdown-{$item->id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'>
                                     Aksi
                                 </button>
                                 <div class='dropdown-menu' aria-labelledby='dropdown-{$item->id}' data-dropdown-out='fadeOut'>
-                                    <a class='dropdown-item' onclick='return getData(\"{$item->id}\");' href='javascript:void(0);' title='Detail'>Detail</a>
                                     " . $action_process . "
                                     " . $action_success . "
                                     " . $action_reject . "
-                                    " . $action_print . "
+                                    " . $action_reason . "
+                                    " . $action_show_proof_of_payment . "
                                     " . $action_show_proof_of_return . "
                                 </div>
                             </div>";
 
+                    if ($item->status == "CANCEL") {
+                        $action = "";
+                    }
+
                     $item["action"] = $action;
                 } else {
-                    $action_cancel = $item->status == "PENDING" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", 'CANCEL');' href='javascript:void(0);' title='Cancel'>Cancel</a>" : "";
-                    $action_print = $item->status == "SUCCESS" ? "<a class='dropdown-item' onclick='return printPreview(\"{$item->id}\");' href='javascript:void(0);' title='Print Preview'>Print Preview</a>" : "";
-                    $action_show_proof_of_return = $item->status == "REJECT" && $item->payment_type == "TRANSFER" ? "<a class='dropdown-item' onclick='return showProofOfReturn(\"{$item->id}\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Refund</a>" : "";
-
+                    $action_cancel = $item->status == "PENDING" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", \"CANCEL\");' href='javascript:void(0);' title='Cancel'>Cancel</a>" : "";
+                    $action_reason =  $item->status == "REJECT" && $item->payment_type == "DEBT" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-REASON-REJECT\");' href='javascript:void(0);' title='Alasan Ditolak'>Alasan Ditolak</a>" : "";
+                    $action_show_proof_of_payment = $item->payment_type == "TRANSFER" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-PAYMENT\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Transfer</a>" : "";
+                    $action_show_proof_of_return = $item->status == "REJECT" && $item->payment_type == "TRANSFER" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-RETURN\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Refund</a>" : "";
                     $action = " <div class='dropdown-primary dropdown open'>
                                 <button class='btn btn-sm btn-primary dropdown-toggle waves-effect waves-light' id='dropdown-{$item->id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'>
                                     Aksi
                                 </button>
                                 <div class='dropdown-menu' aria-labelledby='dropdown-{$item->id}' data-dropdown-out='fadeOut'>
-                                    <a class='dropdown-item' onclick='return getData(\"{$item->id}\");' href='javascript:void(0);' title='Detail'>Detail</a>
                                     " . $action_cancel . "
-                                    " . $action_print . "
+                                    " . $action_reason . "
+                                    " . $action_show_proof_of_payment . "
                                     " . $action_show_proof_of_return . "
                                 </div>
                             </div>";
 
+                    if ($item->status == "CANCEL") {
+                        $action = "";
+                    }
                     $item["action"] = $action;
                     unset($item['profit']); // profit hanya boleh dilihat admin
                 }
@@ -164,7 +174,7 @@ class TrxProductController extends Controller
                             </small>";
 
                 $reseller = "<small> 
-                                <strong>Nama</strong> :" . ($item->User ? $item->User->title : 'Reseller Deleted') .  "
+                                <strong>Nama</strong> :" . ($item->User ? $item->User->name : 'Reseller Deleted') .  "
                                 <br>
                                 <strong>Code</strong> :" . ($item->User ? $item->User->code : 'Reseller Deleted') . "
                                 <br>
@@ -194,7 +204,7 @@ class TrxProductController extends Controller
                 $item['payment_type'] = $item['payment_type'] == "TRANSFER" ? "TRANSFER BANK" : "PIHUTANG";
                 $item['created'] = Carbon::parse($item->created_at)->addHours(7)->format('Y-m-d H:i:s');
                 $item['updated'] = Carbon::parse($item->updated_at)->addHours(7)->format('Y-m-d H:i:s');
-                if($item['created'] == $item['updated']) {
+                if ($item['created'] == $item['updated']) {
                     $item['updated'] = '';
                 }
 
@@ -298,7 +308,6 @@ class TrxProductController extends Controller
                 ], 400);
             }
 
-
             // KAKULASI HARGA PRODUK DAN PROFIT
             $user = User::find(auth()->user()->id);
             $purchasePrice = $product->purchase_price; // harga beli
@@ -323,6 +332,8 @@ class TrxProductController extends Controller
             $data["user_id"] = $user->id;
 
             // CEK TIPE BAYAR DEBT
+            $userFirstDebt = $user->total_debt;
+            $userLastDebt = $user->total_debt;
             if ($data["payment_type"] == "DEBT") {
                 // CEK LIMIT DEBT
                 $limitDebt = $user->debt_limit;
@@ -348,6 +359,7 @@ class TrxProductController extends Controller
                 // UPDATE TOTAL_DEBT RESELLER
                 $updateUser["total_debt"] = $totalDebt + $totalAmount;
                 $user->update($updateUser);
+                $userLastDebt = $user->total_debt; // update main value variabel
             } else {
                 // CEK TIPE BAYAR TF
                 // CEK DATA BANK
@@ -364,8 +376,26 @@ class TrxProductController extends Controller
                 }
             }
 
+            // UPDATE STOK PRODUK
+            $updateStockProduct = [
+                "stock" => $product->stock - $data["qty"]
+            ];
+            $product->update($updateStockProduct);
 
-            TrxProduct::create($data);
+            $trxProduct = TrxProduct::create($data);
+            // CREATE HISTORY PIHUTANG JIKA METODE BAYAR NYA HUTANG
+            if ($data["payment_type"] == "DEBT") {
+                TrxDebt::create([
+                    "user_id" => $user->id,
+                    "trx_product_id" => $trxProduct->id,
+                    "amount" => $totalAmount,
+                    "status" => "SUCCESS",
+                    "first_debt" => $userFirstDebt,
+                    "last_debt" => $userLastDebt,
+                    "remark" => "Pembelian " . $data["qty"] . " Produk " . $product->title . " dengan pembayaran piutang"
+                ]);
+            }
+
             DB::commit();
             return response()->json([
                 "status" => "success",
@@ -375,6 +405,254 @@ class TrxProductController extends Controller
             DB::rollBack();
             if ($request->file("proof_of_payment")) {
                 $uploadedImg = "public/assets/trx-product/" . $request->file("proof_of_payment")->hashName();
+                if (Storage::exists($uploadedImg)) {
+                    Storage::delete($uploadedImg);
+                }
+            }
+            return response()->json([
+                "status" => "error",
+                "message" => $err->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getDetail($id)
+    {
+        try {
+            $trxProduct = TrxProduct::with([
+                "Bank" => function ($query) {
+                    $query->select("id", "title", "account");
+                }
+            ])->where('id', $id)->first();
+
+            if (!$trxProduct) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Data tidak ditemukan",
+                ], 404);
+            }
+
+            $output = [
+                "payment_type" => $trxProduct->payment_type,
+                "bank_target" => $trxProduct->Bank ? $trxProduct->Bank->title . ' (' . $trxProduct->Bank->account .')'  : "",
+                "proof_of_payment" => $trxProduct->proof_of_payment ? Storage::url($trxProduct->proof_of_payment) : null,
+                "proof_of_return" => $trxProduct->proof_of_return ? Storage::url($trxProduct->proof_of_return) : null,
+                "reason" => $trxProduct->remark
+            ];
+
+            return response()->json([
+                "status" => "success",
+                "data" => $output
+            ]);
+        } catch (\Throwable $err) {
+            return response()->json([
+                "status" => "error",
+                "message" => $err->getMessage(),
+            ], 500);
+        }
+    }
+
+    // public function getDetail($id)
+    // {
+    //     try {
+    //         $trxProduct = TrxProduct::with([
+    //             "Product" => function ($query) {
+    //                 $query->select("id", "title", "code", "product_category_id")
+    //                     ->with("ProductCategory:id,title");
+    //             },
+    //             "User" => function ($query) {
+    //                 $query->select("id", "code", "name");
+    //             },
+    //             "Bank" => function ($query) {
+    //                 $query->select("id", "title", "account");
+    //             }
+    //         ])->where('id', $id)->first();
+
+    //         if (!$trxProduct) {
+    //             return response()->json([
+    //                 "status" => "error",
+    //                 "message" => "Data tidak ditemukan",
+    //             ], 404);
+    //         }
+
+    //         $classStatus = "";
+    //         switch ($trxProduct->status) {
+    //             case "PENDING":
+    //                 $classStatus = "badge-info";
+    //                 break;
+    //             case "PROCESS":
+    //                 $classStatus = "badge-primary";
+    //                 break;
+    //             case "SUCCESS":
+    //                 $classStatus = "badge-success";
+    //                 break;
+    //             case "REJECT":
+    //                 $classStatus = "badge-danger";
+    //                 break;
+    //             case "CANCEL":
+    //                 $classStatus = "badge-warning";
+    //         }
+
+    //         $output = [
+    //             "code" => $trxProduct->code,
+    //             "status" => "<span class='badge " . $classStatus . "'>" . $trxProduct->status . "</span>",
+    //             "product" => $trxProduct->Product ? $trxProduct->Product->title : 'Product Deleted',
+    //             "product_code" => $trxProduct->Product ? $trxProduct->Product->code : 'Product Deleted',
+    //             "qty" => $trxProduct->qty,
+    //             "amount" => "Rp. " . number_format($trxProduct->amount, 0, ',', '.'),
+    //             "total_amount" => "Rp. " . number_format($trxProduct->total_amount, 0, ',', '.'),
+    //             "commission" => "Rp. " . number_format($trxProduct->commission, 0, ',', '.'),
+    //             "payment_type" => $trxProduct->payment_type,
+    //             "bank_target" => $trxProduct->Bank ? $trxProduct->Bank->title : "",
+    //             "created" => Carbon::parse($trxProduct->created_at)->addHours(7)->format('Y-m-d H:i:s'),
+    //             "updated" => Carbon::parse($trxProduct->created_at)->addHours(7)->format('Y-m-d H:i:s'),
+    //             "proof_of_payment" => $trxProduct->proof_of_payment ? Storage::url($trxProduct->proof_of_payment) : null,
+    //             "proof_of_return" => $trxProduct->proof_of_return ? Storage::url($trxProduct->proof_of_return) : null,
+    //         ];
+
+    //         $user = auth()->user();
+    //         if ($user->role == "ADMIN") {
+    //             $additional = [
+    //                 "reseller_name" => $trxProduct->User ? $trxProduct->User->name : 'Reseller Deleted',
+    //                 "reseller_code" => $trxProduct->User ? $trxProduct->User->code : 'Reseller Deleted',
+    //                 "profit" =>  "Rp. " . number_format($trxProduct->profit, 0, ',', '.'),
+    //             ];
+
+    //             $output = array_merge($output, $additional);
+    //         }
+
+    //         return response()->json([
+    //             "status" => "success",
+    //             "data" => $output
+    //         ]);
+    //     } catch (\Throwable $err) {
+    //         return response()->json([
+    //             "status" => "error",
+    //             "message" => $err->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+    public function changeStatus(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $rules = [
+                "id" => "required|integer",
+                "status" => "required|string|in:PROCESS,SUCCESS,REJECT,CANCEL",
+                "proof_of_return" => "nullable",
+                "remark" => "nullable"
+            ];
+
+            if ($request->file('proof_of_return')) {
+                $rules['proof_of_return'] .= '|image|max:2048|mimes:giv,svg,jpeg,png,jpg';
+            }
+
+            $messages = [
+                "id.required" => "Data Transaksi harus dipilih",
+                "id.integer" => "Type Transaksi tidak valid",
+                "status.required" => "Status harus diisi",
+                "status.in" => "Status tidak sesuai",
+                "image.image" => "Gambar yang di upload tidak valid",
+                "image.max" => "Ukuran gambar maximal 2MB",
+                "image.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+            ];
+
+            $validator = Validator::make($data, $rules, $messages);
+            if ($validator->fails()) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => $validator->errors()->first(),
+                ], 400);
+            }
+
+            // VALIDASI HAK AKSES PERUBAHAN STATUS
+            $user = auth()->user();
+            $accessAdmin = ["PROCESS", "SUCCESS", "REJECT"];
+            if (in_array($data["status"], $accessAdmin) && $user->role != "ADMIN") {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Opps. anda tidak memiliki akses"
+                ], 403);
+            }
+
+            $dataTrx = TrxProduct::find($data["id"]);
+            if (!$dataTrx) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Data Transaksi tidak ditemukan !"
+                ], 404);
+            }
+
+            // VALIDASI TRX . JIKA SUDAH REJECT / CANCEL TIDAK BOLEH DIUBAH LAGI STATUSNYA
+            if (in_array($dataTrx->status, ['REJECT', 'CANCEL'])) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Status transaksi sudah tidak bisa diubah"
+                ], 400);
+            }
+
+            $reseller = User::find($dataTrx->user_id);
+            if (!$reseller) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Data Reseller atas transaksi ini tidak ditemukan"
+                ], 404);
+            }
+
+            // JIKA SUCCESS LAKUKAN SHARE COMMISSION RESELLER
+            if ($data["status"] == "SUCCESS") {
+                // SIMPAN MUTASI KOMISI
+                $dataMutasi = [
+                    "amount" => $dataTrx->commission,
+                    "type" => "C", // commission,
+                    "first_commission" => $reseller->commission,
+                    "last_commission" => $reseller->commission + $dataTrx->commission,
+                    "trx_product_id" => $dataTrx->id,
+                    "user_id" => $reseller->id,
+                ];
+                Mutation::create($dataMutasi);
+                // UPDATE SALDO RESELLER
+                $updateReseller = ["commission" => $reseller->commission + $dataTrx->commission];
+                $reseller->update($updateReseller);
+            }
+
+            // JIKA REJECT/CANCEL DAN TIPE NYA PIHUTANG, UPDATE NOMINAL PIHUTANGNYA DAN UPDATE STOCK PRODUK
+            if (in_array($data["status"], ["REJECT", "CANCEL"]) && $dataTrx->payment_type == "DEBT") {
+                // PIHUTNG RESELLER
+                $totalDebtBefore = $reseller->total_debt;
+                $totalDebtAfter = $totalDebtBefore - $dataTrx->total_amount;
+                $updateReseller = ["total_debt" => $totalDebtAfter];
+                $reseller->update($updateReseller);
+
+
+                // STOCK PRODUK
+                $product = Product::find($dataTrx->product_id);
+                $updatedStock = [
+                    "stock" => $product->stock + $dataTrx->qty
+                ];
+                $product->update($updatedStock);
+
+                // HAPUS HISTORY PIUTANG
+                TrxDebt::where("trx_product_id", $dataTrx->id)->delete();
+            }
+
+            // SIMPAN BUKTI REFUND JIKA ADA
+            unset($data["proof_of_return"]);
+            if ($request->file("proof_of_return")) {
+                $data["proof_of_return"] = $request->file("proof_of_return")->store("assets/trx-product", "public");
+            }
+
+            $dataTrx->update($data);
+            DB::commit();
+            return response()->json([
+                "status" => "success",
+                "message" => "Status Transaksi berhasil diperbarui"
+            ]);
+        } catch (\Throwable $err) {
+            DB::rollBack();
+            if ($request->file("proof_of_return")) {
+                $uploadedImg = "public/assets/trx-product/" . $request->file("proof_of_return")->hashName();
                 if (Storage::exists($uploadedImg)) {
                     Storage::delete($uploadedImg);
                 }

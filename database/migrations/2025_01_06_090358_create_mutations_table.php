@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('last_commission')->default(0);
             $table->unsignedBigInteger('trx_product_id')->nullable(); // diisi ketika add commission
             $table->unsignedBigInteger('trx_commission_id')->nullable(); // diisi ketika widhraw
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
             $table->softDeletes();
 
@@ -30,6 +31,10 @@ return new class extends Migration
             $table->foreign('trx_commission_id')
                 ->references('id')
                 ->on('trx_commissions')
+                ->onUpdate('cascade');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
                 ->onUpdate('cascade');
         });
     }

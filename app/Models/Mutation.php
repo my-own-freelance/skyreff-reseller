@@ -18,4 +18,8 @@ class Mutation extends Model
     public function TrxCommission() {
         return $this->belongsTo(TrxCommission::class);
     }
+
+    public function User() {
+        return $this->belongsTo(User::class);
+    }
 }

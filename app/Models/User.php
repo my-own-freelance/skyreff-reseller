@@ -66,6 +66,17 @@ class User extends Authenticatable
         return $this->hasMany(TrxReward::class);
     }
 
+    public function Mutations()
+    {
+        return $this->hasMany(Mutation::class);
+    }
+
+    public function TrxDebts()
+    {
+        return $this->hasMany(TrxDebt::class);
+    }
+
+
     public function Province()
     {
         return $this->belongsTo(Province::class);

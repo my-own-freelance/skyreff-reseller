@@ -11,4 +11,16 @@ class Bank extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = [];
     protected $guarded = [];
+
+    public function TrxProducts()
+    {
+        return $this->hasMany(TrxProduct::class);
+    }
+
+    public function TrxDebts()
+    {
+        return $this->hasMany(TrxDebt::class);
+    }
+
+
 }
