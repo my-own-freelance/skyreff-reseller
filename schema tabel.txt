@@ -171,6 +171,7 @@ TABLE TRX_DEBTS
 // ketika di sukseskan oleh admin, buat data mutasi . jika di reject/cancel maka update total pihutang reseller jika metode bayarnya hutang																																																																																																																																																																																																																																																																																																																																																										
 TABLE TRX_COMMISSIONS :
 - id
+- code (auto generate 10 digit a-z)
 - amount
 - bank_name
 - bank_account
@@ -217,6 +218,7 @@ TABLE TRX_REWARD :
 
 TABLE MUTATIONS : 
 - id
+- code
 - amount
 - type (enum ['C', 'W']) C = commission . W = Widhraw
 - first_commission

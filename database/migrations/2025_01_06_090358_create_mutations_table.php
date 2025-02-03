@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('mutations', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
             $table->integer('amount')->default(0);
             $table->enum('type', ['C', 'W']); // C = commission . W = Widhraw
             $table->integer('first_commission')->default(0);

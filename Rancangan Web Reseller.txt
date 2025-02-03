@@ -22,12 +22,11 @@ list menu admin :
         - INFORMATION (ok)
         - KATEGORI PRODUCT (ok) -> upload image
         - PRODUCT (ok) -> tidak usah upload image
-            - PRODUCT DETAIL
             - PRODUCT GALLERY (ok) (reject)
         - REWARD (ok)
          
     - TRANSACTION
-        - PRODUCT
+        - PRODUCT (ok)
             - list
                 - in process (ok)
                 - success (ok)
@@ -39,6 +38,10 @@ list menu admin :
         - REWARD
         - COMPENSATION
         - UPGRADE ACCOUNT
+
+    - MUTASI
+        - PIUTANG
+        - COMMISSION (ok)
 
     - MANAGE
         - ADMIN

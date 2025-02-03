@@ -71,6 +71,18 @@
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>
                     </span>
+                    <h4 class="text-section">Mutation</h4>
+                </li>
+                <li class="nav-item ml-3 {{ $routename == 'mutation-commission' ? 'active' : '' }}">
+                    <a href="{{ route('mutation-commission') }}">
+                        <i class="fas fa-wallet"></i>
+                        <p>Commission</p>
+                    </a>
+                </li>
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
                     <h4 class="text-section">MANAGE</h4>
                 </li>
                 <li class="nav-item ml-3 {{ $routename == 'reseller' ? 'active' : '' }}">

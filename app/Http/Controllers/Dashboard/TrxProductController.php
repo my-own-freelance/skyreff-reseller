@@ -214,7 +214,7 @@ class TrxProductController extends Controller
                 return $item;
             });
 
-            $queryTotal = TrxProduct::query();
+            $queryTotal = TrxProduct::whereBetween('created_at', [$tglAwal, $tglAkhir]);
             if ($user->role == "RESELLER") {
                 $query->where('user_id', $user->id);
             }
@@ -434,7 +434,7 @@ class TrxProductController extends Controller
 
             $output = [
                 "payment_type" => $trxProduct->payment_type,
-                "bank_target" => $trxProduct->Bank ? $trxProduct->Bank->title . ' (' . $trxProduct->Bank->account .')'  : "",
+                "bank_target" => $trxProduct->Bank ? $trxProduct->Bank->title . ' (' . $trxProduct->Bank->account . ')'  : "",
                 "proof_of_payment" => $trxProduct->proof_of_payment ? Storage::url($trxProduct->proof_of_payment) : null,
                 "proof_of_return" => $trxProduct->proof_of_return ? Storage::url($trxProduct->proof_of_return) : null,
                 "reason" => $trxProduct->remark
@@ -452,86 +452,6 @@ class TrxProductController extends Controller
         }
     }
 
-    // public function getDetail($id)
-    // {
-    //     try {
-    //         $trxProduct = TrxProduct::with([
-    //             "Product" => function ($query) {
-    //                 $query->select("id", "title", "code", "product_category_id")
-    //                     ->with("ProductCategory:id,title");
-    //             },
-    //             "User" => function ($query) {
-    //                 $query->select("id", "code", "name");
-    //             },
-    //             "Bank" => function ($query) {
-    //                 $query->select("id", "title", "account");
-    //             }
-    //         ])->where('id', $id)->first();
-
-    //         if (!$trxProduct) {
-    //             return response()->json([
-    //                 "status" => "error",
-    //                 "message" => "Data tidak ditemukan",
-    //             ], 404);
-    //         }
-
-    //         $classStatus = "";
-    //         switch ($trxProduct->status) {
-    //             case "PENDING":
-    //                 $classStatus = "badge-info";
-    //                 break;
-    //             case "PROCESS":
-    //                 $classStatus = "badge-primary";
-    //                 break;
-    //             case "SUCCESS":
-    //                 $classStatus = "badge-success";
-    //                 break;
-    //             case "REJECT":
-    //                 $classStatus = "badge-danger";
-    //                 break;
-    //             case "CANCEL":
-    //                 $classStatus = "badge-warning";
-    //         }
-
-    //         $output = [
-    //             "code" => $trxProduct->code,
-    //             "status" => "<span class='badge " . $classStatus . "'>" . $trxProduct->status . "</span>",
-    //             "product" => $trxProduct->Product ? $trxProduct->Product->title : 'Product Deleted',
-    //             "product_code" => $trxProduct->Product ? $trxProduct->Product->code : 'Product Deleted',
-    //             "qty" => $trxProduct->qty,
-    //             "amount" => "Rp. " . number_format($trxProduct->amount, 0, ',', '.'),
-    //             "total_amount" => "Rp. " . number_format($trxProduct->total_amount, 0, ',', '.'),
-    //             "commission" => "Rp. " . number_format($trxProduct->commission, 0, ',', '.'),
-    //             "payment_type" => $trxProduct->payment_type,
-    //             "bank_target" => $trxProduct->Bank ? $trxProduct->Bank->title : "",
-    //             "created" => Carbon::parse($trxProduct->created_at)->addHours(7)->format('Y-m-d H:i:s'),
-    //             "updated" => Carbon::parse($trxProduct->created_at)->addHours(7)->format('Y-m-d H:i:s'),
-    //             "proof_of_payment" => $trxProduct->proof_of_payment ? Storage::url($trxProduct->proof_of_payment) : null,
-    //             "proof_of_return" => $trxProduct->proof_of_return ? Storage::url($trxProduct->proof_of_return) : null,
-    //         ];
-
-    //         $user = auth()->user();
-    //         if ($user->role == "ADMIN") {
-    //             $additional = [
-    //                 "reseller_name" => $trxProduct->User ? $trxProduct->User->name : 'Reseller Deleted',
-    //                 "reseller_code" => $trxProduct->User ? $trxProduct->User->code : 'Reseller Deleted',
-    //                 "profit" =>  "Rp. " . number_format($trxProduct->profit, 0, ',', '.'),
-    //             ];
-
-    //             $output = array_merge($output, $additional);
-    //         }
-
-    //         return response()->json([
-    //             "status" => "success",
-    //             "data" => $output
-    //         ]);
-    //     } catch (\Throwable $err) {
-    //         return response()->json([
-    //             "status" => "error",
-    //             "message" => $err->getMessage(),
-    //         ], 500);
-    //     }
-    // }
     public function changeStatus(Request $request)
     {
         try {
@@ -604,6 +524,7 @@ class TrxProductController extends Controller
             if ($data["status"] == "SUCCESS") {
                 // SIMPAN MUTASI KOMISI
                 $dataMutasi = [
+                    "code" => strtoupper(Str::random(10)),
                     "amount" => $dataTrx->commission,
                     "type" => "C", // commission,
                     "first_commission" => $reseller->commission,

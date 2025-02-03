@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\BankController;
 use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\LocationController;
+use App\Http\Controllers\Dashboard\MutationController;
 use App\Http\Controllers\Dashboard\ProductCategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductImageController;
@@ -48,6 +49,7 @@ Route::group(["middleware" => "check.auth"], function () {
     Route::get("/trx/product/datatable", [TrxProductController::class, "dataTable"])->name('trx-product.datatable');
     Route::post("/trx/product/update-status", [TrxProductController::class, "changeStatus"])->name('trx-product.change-status');
     Route::get("/trx/product/{id}/detail", [TrxProductController::class, "getDetail"])->name('trx-product.detail');
+    Route::get("/mutation/commission/datatable", [MutationController::class, "dataTable"])->name('mutation-commission.datatable');
 
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "api.check.role:ADMIN"], function () {
