@@ -34,7 +34,7 @@ list menu admin :
                 - bukti refund (ok)
                 - bukti tf (ok)
                 - alasan ditolak (ok)
-        - CLAIM COMMISSION
+        - CLAIM COMMISSION (ok)
         - REWARD
         - COMPENSATION
         - UPGRADE ACCOUNT
@@ -64,7 +64,7 @@ list menu resellet :
                 - bukti refund (ok)
                 - bukti tf (ok)
                 - alasan ditolak (ok)
-        - CLAIM COMMISSION
+        - CLAIM COMMISSION (ok)
         - REWARD
         - COMPENSATION
         - UPGRADE ACCOUNT

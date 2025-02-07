@@ -80,20 +80,33 @@ class MutationController extends Controller
 
         $user = auth()->user();
         $output = $data->map(function ($item) use ($user) {
-            $item["amount"] = $item["type"] == "C" ? "<span class='text-success'>+ Rp. " . number_format($item->amount, 0, ',', '.') . "</span>" : "<span class='text-warning'>- Rp. " . number_format($item->amount, 0, ',', '.') . "</span>";
+            $item["amount"] = ($item["type"] == "C" || $item["type"] == "R") ? "<span class='text-success'>+ Rp. " . number_format($item->amount, 0, ',', '.') . "</span>" : "<span class='text-danger'>- Rp. " . number_format($item->amount, 0, ',', '.') . "</span>";
             $item["first_commission"] = "Rp. "  . number_format($item->first_commission, 0, ',', '.');
             $item["last_commission"] = "Rp. "  . number_format($item->last_commission, 0, ',', '.');
             $item['created'] = Carbon::parse($item->created_at)->addHours(7)->format('Y-m-d H:i:s');
-            
+
             $item["ref_code"] = "";
-            
+
             if ($item["type"] == "C" && $item["TrxProduct"]) {
                 $item["ref_code"] = $item->TrxProduct->code;
-            } else if ($item["type"] == "W" && $item["TrxCommission"]) {
+            } else if (($item["type"] == "W" || $item['type'] == "R") && $item["TrxCommission"]) {
                 $item["ref_code"] = $item->TrxCommission->code;
             }
-            
-            $item["type"] = $item["type"] == "C" ? "<span class='badge badge-success'>COMMISSION</span>" : "<span class='badge badge-warning'>WITHDRAW</span>";
+
+            switch ($item["type"]) {
+                case "C":
+                    $item["type"] = "<span class='badge badge-success'>COMMISSION</span>";
+                    break;
+                case "R":
+                    $item["type"] = "<span class='badge badge-secondary'>REFUND</span>";
+                    break;
+                case "W":
+                    $item["type"] = "<span class='badge badge-info'>WITHDRAW</span>";
+                    break;
+                default:
+                    $item["type"] = "<span class='badge badge-error'>UNKNOWN</span>";
+                    break;
+            }
             if ($user->role == "ADMIN") {
                 $reseller = "<small> 
                                 <strong>Nama</strong> :" . ($item->User ? $item->User->name : 'Reseller Deleted') .  "
@@ -112,7 +125,7 @@ class MutationController extends Controller
 
         $queryTotal = Mutation::whereBetween('created_at', [$tglAwal, $tglAkhir]);
         if ($user->role == "RESELLER") {
-            $query->where('user_id', $user->id);
+            $queryTotal->where('user_id', $user->id);
         }
 
         $total = $queryTotal->count();

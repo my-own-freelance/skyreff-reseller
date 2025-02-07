@@ -127,6 +127,7 @@ TABLE REWARD :
 
 
 // ketika trx disukseskan oleh admin, buat data mutasi komisi dan upadate saldo komisi
+// jika di reject/cancel maka update total pihutang reseller jika metode bayarnya hutang
 TABLE TRX_PRODUCTS : 
 - id
 - code (auto generate 10 digit a-z)
@@ -168,11 +169,13 @@ TABLE TRX_DEBTS
 - updated_at
 - deleted_at
 
-// ketika di sukseskan oleh admin, buat data mutasi . jika di reject/cancel maka update total pihutang reseller jika metode bayarnya hutang																																																																																																																																																																																																																																																																																																																																																										
+// ketika mengajukan WD, buat data mutasi tipe W. jika di reject/cancel maka buat mutasi tipe R dan update saldo komisi reseller																																																																																																																																																																																																																																																																																																																																																									
 TABLE TRX_COMMISSIONS :
 - id
 - code (auto generate 10 digit a-z)
 - amount
+- admin
+- total_amount
 - bank_name
 - bank_account
 - status (enum ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT'] . default 'PENDING')
@@ -220,7 +223,7 @@ TABLE MUTATIONS :
 - id
 - code
 - amount
-- type (enum ['C', 'W']) C = commission . W = Widhraw
+- type (enum ['C', 'W', 'R']) C = commission . W = Widhraw . R = Refund
 - first_commission
 - last_commission
 - trx_product_id

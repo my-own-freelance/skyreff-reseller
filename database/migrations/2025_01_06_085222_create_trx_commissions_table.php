@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->integer('amount')->default(0);
             $table->integer('admin')->default(0);
-            $table->integer('net_amount')->default(0);
+            $table->integer('total_amount')->default(0);
             $table->string('bank_name');
             $table->string('bank_account');
             $table->enum('status', ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');

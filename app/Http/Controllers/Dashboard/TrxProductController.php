@@ -216,7 +216,7 @@ class TrxProductController extends Controller
 
             $queryTotal = TrxProduct::whereBetween('created_at', [$tglAwal, $tglAkhir]);
             if ($user->role == "RESELLER") {
-                $query->where('user_id', $user->id);
+                $queryTotal->where('user_id', $user->id);
             }
 
             $total = $queryTotal->count();

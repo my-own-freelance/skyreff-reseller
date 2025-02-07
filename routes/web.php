@@ -10,6 +10,7 @@ use App\Http\Controllers\Dashboard\ProductCategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\RewardController;
 use App\Http\Controllers\Dashboard\ResellerController;
+use App\Http\Controllers\Dashboard\TrxCommissionController;
 use App\Http\Controllers\Dashboard\TrxProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,12 +42,13 @@ Route::group(["middleware" => "auth:web"], function () {
     Route::get("/reseller", [DashboardController::class, "index"])->name("dashboard.reseller");
     Route::get("/trx/product", [TrxProductController::class, "index"])->name("trx-product");
     Route::get("/mutation/commission", [MutationController::class, "index"])->name("mutation-commission");
+    Route::get("/trx-commission", [TrxCommissionController::class, "index"])->name("trx-commission");
 
     // GLOBAL ACCESS
     Route::get("/master/products", [ProductController::class, 'index'])->name('product');
 
     // ONLY ADMIN ACCESS
-    Route::group(["middleware" => "api.check.role:ADMIN"], function () {
+    Route::group(["middleware" => "web.check.role:ADMIN"], function () {
         // PREFIX MASTER
         Route::group(["prefix" => "master"], function () {
             Route::get("/bank", [BankController::class, 'index'])->name('bank');
@@ -70,5 +72,7 @@ Route::group(["middleware" => "auth:web"], function () {
     });
 
     // ONLY RESELLER
-
+    Route::group(["middleware" => "web.check.role:RESELLER"], function () {
+        Route::get("/trx-commission/request-wd", [TrxCommissionController::class, "requestWithdraw"])->name("trx-commission.request-wd");
+    });
 });

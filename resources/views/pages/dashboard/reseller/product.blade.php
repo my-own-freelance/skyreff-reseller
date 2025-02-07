@@ -509,6 +509,7 @@
                 success: function(res) {
                     closeForm();
                     showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
+                    refreshData()
                 },
                 error: function(err) {
                     console.log("error :", err);

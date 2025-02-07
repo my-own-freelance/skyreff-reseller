@@ -22,7 +22,7 @@ class WebCheckRole
 
         $user = Auth::user();
         if (!in_array($user->role, $roles)) {
-            return redirect(route('dashboard'));
+            return abort(404);
         }
 
         return $next($request);

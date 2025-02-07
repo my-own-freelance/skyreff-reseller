@@ -3,6 +3,11 @@
 @push('styles')
     <link rel="stylesheet" href="{{ asset('/dashboard/css/toggle-status.css') }}">
     <style>
+        .wrap-text {
+            max-width: 500px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
         #proofImg {
             max-width: 100%;
             max-height: 400px;
@@ -18,7 +23,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <h5 class="text-uppercase title">List Transaksi Produk - RESELLER</h5>
+                        <h5 class="text-uppercase title">List Transaksi Komisi</h5>
                     </div>
                     <div class="card-header-right">
                         <button class="btn btn-mini btn-info mr-1" onclick="return refreshData();">Refresh</button>
@@ -37,27 +42,6 @@
                                     <label for="">Tanggal Akhir</label>
                                     <input class="form-control date-picker" id="dateTo" type="text"
                                         placeholder="Pilih tanggal akhir" />
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="fProductCategoryId">Filter Kategori</label>
-                                    <select class="form-control" id="fProductCategoryId" name="fProductCategoryId">
-                                        <option value="">All</option>
-                                        @foreach ($categories as $category)
-                                            <option value = "{{ $category->id }}">{{ $category->title }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="fPaymentType">Filter Pembayaran</label>
-                                    <select class="form-control" id="fPaymentType" name="fPaymentType">
-                                        <option value="">All</option>
-                                        <option value="TRANSFER">Transfer</option>
-                                        <option value="DEBT">Pihutang</option>
-                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -83,30 +67,26 @@
                 </div>
                 <div class="card-block">
                     <div class="table-responsive mt-3">
-                        <table class="table table-striped table-bordered nowrap dataTable" id="trxProductDataTable">
+                        <table class="table table-striped table-bordered nowrap dataTable" id="trxCommissionDataTable">
                             <thead>
                                 <tr>
                                     <th class="all">#</th>
-                                    <th class="all">Code Trx</th>
+                                    <th class="all">Code</th>
                                     <th class="all">Status</th>
-                                    <th class="all">Produk</th>
-                                    <th class="all">Harga</th>
-                                    <th class="all">Qty</th>
+                                    <th class="all">Bank</th>
+                                    <th class="all">Nominal</th>
+                                    <th class="all">Admin</th>
                                     <th class="all">Total</th>
-                                    <th class="all">Komisi</th>
-                                    <th class="all">Tipe Bayar</th>
-                                    <th class="all">Tanggal Trx</th>
+                                    <th class="all">Tanggal Request</th>
                                     <th class="all">Tanggal Update</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="11" class="text-center"><small>Tidak Ada Data</small></td>
+                                    <td colspan="9" class="text-center"><small>Tidak Ada Data</small></td>
                                 </tr>
                             </tbody>
                             <tfoot style="border-top: 1px solid #dedede;">
-                                <th></th>
-                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -136,8 +116,11 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p id="reasonReject"></p>
                     <p id="bankTarget"></p>
+                    <p id="amount"></p>
+                    <p id="admin"></p>
+                    <p id="totalAmount"></p>
+                    <p id="reasonReject"></p>
                     <img alt="" id="proofImg">
                 </div>
                 <div class="modal-footer">
@@ -168,10 +151,10 @@
         })
 
         function dataTable(filter) {
-            let url = "{{ route('trx-product.datatable') }}";
+            let url = "{{ route('trx-commission.datatable') }}";
             if (filter) url += "?" + filter;
 
-            dTable = $("#trxProductDataTable").DataTable({
+            dTable = $("#trxCommissionDataTable").DataTable({
                 searching: true,
                 orderng: true,
                 lengthChange: true,
@@ -189,26 +172,22 @@
                 }, {
                     data: "status"
                 }, {
-                    data: "product"
+                    data: "target"
                 }, {
                     data: "amount",
                     render: function(data, type, row) {
-                        return convertToRupiah(data);
+                        return `<span class="text-success">+ ${convertToRupiah(data)}</span>`;
                     }
                 }, {
-                    data: "qty"
+                    data: "admin",
+                    render: function(data, type, row) {
+                        return `<span class="text-danger">- ${convertToRupiah(data)}</span>`;
+                    }
                 }, {
                     data: "total_amount",
                     render: function(data, type, row) {
                         return convertToRupiah(data);
                     }
-                }, {
-                    data: "commission",
-                    render: function(data, type, row) {
-                        return `<span class="text-success">+ ${convertToRupiah(data)}</span>`;
-                    }
-                }, {
-                    data: "payment_type"
                 }, {
                     data: "created"
                 }, {
@@ -227,14 +206,20 @@
                         },
                         success: function(msg) {
                             let d = msg.data
-                            let commission = 0;
+                            let amount = 0,
+                                admin = 0,
+                                total_amount = 0;
 
                             d.map((r) => {
-                                commission += r.commission
+                                amount += r.amount;
+                                admin += r.admin;
+                                total_amount += r.total_amount;
                             });
 
-                            $(api.column(6).footer()).html('TOTAL KOMISI');
-                            $(api.column(7).footer()).html(`<span class="text-success">+ ${convertToRupiah(commission)}</span>`);
+                            $(api.column(3).footer()).html('TOTAL');
+                            $(api.column(4).footer()).html(`<span class="text-success">+ ${convertToRupiah(amount)}</span>`);
+                            $(api.column(5).footer()).html(`<span class="text-danger">+ ${convertToRupiah(admin)}</span>`);
+                            $(api.column(6).footer()).html(convertToRupiah(total_amount));
                         }
                     })
                 },
@@ -245,15 +230,12 @@
             dTable.ajax.reload(null, false);
         }
 
-
         $('#formFilter').submit(function(e) {
             e.preventDefault()
             let dataFilter = {
-                product_category_id: $("#fProductCategoryId").val(),
-                payment_type: $("#fPaymentType").val(),
-                status: $("#fStatus").val(),
                 tgl_awal: $("#dateFrom").val(),
-                tgl_akhir: $("#dateTo").val()
+                tgl_akhir: $("#dateTo").val(),
+                status: $("#fStatus").val(),
             }
 
             dTable.clear();
@@ -264,7 +246,7 @@
 
         function getData(id, status) {
             $.ajax({
-                url: "{{ route('trx-product.detail', ['id' => ':id']) }}".replace(':id', id),
+                url: "{{ route('trx-commission.detail', ['id' => ':id']) }}".replace(':id', id),
                 method: "GET",
                 dataType: "json",
                 success: function(res) {
@@ -283,26 +265,29 @@
             const modal = $("#modalDetail");
             modal.modal('show');
             modal.off('shown.bs.modal').on('shown.bs.modal', function() {
+                if (status == "DETAIL") {
+                    $("#modalDetailTitle").html("DETAIL WITHDRAW")
+                    $("#bankTarget").html(`Tujuan : ${data.bank_name} (${data.bank_account})`);
+                    $("#amount").html(`Nominal : ${data.amount}`);
+                    $("#admin").html(`Admin : ${data.admin}`);
+                    $("#totalAmount").html(`Total : ${data.total_amount}`);
+                    $("#reasonReject").html(`Catatan : ${data.remark}`);
+                }
+
                 if (status == "SHOW-REASON-REJECT") {
-                    $("#modalDetailTitle").html("ALASAN TRANSAKSI DITOLAK")
-                    $("#reasonReject").html(data.reason);
+                    $("#modalDetailTitle").html("ALASAN WITHDRAW DITOLAK")
+                    $("#reasonReject").html(data.remark);
                 }
 
                 if (status == "SHOW-PROOF-PAYMENT") {
                     $("#modalDetailTitle").html("BUKTI PEMBAYARAN TRANSFER")
-                    $("#bankTarget").html(`${data.payment_type} : ${data.bank_target}`);
+                    $("#bankTarget").html(`TUJUAN : ${data.bank_name} (${data.bank_account})`);
+                    $("#amount").html(`Nominal : ${data.amount}`);
+                    $("#admin").html(`Admin : ${data.admin}`);
+                    $("#totalAmount").html(`Total : ${data.total_amount}`);
+                    $("#reasonReject").html(`Catatan : ${data.remark}`);
                     if (data.proof_of_payment) {
                         $("#proofImg").attr("src", data.proof_of_payment);
-                    } else {
-                        $("#proofImg").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
-                    }
-                }
-
-                if (status == "SHOW-PROOF-RETURN") {
-                    $("#modalDetailTitle").html("ALASAN DITOLAK DAN BUKTI PENGEMBALIAN SALDO")
-                    $("#reasonReject").html(data.reason);
-                    if (data.proof_of_return) {
-                        $("#proofImg").attr("src", data.proof_of_return);
                     } else {
                         $("#proofImg").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
                     }
@@ -315,6 +300,9 @@
         $("#modalDetail").on("hidden.bs.modal", function() {
             $("#reasonReject").html("");
             $("#bankTarget").html("");
+            $("#amount").html("");
+            $("#admin").html("");
+            $("#totalAmount").html("");
             $("#proofImg").attr("src", "");
         });
 
@@ -326,7 +314,7 @@
                 dataToSend.append("status", status);
 
                 $.ajax({
-                    url: "{{ route('trx-product.change-status') }}",
+                    url: "{{ route('trx-commission.change-status') }}",
                     contentType: false,
                     processData: false,
                     method: "POST",

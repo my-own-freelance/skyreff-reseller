@@ -44,6 +44,7 @@
                                         <option value="">All</option>
                                         <option value="C">Komisi</option>
                                         <option value="W">Penarikan</option>
+                                        <option value="R">Refund</option>
                                     </select>
                                 </div>
                             </div>
@@ -134,7 +135,7 @@
                 }, {
                     data: "ref_code"
                 }],
-                pageLength: 10,
+                pageLength: 25,
             });
         }
 

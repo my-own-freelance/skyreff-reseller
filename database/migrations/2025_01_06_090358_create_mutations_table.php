@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->integer('amount')->default(0);
-            $table->enum('type', ['C', 'W']); // C = commission . W = Widhraw
+            $table->enum('type', ['C', 'W', "R"]); // C = commission . W = Widhraw, R = REFUND
             $table->integer('first_commission')->default(0);
             $table->integer('last_commission')->default(0);
             $table->unsignedBigInteger('trx_product_id')->nullable(); // diisi ketika add commission

@@ -11,6 +11,7 @@ use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductImageController;
 use App\Http\Controllers\Dashboard\ResellerController;
 use App\Http\Controllers\Dashboard\RewardController;
+use App\Http\Controllers\Dashboard\TrxCommissionController;
 use App\Http\Controllers\Dashboard\TrxProductController;
 use App\Http\Controllers\Dashboard\WebConfigController;
 use Illuminate\Http\Request;
@@ -50,7 +51,9 @@ Route::group(["middleware" => "check.auth"], function () {
     Route::post("/trx/product/update-status", [TrxProductController::class, "changeStatus"])->name('trx-product.change-status');
     Route::get("/trx/product/{id}/detail", [TrxProductController::class, "getDetail"])->name('trx-product.detail');
     Route::get("/mutation/commission/datatable", [MutationController::class, "dataTable"])->name('mutation-commission.datatable');
-
+    Route::get("/trx/commission/datatable", [TrxCommissionController::class, "dataTable"])->name('trx-commission.datatable');
+    Route::post("/trx/commission/update-status", [TrxCommissionController::class, "changeStatus"])->name('trx-commission.change-status');
+    Route::get("/trx/commission/{id}/detail", [TrxCommissionController::class, "getDetail"])->name('trx-commission.detail');
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "api.check.role:ADMIN"], function () {
         Route::post("/config/create-update", [WebConfigController::class, "saveUpdateData"])->name('web.update-config');
@@ -142,11 +145,11 @@ Route::group(["middleware" => "check.auth"], function () {
     // ONLY RESELLER ACCESS
     Route::group(["middleware" => "api.check.role:RESELLER"], function () {
         // PREFIX TRANSACTION
-        Route::group(["prefix" => "transaction"], function () {
+        Route::group(["prefix" => "trx"], function () {
             //  PRODUCT
-            Route::group(["prefix" => "product"], function () {
-                Route::post('/create', [TrxProductController::class, "create"])->name("trx-product.create");
-            });
+            Route::post('/product/create', [TrxProductController::class, "create"])->name("trx-product.create");
+            // COMMISSION
+            Route::post('/commission/create', [TrxCommissionController::class, "create"])->name("trx-commission.create");
         });
     });
 });

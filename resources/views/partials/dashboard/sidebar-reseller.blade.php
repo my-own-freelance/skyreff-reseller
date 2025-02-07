@@ -37,6 +37,12 @@
                         <p>Product</p>
                     </a>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'trx-commission' ? 'active' : '' }}">
+                    <a href="{{ route('trx-commission') }}">
+                        <i class="fas fa-wallet"></i>
+                        <p>Commission</p>
+                    </a>
+                </li>
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>

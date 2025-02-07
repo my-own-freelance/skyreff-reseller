@@ -22,7 +22,7 @@
                             href="/transaction/withdraw/merchant" type="button"><i class="fa fa-external-link-alt"></i></a>
                     </div>
                     <div class="separator-dashed"></div><a class="btn btn-secondary text-white btn-block"
-                        href="/transaction/withdraw/request"> Tarik Saldo Efektif</a>
+                        href="{{ route('trx-commission.request-wd') }}"> Tarik Saldo Efektif</a>
                 </div>
             </div>
         </div>
@@ -52,8 +52,9 @@
                             <h1 class="mt-4">{{ $data['total_debt'] }}</h1>
                             <h3 class="mt-3">Total Hutang</h3>
                             <div class="pull-right"><a class="text-white" href="">
-                                <small class="fw-bold op-9">Bayar Sekarang<i class="fas fa-external-link-alt ml-2"></i></small>
-                            </a></div>
+                                    <small class="fw-bold op-9">Bayar Sekarang<i
+                                            class="fas fa-external-link-alt ml-2"></i></small>
+                                </a></div>
                         </div>
                     </div>
                 </div>
@@ -62,9 +63,12 @@
                         <div class="card-body skew-shadow">
                             <h1 class="mt-4">{{ $data['month_commission'] }}</h1>
                             <h3 class="mt-3">Komisi Bulan Ini</h3>
-                            <div class="pull-right"><a class="text-white" href="">
-                                <small class="fw-bold op-9">Cek Mutasi<i class="fas fa-external-link-alt ml-2"></i></small>
-                            </a></div>
+                            <div class="pull-right">
+                                <a class="text-white" href="{{ route('mutation-commission') }}">
+                                    <small class="fw-bold op-9">Cek Mutasi<i
+                                            class="fas fa-external-link-alt ml-2"></i></small>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
