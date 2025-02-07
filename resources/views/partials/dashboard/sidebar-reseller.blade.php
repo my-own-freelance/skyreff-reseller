@@ -43,6 +43,12 @@
                         <p>Commission</p>
                     </a>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'trx-debt' ? 'active' : '' }}">
+                    <a href="{{ route('trx-debt') }}">
+                        <i class="fas fa-exchange-alt"></i>
+                        <p>Pihutang</p>
+                    </a>
+                </li>
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>

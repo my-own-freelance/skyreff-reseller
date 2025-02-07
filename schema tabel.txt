@@ -155,12 +155,14 @@ TABLE TRX_PRODUCTS :
 
 TABLE TRX_DEBTS
 - id
+- code (auto generate 10 digit a-z)
 - amount
 - type (enum ['D','P']) D = debt . P = pay
 - first_debt
 - last_debt
 - status (enum ['PENDING','SUCCESS', 'REJECT'] . default 'PENDING')
-- proof_of_payment (upload bukti pembayaran)	
+- proof_of_payment (upload bukti pembayaran)
+- proof_of_return	
 - remark
 - trx_product_id
 - bank_id

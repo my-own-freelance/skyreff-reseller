@@ -13,14 +13,16 @@ return new class extends Migration
     {
         Schema::create('trx_debts', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
             $table->integer('amount')->nullable();
             $table->enum('type', ['D', 'P'])->default('D'); // D = debt . P = pay
             $table->integer('first_debt')->default(0);
             $table->integer('last_debt')->default(0);
             $table->enum('status', ['PENDING', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
             $table->string('proof_of_payment')->nullable(); // upload bukti pembayaran piutang
+            $table->string('proof_of_return')->nullable(); // upload bukti pengembalian uang
             $table->string('remark')->nullable(); // keterangan untuk admin ketika reject trx
-            $table->unsignedBigInteger('trx_product_id');
+            $table->unsignedBigInteger('trx_product_id')->nullable(); // diisi ketika hutang pembelian produk
             $table->unsignedBigInteger('bank_id')->nullable(); // diisi ketika bayar hutang via tf
             $table->unsignedBigInteger('user_id');
             $table->timestamps();

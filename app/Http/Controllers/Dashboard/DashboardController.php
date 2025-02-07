@@ -44,4 +44,27 @@ class DashboardController extends Controller
         }
         return view($pageUrl, compact("title", "data"));
     }
+
+    public function getStatikSession()
+    {
+        try {
+            $user = User::find(auth()->user()->id);
+            if (!$user) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "User session not found !"
+                ]);
+            }
+
+            return response()->json([
+                "status" => "success",
+                "data" => $user
+            ]);
+        } catch (\Throwable $err) {
+            return response()->json([
+                "status" => "error",
+                "message" => $err->getMessage(),
+            ], 500);
+        }
+    }
 }

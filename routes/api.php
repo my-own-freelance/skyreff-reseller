@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard\BankController;
 use App\Http\Controllers\Dashboard\BannerController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\LocationController;
 use App\Http\Controllers\Dashboard\MutationController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Dashboard\ProductImageController;
 use App\Http\Controllers\Dashboard\ResellerController;
 use App\Http\Controllers\Dashboard\RewardController;
 use App\Http\Controllers\Dashboard\TrxCommissionController;
+use App\Http\Controllers\Dashboard\TrxDebtController;
 use App\Http\Controllers\Dashboard\TrxProductController;
 use App\Http\Controllers\Dashboard\WebConfigController;
 use Illuminate\Http\Request;
@@ -45,6 +47,7 @@ Route::group(["middleware" => "check.auth"], function () {
     // ADMIN AND RESELLER ACCESS
 
     // GLOBAL ACCESS
+    Route::get("/statik-session", [DashboardController::class, "getStatikSession"])->name("statik-session");
     Route::get("/master/product/datatable", [ProductController::class, "dataTable"])->name('product.datatable');
     Route::get("/master/product/{id}/detail", [ProductController::class, "getDetail"])->name('product.detail');
     Route::get("/trx/product/datatable", [TrxProductController::class, "dataTable"])->name('trx-product.datatable');
@@ -54,6 +57,11 @@ Route::group(["middleware" => "check.auth"], function () {
     Route::get("/trx/commission/datatable", [TrxCommissionController::class, "dataTable"])->name('trx-commission.datatable');
     Route::post("/trx/commission/update-status", [TrxCommissionController::class, "changeStatus"])->name('trx-commission.change-status');
     Route::get("/trx/commission/{id}/detail", [TrxCommissionController::class, "getDetail"])->name('trx-commission.detail');
+    Route::get("/trx/debt/datatable", [TrxDebtController::class, "dataTable"])->name('trx-debt.datatable');
+    Route::post("/trx/debt/create", [TrxDebtController::class, "create"])->name('trx-debt.create');
+    Route::post("/trx/debt/update-status", [TrxDebtController::class, "changeStatus"])->name('trx-debt.change-status');
+    Route::get("/trx/debt/{id}/detail", [TrxDebtController::class, "getDetail"])->name('trx-debt.detail');
+
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "api.check.role:ADMIN"], function () {
         Route::post("/config/create-update", [WebConfigController::class, "saveUpdateData"])->name('web.update-config');

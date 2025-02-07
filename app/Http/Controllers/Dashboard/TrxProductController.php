@@ -386,9 +386,11 @@ class TrxProductController extends Controller
             // CREATE HISTORY PIHUTANG JIKA METODE BAYAR NYA HUTANG
             if ($data["payment_type"] == "DEBT") {
                 TrxDebt::create([
+                    "code" => strtoupper(Str::random(10)),
                     "user_id" => $user->id,
                     "trx_product_id" => $trxProduct->id,
                     "amount" => $totalAmount,
+                    "type" => "D",
                     "status" => "SUCCESS",
                     "first_debt" => $userFirstDebt,
                     "last_debt" => $userLastDebt,
@@ -473,9 +475,9 @@ class TrxProductController extends Controller
                 "id.integer" => "Type Transaksi tidak valid",
                 "status.required" => "Status harus diisi",
                 "status.in" => "Status tidak sesuai",
-                "image.image" => "Gambar yang di upload tidak valid",
-                "image.max" => "Ukuran gambar maximal 2MB",
-                "image.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                "proof_of_return.image" => "Gambar yang di upload tidak valid",
+                "proof_of_return.max" => "Ukuran gambar maximal 2MB",
+                "proof_of_return.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
             ];
 
             $validator = Validator::make($data, $rules, $messages);
@@ -554,8 +556,8 @@ class TrxProductController extends Controller
                 ];
                 $product->update($updatedStock);
 
-                // HAPUS HISTORY PIUTANG
-                TrxDebt::where("trx_product_id", $dataTrx->id)->delete();
+                // UPDATE STATUS PIUTANG PIUTANG
+                TrxDebt::where("trx_product_id", $dataTrx->id)->update(["status" => $data["status"]]);
             }
 
             // SIMPAN BUKTI REFUND JIKA ADA

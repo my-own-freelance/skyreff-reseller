@@ -244,7 +244,6 @@
                                             <small class="text-danger">Max ukuran 2MB</small>
                                         </div>
 
-
                                         <button class="btn btn-secondary btn-block mt-4" type="submit">
                                             <span class="btn-label mr-2">
                                                 <i class="far fa-credit-card"></i>

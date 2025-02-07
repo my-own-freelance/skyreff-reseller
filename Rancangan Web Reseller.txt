@@ -35,12 +35,12 @@ list menu admin :
                 - bukti tf (ok)
                 - alasan ditolak (ok)
         - CLAIM COMMISSION (ok)
+        - PIUTANG (ok)
         - REWARD
         - COMPENSATION
         - UPGRADE ACCOUNT
 
     - MUTASI
-        - PIUTANG
         - COMMISSION (ok)
 
     - MANAGE
