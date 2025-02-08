@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\LocationController;
 use App\Http\Controllers\Dashboard\MutationController;
+use App\Http\Controllers\Dashboard\OwnerController;
 use App\Http\Controllers\Dashboard\ProductCategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProductImageController;
@@ -149,6 +150,16 @@ Route::group(["middleware" => "check.auth"], function () {
                 Route::post("update-status", [ResellerController::class, "updateStatus"])->name('reseller.change-status');
                 Route::post("restore", [ResellerController::class, "restore"])->name('reseller.restore');
                 Route::delete("soft-delete", [ResellerController::class, "softDelete"])->name('reseller.soft-delete');
+            });
+
+            // OWNER
+            Route::group(["prefix" => "owner"], function () {
+                Route::get("datatable", [OwnerController::class, "dataTable"])->name('owner.datatable');
+                Route::get("{id}/detail", [OwnerController::class, "getDetail"])->name('owner.detail');
+                Route::post("create", [OwnerController::class, "create"])->name('owner.create');
+                Route::post("update", [OwnerController::class, "update"])->name('owner.update');
+                Route::post("update-status", [OwnerController::class, "updateStatus"])->name('owner.change-status');
+                Route::post("dekete", [OwnerController::class, "destroy"])->name('owner.destroy');
             });
         });
     });

@@ -254,7 +254,6 @@ class ResellerController extends Controller
                 "username.required" => "Username harus diisi",
                 "username.unique" => "Username sudah digunakan",
                 "phone_number.required" => "Nomor telepon harus diisi",
-                "phone_number.unique" => "Nomor telepon sudah digunakan",
                 "phone_number.digits_between" => "Nomor telepon harus memiliki panjang antara 10 hingga 15 karakter",
                 "password.required" => "Password harus diisi",
                 "password.min" => "Password minimal 5 karakter",
@@ -345,6 +344,7 @@ class ResellerController extends Controller
     {
         try {
             $data = $request->all();
+            $data["phone_number"] = preg_replace('/^08/', '628', $data['phone_number']);
             $rules = [
                 "id" => "required|integer",
                 "name" => "required|string",
@@ -374,7 +374,6 @@ class ResellerController extends Controller
                 "username.required" => "Username harus diisi",
                 "username.unique" => "Username sudah digunakan",
                 "phone_number.required" => "Nomor telepon harus diisi",
-                "phone_number.unique" => "Nomor telepon sudah digunakan",
                 "phone_number.digits_between" => "Nomor telepon harus memiliki panjang antara 10 hingga 15 karakter",
                 "password.min" => "Password minimal 5 karakter",
                 "is_active.required" => "Status harus diisi",

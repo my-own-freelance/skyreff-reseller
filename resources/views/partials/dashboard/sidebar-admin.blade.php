@@ -109,6 +109,12 @@
                         <p>Reseller</p>
                     </a>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'owner' ? 'active' : '' }}">
+                    <a href="{{ route('owner') }}">
+                        <i class="fas fa-user-tie"></i>
+                        <p>Owner</p>
+                    </a>
+                </li>
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>

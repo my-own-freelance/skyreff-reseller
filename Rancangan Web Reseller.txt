@@ -44,7 +44,7 @@ list menu admin :
         - COMMISSION (ok)
 
     - MANAGE
-        - ADMIN
+        - ADMIN (ok)
         - WAITING RESELLER (ok)
         - RESELLER REGULAR (ok)
         - RESELLER VIP (ok)
@@ -66,7 +66,7 @@ list menu resellet :
                 - alasan ditolak (ok)
         - CLAIM COMMISSION (ok)
         - REWARD
-        - COMPENSATION
+        - COMPENSATION (ok)
         - UPGRADE ACCOUNT
 
 

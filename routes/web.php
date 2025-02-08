@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\MutationController;
+use App\Http\Controllers\Dashboard\OwnerController;
 use App\Http\Controllers\Dashboard\ProductCategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\RewardController;
@@ -72,6 +73,9 @@ Route::group(["middleware" => "auth:web"], function () {
                 Route::get("/vip", [ResellerController::class, 'resellerVip'])->name("reseller.vip");
                 Route::get("/deleted", [ResellerController::class, 'resellerDeleted'])->name("reseller.deleted");
             });
+
+            // OWNER
+            Route::get("/owner", [OwnerController::class, "index"])->name("owner");
         });
     });
 
