@@ -13,6 +13,172 @@
     </style>
 @endpush
 @section('content')
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+        <div>
+            <h2 class="pb-2 fw-bold">{{ $title }}</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card card-dark card-primary">
+                <div class="card-body bubble-shadow">
+                    <h1 id="w1_totalEstimated">Rp. 0</h1>
+                    <h5></h5>
+                    <div class="pull-right">
+                        <h3 class="fw-bold">Total Estimasi Pendapatan</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="icon-big text-center">
+                                <i class="flaticon-chart-pie text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="col-9 col-stats">
+                            <div class="numbers">
+                                <p class="card-category">Estimasi Pembayaran Transfer</p>
+                                <h4 class="card-title" id="w1_estTransfer">Rp. 0</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="icon-big text-center">
+                                <i class="flaticon-chart-pie text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="col-9 col-stats">
+                            <div class="numbers">
+                                <p class="card-category">Estimasi Pembayaran Hutang</p>
+                                <h4 class="card-title" id="w1_estDebt">Rp. 0</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="icon-big text-center">
+                                <i class="flaticon-chart-pie text-success"></i>
+                            </div>
+                        </div>
+                        <div class="col-9 col-stats">
+                            <div class="numbers">
+                                <p class="card-category">Estimasi Profit</p>
+                                <h4 class="card-title" id="w1_estProfit">Rp. 0</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-lg-3">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <span class="stamp stamp-md bg-secondary mr-3">
+                        <i class="fa fa-receipt"></i>
+                    </span>
+                    <div class="card_content_wrapper truncate">
+                        <h5 class="mb-1"><b id="w1_totalTrx">0</b></h5>
+                        <small class="text-muted" title="Total Transaksi">Total Trx</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-3">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <span class="stamp stamp-md bg-success mr-3">
+                        <i class="fa fa-check-circle"></i>
+                    </span>
+                    <div class="card_content_wrapper truncate">
+                        <h5 class="mb-1"><b id="w1_trxSuccess">0</b></h5>
+                        <small class="text-muted" title="Transaksi Sukses">Trx Success</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-3">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <span class="stamp stamp-md bg-info mr-3">
+                        <i class="fa fa-question-circle"></i>
+                    </span>
+                    <div class="card_content_wrapper truncate">
+                        <h5 class="mb-1"><b id="w1_trxPending">0</b></h5>
+                        <small class="text-muted" title="Transaksi Pending">Trx Pending</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-3">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <span class="stamp stamp-md bg-primary mr-3">
+                        <i class="fa fa-clock"></i>
+                    </span>
+                    <div class="card_content_wrapper truncate">
+                        <h5 class="mb-1"><b id="w1_TrxProcess">0</b></h5>
+                        <small class="text-muted" title="Transaksi Di Proses">Trx Process</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-3">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <span class="stamp stamp-md bg-warning mr-3">
+                        <i class="fa fa-ban"></i>
+                    </span>
+                    <div class="card_content_wrapper truncate">
+                        <h5 class="mb-1"><b id="w1_trxCancel">0</b></h5>
+                        <small class="text-muted" title="Transaksi Cancel">Trx Cancel</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-3">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <span class="stamp stamp-md bg-danger mr-3">
+                        <i class="fa fa-times-circle"></i>
+                    </span>
+                    <div class="card_content_wrapper truncate">
+                        <h5 class="mb-1"><b id="w1_trxReject">0</b></h5>
+                        <small class="text-muted" title="Transaksi Reject">Trx Reject</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
     <div class="row mb-5">
         <div class="col-md-12" id="boxTable">
             <div class="card">
@@ -275,27 +441,78 @@
                         },
                         success: function(msg) {
                             let d = msg.data
+                            // for statistik bar
+                            let totEstimated = 0,
+                                totEstTransfer = 0,
+                                totEstDebt = 0,
+                                totEstProfit = 0,
+                                totTrx = 0,
+                                totTrxSuccess = 0,
+                                totTrxPending = 0,
+                                totTrxProcess = 0,
+                                totTrxCancel = 0,
+                                totTrxReject = 0;
+
+                            // for table footer
                             let amount = 0,
                                 qty = 0,
                                 total_amount = 0,
                                 commission = 0,
                                 profit = 0;
 
+
                             d.map((r) => {
+                                // update value statistik bar
+                                if (r.trx_status == "SUCCESS") {
+                                    totTrxSuccess += 1;
+                                    totEstimated += r.total_amount;
+                                    totEstProfit += r.profit;
+                                    if (r.trx_payment == "TRANSFER") {
+                                        totEstTransfer += r.total_amount;
+                                    } else {
+                                        totEstDebt += r.total_amount;
+                                    }
+                                }
+
+                                totTrx += 1;
+                                r.trx_status == "PENDING" ? totTrxPending += 1 : '';
+                                r.trx_status == "PROCESS" ? totTrxProcess += 1 : '';
+                                r.trx_status == "CANCEL" ? totTrxCancel += 1 : '';
+                                r.trx_status == "REJECT" ? totTrxReject += 1 : '';
+
+                                // update value table footer
                                 amount += r.amount;
                                 qty += r.qty;
                                 total_amount += r.total_amount;
                                 commission += r.commission;
                                 profit += r.profit;
-
                             });
 
+                            // implement value statistik bar
+                            $("#w1_totalEstimated").html(convertToRupiah(totEstimated));
+                            $("#w1_estTransfer").html(convertToRupiah(totEstTransfer));
+                            $("#w1_estDebt").html(convertToRupiah(totEstDebt));
+                            $("#w1_estProfit").html(convertToRupiah(totEstProfit));
+                            $("#w1_totalTrx").html(totTrx);
+                            $("#w1_trxSuccess").html(totTrxSuccess);
+                            $("#w1_trxPending").html(totTrxPending);
+                            $("#w1_TrxProcess").html(totTrxProcess);
+                            $("#w1_trxCancel").html(totTrxCancel);
+                            $("#w1_trxReject").html(totTrxReject);
+
+                            // implement value footer table
                             $(api.column(4).footer()).html('TOTAL');
-                            $(api.column(5).footer()).html(`<span class="text-info">${convertToRupiah(amount)}</span>`);
+                            $(api.column(5).footer()).html(convertToRupiah(amount));
                             $(api.column(6).footer()).html(`${qty}`);
-                            $(api.column(7).footer()).html(`<span class="text-success">+ ${convertToRupiah(total_amount)}</span>`);
-                            $(api.column(8).footer()).html(`<span class="text-danger">- ${convertToRupiah(commission)}</span>`);
-                            $(api.column(9).footer()).html(`<span class="text-success">+ ${convertToRupiah(profit)}</span>`);
+                            $(api.column(7).footer()).html(
+                                `<span class="text-success">+ ${convertToRupiah(total_amount)}</span>`
+                            );
+                            $(api.column(8).footer()).html(
+                                `<span class="text-danger">- ${convertToRupiah(commission)}</span>`
+                            );
+                            $(api.column(9).footer()).html(
+                                `<span class="text-success">+ ${convertToRupiah(profit)}</span>`
+                            );
                         }
                     })
                 },
@@ -360,7 +577,7 @@
                 if (status == "SHOW-PROOF-RETURN") {
                     $("#modalDetailTitle").html("ALASAN DITOLAK DAN BUKTI PENGEMBALIAN SALDO")
                     $("#reasonReject").html(data.reason);
-                    if(data.proof_of_return){
+                    if (data.proof_of_return) {
                         $("#proofImg").attr("src", data.proof_of_return);
                     }
                 }

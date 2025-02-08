@@ -200,6 +200,8 @@ class TrxProductController extends Controller
                         $classStatus = "badge-warning";
                 }
 
+                $item["trx_status"] = $item["status"];
+                $item["trx_payment"] = $item["payment_type"];
                 $item["status"] = "<span class='badge " . $classStatus . "'>" . $item["status"] . "</span>";
                 $item['product'] = $product;
                 $item['reseller'] = $reseller;
@@ -525,7 +527,7 @@ class TrxProductController extends Controller
             }
 
             // JIKA SUCCESS LAKUKAN SHARE COMMISSION RESELLER
-            if ($data["status"] == "SUCCESS") {
+            if ($data["status"] == "SUCCESS" && $dataTrx->commission > 0) {
                 // SIMPAN MUTASI KOMISI
                 $dataMutasi = [
                     "code" => "MUTAT" . strtoupper(Str::random(5)),
