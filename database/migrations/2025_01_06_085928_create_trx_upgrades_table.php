@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('trx_upgrades', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', ['PENDING', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
-            $table->string('remark')->nullable(); // alasan admin ketika reject
+            $table->enum('status', ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
+            $table->string('remark')->nullable(); 
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
             $table->softDeletes();

@@ -17,6 +17,7 @@ use App\Http\Controllers\Dashboard\TrxCommissionController;
 use App\Http\Controllers\Dashboard\TrxCompensationController;
 use App\Http\Controllers\Dashboard\TrxDebtController;
 use App\Http\Controllers\Dashboard\TrxProductController;
+use App\Http\Controllers\Dashboard\UpgradeAccountController;
 use App\Http\Controllers\Dashboard\WebConfigController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -159,7 +160,16 @@ Route::group(["middleware" => "check.auth"], function () {
                 Route::post("create", [OwnerController::class, "create"])->name('owner.create');
                 Route::post("update", [OwnerController::class, "update"])->name('owner.update');
                 Route::post("update-status", [OwnerController::class, "updateStatus"])->name('owner.change-status');
-                Route::post("dekete", [OwnerController::class, "destroy"])->name('owner.destroy');
+                Route::post("delete", [OwnerController::class, "destroy"])->name('owner.destroy');
+            });
+        });
+
+        // PREFIX TRX
+        Route::group(["prefix" => "trx"], function () {
+            // UPGRADE ACCOUNT
+            Route::group(["prefix" => "upgrade"], function () {
+                Route::get("datatable", [UpgradeAccountController::class, "dataTable"])->name('trx-upgrade.datatable');
+                Route::post("update-status", [UpgradeAccountController::class, "updateStatus"])->name('trx-upgrade.change-status');
             });
         });
     });
@@ -174,6 +184,9 @@ Route::group(["middleware" => "check.auth"], function () {
             Route::post('/commission/create', [TrxCommissionController::class, "create"])->name("trx-commission.create");
             // COMPENSATION
             Route::post('/compensation/create', [TrxCompensationController::class, "create"])->name("trx-compensation.create");
+
+            // UPGRADE RESELLER
+            Route::post("/trx-upgrade/create", [UpgradeAccountController::class, "create"])->name('trx-upgrade.create');
         });
     });
 });

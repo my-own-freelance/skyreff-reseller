@@ -9,6 +9,22 @@
 @endpush
 @section('content')
     <div class="row mt--2">
+        <div class="col-md-12">
+            <div class="card card-primary text-white">
+                <div class="card-body">
+                    <h1 class="fw-bold">PAKET REGULAR</h1>
+                    <h5 class="op-8">Jenis paket yang aktif untuk akun reseller anda adalah Regular</h5>
+                    @if ($data['level'] == 'REGULAR')
+                        <div class="pull-right mt-2">
+                            <button class="btn btn-block btn-sm" onclick="upgradeAccount()">
+                                <i class="fas fa-arrow-circle-up mr-1"></i>
+                                Upgrade VIP
+                            </button>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
         <div class="col-md-4 col-lg-4">
             <div class="card">
                 <div class="card-body p-3 text-center">
@@ -18,10 +34,12 @@
                     <div class="text-muted mb-3">Penarikan Tersedia</div>
                     <div class="separator-dashed"></div>
                     <h4><b style="font-size:150%;" id="w3_wd_pending">{{ $data['wd_commission'] }}</b></h4>
-                    <div class="text-muted">Penarikan Menunggu Konfirmasi<a class="btn btn-icon btn-link"
-                            href="/transaction/withdraw/merchant" type="button"><i class="fa fa-external-link-alt"></i></a>
+                    <div class="text-muted">Penarikan Menunggu Konfirmasi
+                        <a class="btn btn-icon btn-link" href="{{ route('trx-commission') }}" type="button">
+                            <i class="fa fa-external-link-alt"></i>
+                        </a>
                     </div>
-                    <div class="separator-dashed"></div><a class="btn btn-secondary text-white btn-block"
+                    <div class="separator-dashed"></div><a class="btn btn-primary text-white btn-block"
                         href="{{ route('trx-commission.request-wd') }}"> Tarik Saldo Efektif</a>
                 </div>
             </div>
@@ -29,7 +47,7 @@
         <div class="col-md-8 col-sm-12">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="card card-secondary">
+                    <div class="card card-primary">
                         <div class="card-body skew-shadow">
                             <h1 class="mt-4">{{ $data['trx_product'] }}</h1>
                             <h3 class="mt-3">Total Transaksi</h3>
@@ -38,7 +56,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card card-dark bg-secondary-gradient">
+                    <div class="card card-primary">
                         <div class="card-body bubble-shadow">
                             <h1 class="mt-4">{{ $data['debt_limit'] }}</h1>
                             <h3 class="mt-3">Limit Pihutang</h3>
@@ -47,11 +65,11 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card card-dark bg-secondary2">
+                    <div class="card card-primary">
                         <div class="card-body skew-shadow">
                             <h1 class="mt-4">{{ $data['total_debt'] }}</h1>
                             <h3 class="mt-3">Total Hutang</h3>
-                            <div class="pull-right"><a class="text-white" href="">
+                            <div class="pull-right"><a class="text-white" href="{{ route('trx-debt') }}">
                                     <small class="fw-bold op-9">Bayar Sekarang<i
                                             class="fas fa-external-link-alt ml-2"></i></small>
                                 </a></div>
@@ -59,7 +77,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card card-dark bg-secondary2">
+                    <div class="card card-primary">
                         <div class="card-body skew-shadow">
                             <h1 class="mt-4">{{ $data['month_commission'] }}</h1>
                             <h3 class="mt-3">Komisi Bulan Ini</h3>
@@ -106,7 +124,7 @@
                         title: item.subject,
                         message: item.message,
                         icon: 'fa fa-bell',
-                        url: "/",
+                        // url: "/",
                     }
 
                     let state = "info"
@@ -140,5 +158,33 @@
                 }, index * 2000);
             });
         })()
+
+        function upgradeAccount() {
+            let c = confirm("Anda yakin ingin melakukan upgrade akun level ke VIP ?")
+            if (c) {
+                $.ajax({
+                    url: "{{ route('trx-upgrade.create') }}",
+                    method: 'POST',
+                    header: {
+                        'Content-Type': 'application/json'
+                    },
+                    data: {
+                        user_id: parseInt("{{ $data['reseller_id'] }}")
+                    },
+                    beforeSend: function() {
+                        console.log('Loading...')
+                    },
+                    success: function(res) {
+                        showMessage('success', 'flaticon-alarm-1', 'Sucess !', res.message)
+                    },
+                    error: function(err) {
+                        console.log("error :", err);
+                        showMessage("warning", "flaticon-error", "Peringatan", err.message || err
+                            .responseJSON
+                            ?.message);
+                    }
+                })
+            }
+        }
     </script>
 @endpush

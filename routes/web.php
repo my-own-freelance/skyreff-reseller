@@ -15,6 +15,7 @@ use App\Http\Controllers\Dashboard\TrxCommissionController;
 use App\Http\Controllers\Dashboard\TrxCompensationController;
 use App\Http\Controllers\Dashboard\TrxDebtController;
 use App\Http\Controllers\Dashboard\TrxProductController;
+use App\Http\Controllers\Dashboard\UpgradeAccountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -77,6 +78,9 @@ Route::group(["middleware" => "auth:web"], function () {
             // OWNER
             Route::get("/owner", [OwnerController::class, "index"])->name("owner");
         });
+
+        // UPGRADE ACCOUNT
+        Route::get("/trx-upgrade", [UpgradeAccountController::class, "index"])->name("trx-upgrade");
     });
 
     // ONLY RESELLER

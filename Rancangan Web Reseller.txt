@@ -38,7 +38,7 @@ list menu admin :
         - PIUTANG (ok)
         - REWARD
         - COMPENSATION (ok)
-        - UPGRADE ACCOUNT
+        - UPGRADE ACCOUNT (ok)
 
     - MUTASI
         - COMMISSION (ok)

@@ -7,6 +7,12 @@
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             <ul class="nav nav-primary">
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">NAVIGATION</h4>
+                </li>
                 <li class="nav-item ml-3 {{ $routename == 'dashboard' ? 'active' : '' }}">
                     <a href="{{ route('dashboard.admin') }}" aria-expanded="false">
                         <i class="fas fa-home"></i>
@@ -83,6 +89,12 @@
                     <a href="{{ route('trx-compensation') }}">
                         <i class="fas fa-clipboard-list"></i>
                         <p>Komplain Transaksi</p>
+                    </a>
+                </li>
+                <li class="nav-item ml-3 {{ $routename == 'trx-upgrade' ? 'active' : '' }}">
+                    <a href="{{ route('trx-upgrade') }}">
+                        <i class="fas fa-arrow-up"></i>
+                        <p>Upgrade Akun</p>
                     </a>
                 </li>
                 <li class="nav-section">

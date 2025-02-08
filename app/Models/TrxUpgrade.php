@@ -11,13 +11,8 @@ class TrxUpgrade extends Model
     protected $fillable = [];
     protected $guarded = [];
 
-    public function TrxProduct()
+    public function User()
     {
-        return $this->belongsTo(TrxProduct::class);
-    }
-
-    public function TrxCommission()
-    {
-        return $this->belongsTo(TrxCommission::class);
+        return $this->belongsTo(User::class);
     }
 }

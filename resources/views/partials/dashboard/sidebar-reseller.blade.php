@@ -7,6 +7,12 @@
     <div class="sidebar-wrapper scrollbar scrollbar-inner">
         <div class="sidebar-content">
             <ul class="nav nav-primary">
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">NAVIGATION</h4>
+                </li>
                 <li class="nav-item ml-3 {{ $routename == 'dashboard' ? 'active' : '' }}">
                     <a href="{{ route('dashboard.reseller') }}" aria-expanded="false">
                         <i class="fas fa-home"></i>
