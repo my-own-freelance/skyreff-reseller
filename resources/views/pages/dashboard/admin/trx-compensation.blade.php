@@ -259,8 +259,6 @@
                     $("#notes").html(`<strong>Permasalahan : </strong> ${data.description}`);
                     if (data.proof_of_constrain) {
                         $("#proofImg").attr("src", data.proof_of_constrain);
-                    } else {
-                        $("#proofImg").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
                     }
                 }
 
@@ -274,8 +272,6 @@
                     $("#notes").html(`<strong>Solusi Admin : </strong> ${data.description}`);
                     if (data.proof_of_solution) {
                         $("#proofImg").attr("src", data.proof_of_solution);
-                    } else {
-                        $("#proofImg").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
                     }
                 }
             });

@@ -330,8 +330,6 @@
                     $("#bankTarget").html(`${data.payment_type} : ${data.bank_target}`);
                     if (data.proof_of_payment) {
                         $("#proofImg").attr("src", data.proof_of_payment);
-                    } else {
-                        $("#proofImg").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
                     }
                 }
 
@@ -340,8 +338,6 @@
                     $("#reasonReject").html(data.reason);
                     if (data.proof_of_return) {
                         $("#proofImg").attr("src", data.proof_of_return);
-                    } else {
-                        $("#proofImg").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
                     }
                 }
             });

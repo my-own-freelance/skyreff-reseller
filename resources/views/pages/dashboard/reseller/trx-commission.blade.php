@@ -224,7 +224,7 @@
                                 `<span class="text-success">+ ${convertToRupiah(amount)}</span>`
                             );
                             $(api.column(5).footer()).html(
-                                `<span class="text-danger">+ ${convertToRupiah(admin)}</span>`);
+                                `<span class="text-danger">- ${convertToRupiah(admin)}</span>`);
                             $(api.column(6).footer()).html(convertToRupiah(total_amount));
                         }
                     })
@@ -294,8 +294,6 @@
                     $("#reasonReject").html(`Catatan : ${data.remark}`);
                     if (data.proof_of_payment) {
                         $("#proofImg").attr("src", data.proof_of_payment);
-                    } else {
-                        $("#proofImg").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
                     }
                 }
             });

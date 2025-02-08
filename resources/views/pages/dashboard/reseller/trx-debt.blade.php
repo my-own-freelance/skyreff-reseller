@@ -464,8 +464,6 @@
                     $("#reasonReject").html(data.remark);
                     if (data.proof_of_payment) {
                         $("#proofImg").attr("src", data.proof_of_payment);
-                    } else {
-                        $("#proofImg").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
                     }
                 }
 
@@ -479,8 +477,6 @@
                     }
                     if (data.proof_of_payment) {
                         $("#proofImg").attr("src", data.proof_of_payment);
-                    } else {
-                        $("#proofImg").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
                     }
                 }
             });
