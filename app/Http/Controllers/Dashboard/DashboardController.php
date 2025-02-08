@@ -30,16 +30,18 @@ class DashboardController extends Controller
 
             $tglAwal = Carbon::now('UTC')->startOfMonth()->subHour(7)->toDateTimeString(); // dikurangi 7 jam mengikuti waktu utc
             $tglAkhir = Carbon::now('UTC')->endOfMonth()->subHour(7)->toDateTimeString(); // dikurangi 7 jam mengikuti waktu utc
-            $commissionThisMonth = Mutation::where("type", "C")->whereBetween("created_at", [$tglAwal, $tglAkhir])->sum("amount") ?? 0;
+            $commissionThisMonth = Mutation::where("type", "C")->where("user_id", $reseller->id)->whereBetween("created_at", [$tglAwal, $tglAkhir])->sum("amount") ?? 0;
             $data = [
                 "informations" => Information::where("is_active", "Y")->get(),
                 "banners" => Banner::where("is_active", "Y")->get(),
-                "trx_product" => TrxProduct::where("user_id", $user->id)->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->count(),
+                "trx_product" => TrxProduct::where("user_id", $user->id)->whereBetween("created_at", [$tglAwal, $tglAkhir])->count(),
                 "debt_limit" => 'Rp. ' . number_format($reseller->debt_limit, 0, ',', '.'),
                 "total_debt" => 'Rp. ' . number_format($reseller->total_debt, 0, ',', '.'),
                 "commission" => 'Rp. ' . number_format($reseller->commission, 0, ',', '.'),
                 "wd_commission" => 'Rp. ' . number_format($wdCommisson, 0, ',', '.'),
                 "month_commission" => 'Rp. ' . number_format($commissionThisMonth, 0, ',', '.'),
+                "level" => $reseller->level,
+                "reseller_id" => $reseller->id
             ];
         }
         return view($pageUrl, compact("title", "data"));

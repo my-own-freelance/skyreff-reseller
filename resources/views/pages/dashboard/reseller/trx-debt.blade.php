@@ -281,7 +281,7 @@
                     $("#totalDebt").html(convertToRupiah(data.total_debt));
                 },
                 error: function(err) {
-                    console.log("error get statil session :", err)
+                    console.log("error get static session :", err)
                 }
             })
         }
