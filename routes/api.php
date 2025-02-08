@@ -13,6 +13,7 @@ use App\Http\Controllers\Dashboard\ProductImageController;
 use App\Http\Controllers\Dashboard\ResellerController;
 use App\Http\Controllers\Dashboard\RewardController;
 use App\Http\Controllers\Dashboard\TrxCommissionController;
+use App\Http\Controllers\Dashboard\TrxCompensationController;
 use App\Http\Controllers\Dashboard\TrxDebtController;
 use App\Http\Controllers\Dashboard\TrxProductController;
 use App\Http\Controllers\Dashboard\WebConfigController;
@@ -61,7 +62,9 @@ Route::group(["middleware" => "check.auth"], function () {
     Route::post("/trx/debt/create", [TrxDebtController::class, "create"])->name('trx-debt.create');
     Route::post("/trx/debt/update-status", [TrxDebtController::class, "changeStatus"])->name('trx-debt.change-status');
     Route::get("/trx/debt/{id}/detail", [TrxDebtController::class, "getDetail"])->name('trx-debt.detail');
-
+    Route::get("/trx/compensation/datatable", [TrxCompensationController::class, "dataTable"])->name('trx-compensation.datatable');
+    Route::post("/trx/compensation/update-status", [TrxCompensationController::class, "changeStatus"])->name('trx-compensation.change-status');
+    Route::get("/trx/compensation/{id}/detail", [TrxCompensationController::class, "getDetail"])->name('trx-compensation.detail');
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "api.check.role:ADMIN"], function () {
         Route::post("/config/create-update", [WebConfigController::class, "saveUpdateData"])->name('web.update-config');
@@ -158,6 +161,8 @@ Route::group(["middleware" => "check.auth"], function () {
             Route::post('/product/create', [TrxProductController::class, "create"])->name("trx-product.create");
             // COMMISSION
             Route::post('/commission/create', [TrxCommissionController::class, "create"])->name("trx-commission.create");
+            // COMPENSATION
+            Route::post('/compensation/create', [TrxCompensationController::class, "create"])->name("trx-compensation.create");
         });
     });
 });

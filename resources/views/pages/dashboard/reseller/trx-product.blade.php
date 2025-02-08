@@ -56,7 +56,7 @@
                                     <select class="form-control" id="fPaymentType" name="fPaymentType">
                                         <option value="">All</option>
                                         <option value="TRANSFER">Transfer</option>
-                                        <option value="DEBT">Pihutang</option>
+                                        <option value="DEBT">Hutang</option>
                                     </select>
                                 </div>
                             </div>
@@ -143,6 +143,41 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL COMPLAIN --}}
+    <div class="modal fade" id="modalComplain" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" id="formReject">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="complainTitle">Alasan Komplain</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formComplain">
+                    <div class="modal-body">
+                        <input type="hidden" name="trxId" id="trxId">
+                        <div class="form-group">
+                            <label for="description">Permasalahan</label>
+                            <textarea class="form-control" name="description" id="description" cols="30" rows="5" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for=proofConstrain">Bukti Permasalahan</label>
+                            <input class="form-control" id="proofConstrain" type="file" name="proofConstrain"
+                                placeholder="upload gambar" required />
+                            <small class="text-danger">Max ukuran 2MB</small>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -234,7 +269,9 @@
                             });
 
                             $(api.column(6).footer()).html('TOTAL KOMISI');
-                            $(api.column(7).footer()).html(`<span class="text-success">+ ${convertToRupiah(commission)}</span>`);
+                            $(api.column(7).footer()).html(
+                                `<span class="text-success">+ ${convertToRupiah(commission)}</span>`
+                            );
                         }
                     })
                 },
@@ -347,5 +384,55 @@
             }
             return false;
         }
+
+        function complain(id) {
+            const modal = $("#modalComplain");
+            modal.modal('show');
+            modal.off('shown.bs.modal').on('shown.bs.modal', function() {
+                $("#trxId").val(id);
+            });
+
+            return false;
+        }
+
+        $("#modalComplain").on("hidden.bs.modal", function() {
+            $(this).find("form")[0].reset();
+        });
+
+        $("#formComplain").submit(function(e) {
+            e.preventDefault();
+            let c = confirm(`Anda yakin untuk melakukan komplain terhadap data transaksi ini ?`)
+            if (c) {
+                let dataToSend = new FormData();
+                dataToSend.append("trx_product_id", $("#trxId").val());
+                dataToSend.append("description", $("#description").val());
+                dataToSend.append("proof_of_constrain", document.getElementById("proofConstrain").files[0]);
+
+                $.ajax({
+                    url: "{{ route('trx-compensation.create') }}",
+                    contentType: false,
+                    processData: false,
+                    method: "POST",
+                    data: dataToSend,
+                    beforeSend: function() {
+                        console.log("Loading...")
+                    },
+                    success: function(res) {
+                        showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
+                        $("#modalComplain").modal('hide')
+                        setTimeout(() => {
+                            window.location.href = "{{ route('trx-compensation') }}"
+                        }, 3000)
+                    },
+                    error: function(err) {
+                        console.log("error :", err);
+                        showMessage("danger", "flaticon-error", "Peringatan", err.message || err
+                            .responseJSON
+                            ?.message);
+                    }
+                })
+            }
+            return false;
+        })
     </script>
 @endpush

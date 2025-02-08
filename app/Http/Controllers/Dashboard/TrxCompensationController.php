@@ -3,46 +3,40 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Mutation;
-use App\Models\TrxCommission;
+use App\Models\TrxCompensation;
+use App\Models\TrxProduct;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class TrxCommissionController extends Controller
+class TrxCompensationController extends Controller
 {
     public function index()
     {
-        $title = "Transaksi Komisi";
-        $user = Auth::user();
-        $pageUrl = $user->role == "ADMIN" ? "pages.dashboard.admin.trx-commission" : "pages.dashboard.reseller.trx-commission";
+        $title = "Transaksi Kompensasi";
+        $user = auth()->user();
+        $pageUrl = "pages.dashboard.admin.trx-compensation";
+
+        if ($user->role == "RESELLER") {
+            $pageUrl = "pages.dashboard.reseller.trx-compensation";
+        }
 
         return view($pageUrl, compact("title"));
     }
 
-    public function requestWithdraw()
-    {
-        $user = User::where("id", auth()->user()->id)->first();
-        $balance = $user->commission;
-        $title = "Request Withdraw";
-        $bank_type = $user->bank_type ?? "";
-        $bank_account = $user->bank_account ?? "";
-
-        return view("pages.dashboard.reseller.request-wd", compact("title", "balance", "bank_type", "bank_account"));
-    }
-
-    // API
+    // HANDLER API
     public function dataTable(Request $request)
     {
         try {
-            $query = TrxCommission::with([
+            $query = TrxCompensation::with([
+                "TrxProduct" => function ($query) {
+                    $query->select("id", "code", "product_id")->with("Product:id,title");
+                },
                 "User" => function ($query) {
-                    $query->select("id", "code", "name");
+                    $query->select("id", "name", "code");
                 }
             ]);
 
@@ -95,20 +89,19 @@ class TrxCommissionController extends Controller
                     $action_success = $item->status == "PENDING" || $item->status == "PROCESS" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", \"SUCCESS\");' href='javascript:void(0);' title='Success'>Success</a>" : "";
                     $action_reject = $item->status == "PENDING" || $item->status == "PROCESS" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", \"REJECT\");' href='javascript:void(0);' title='Reject'>Reject</a>" : "";
                     $action_reason =  $item->status == "REJECT" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-REASON-REJECT\");' href='javascript:void(0);' title='Alasan Ditolak'>Alasan Ditolak</a>" : "";
-                    $action_detail = $item->status == "PENDING" || $item->status == "PROCESS" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"DETAIL\");' href='javascript:void(0);' title='Detail'>Detail</a>" : "";
-                    $action_show_proof_of_payment = $item->status == "SUCCESS" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-PAYMENT\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Transfer</a>" : "";
+                    $action_show_proof_of_solution = $item->status == "SUCCESS" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-SOLUTION\");' href='javascript:void(0);' title='Bukti Refund'>Solusi Admin</a>" : "";
 
                     $action = " <div class='dropdown-primary dropdown open'>
                                 <button class='btn btn-sm btn-primary dropdown-toggle waves-effect waves-light' id='dropdown-{$item->id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'>
                                     Aksi
                                 </button>
                                 <div class='dropdown-menu' aria-labelledby='dropdown-{$item->id}' data-dropdown-out='fadeOut'>
-                                    " . $action_detail . "
+                                    <a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"DETAIL\");' href='javascript:void(0);' title='Detail'>Detail</a>
                                     " . $action_process . "
                                     " . $action_success . "
                                     " . $action_reject . "
                                     " . $action_reason . "
-                                    " . $action_show_proof_of_payment . "
+                                    " . $action_show_proof_of_solution . "
                                 </div>
                             </div>";
 
@@ -128,17 +121,16 @@ class TrxCommissionController extends Controller
                 } else {
                     $action_cancel = $item->status == "PENDING" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", \"CANCEL\");' href='javascript:void(0);' title='Cancel'>Cancel</a>" : "";
                     $action_reason =  $item->status == "REJECT" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-REASON-REJECT\");' href='javascript:void(0);' title='Alasan Ditolak'>Alasan Ditolak</a>" : "";
-                    $action_detail = $item->status == "PENDING" || $item->status == "PROCESS" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"DETAIL\");' href='javascript:void(0);' title='Detail'>Detail</a>" : "";
-                    $action_show_proof_of_payment = $item->status == "SUCCESS" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-PAYMENT\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Transfer</a>" : "";
+                    $action_show_proof_of_solution = $item->status == "SUCCESS" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-SOLUTION\");' href='javascript:void(0);' title='Bukti Refund'>Solusi Admin</a>" : "";
                     $action = " <div class='dropdown-primary dropdown open'>
                                     <button class='btn btn-sm btn-primary dropdown-toggle waves-effect waves-light' id='dropdown-{$item->id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'>
                                         Aksi
                                     </button>
                                     <div class='dropdown-menu' aria-labelledby='dropdown-{$item->id}' data-dropdown-out='fadeOut'>
-                                        " . $action_detail . "
+                                        <a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"DETAIL\");' href='javascript:void(0);' title='Detail'>Detail</a>
                                         " . $action_cancel . "
                                         " . $action_reason . "
-                                        " . $action_show_proof_of_payment . "
+                                        " . $action_show_proof_of_solution . "
                                     </div>
                                 </div>";
 
@@ -165,25 +157,27 @@ class TrxCommissionController extends Controller
                     case "CANCEL":
                         $classStatus = "badge-warning";
                 }
-                $target = "<small> 
-                                <strong>Bank</strong> :" . $item->bank_name .  "
+                $trx = "<small> 
+                                <strong>Trx Code</strong> :" . ($item->TrxProduct ? $item->TrxProduct->code : '-') .  "
                                 <br>
-                                <strong>Rekening</strong> :" . $item->bank_account . "
+                                <strong>Product</strong> :" . ($item->TrxProduct && $item->TrxProduct->Product ? $item->TrxProduct->Product->title : '-') . "
                                 <br>
                             </small>";
+                $item["trx_prod"] = $item->TrxProduct;
 
                 $item["status"] = "<span class='badge " . $classStatus . "'>" . $item["status"] . "</span>";
-                $item["target"] = $target;
+                $item["trx"] = $trx;
                 $item['created'] = Carbon::parse($item->created_at)->addHours(7)->format('Y-m-d H:i:s');
                 $item['updated'] = Carbon::parse($item->updated_at)->addHours(7)->format('Y-m-d H:i:s');
                 if ($item['created'] == $item['updated']) {
                     $item['updated'] = '';
                 }
                 unset($item['User']);
+                unset($item['TrxProduct']);
                 return $item;
             });
 
-            $queryTotal = TrxCommission::whereBetween('created_at', [$tglAwal, $tglAkhir]);
+            $queryTotal = TrxCompensation::whereBetween('created_at', [$tglAwal, $tglAkhir]);
             if ($user->role == "RESELLER") {
                 $queryTotal->where('user_id', $user->id);
             }
@@ -206,25 +200,24 @@ class TrxCommissionController extends Controller
             ], 500);
         }
     }
-    
+
     public function create(Request $request)
     {
         try {
-            DB::beginTransaction();
             $data = $request->all();
             $rules = [
-                "amount" => "integer|min:100000|max:1000000|required",
-                "bank_name" => "string|required",
-                "bank_account" => "string|required"
+                "trx_product_id" => "required|integer",
+                "description" => "required|string",
+                "proof_of_constrain" =>  "required|image|max:2048|mimes:giv,svg,jpeg,png,jpg"
             ];
 
             $messages = [
-                "amount.integer" => "Nominal Withdraw tidak valid",
-                "amount.min" => "Nominal Withdraw minimal Rp.100.000",
-                "amount.max" => "Nominal Withdraw maksimal Rp.1.000.000",
-                "amount.requred" => "Nominal Withdraw harus diisi",
-                "bank_name.required" => "Nama Bank harus diisi",
-                "bank_account" => "No Rekening harus diisi"
+                "trx_product_id.required" => "Data Transaksi harus dipilih",
+                "trx_product_id.integer" => "Data Transaksi tidak valid",
+                "proof_of_constrain.required" => "Gambar harus diisi",
+                "proof_of_constrain.image" => "Gambar yang di upload tidak valid",
+                "proof_of_constrain.max" => "Ukuran gambar maksimal 5MB per gambar",
+                "proof_of_constrain.mimes" => "Format gambar harus gif/svg/jpeg/png/jpg"
             ];
 
             $validator = Validator::make($data, $rules, $messages);
@@ -235,59 +228,44 @@ class TrxCommissionController extends Controller
                 ], 400);
             }
 
-            $user = User::where("id", auth()->user()->id)->first();
-            // CEK KOMISI RESELLER
-            $admin = 6500;
-            $totalAmount = $data["amount"] + $admin;
-            if ($user->commission < $totalAmount) {
+            // CEK DATA TRANSAKSI
+            $dataTrx = TrxProduct::where("id", $data["trx_product_id"])->first();
+            if (!$dataTrx) {
                 return response()->json([
                     "status" => "error",
-                    "message" => "Mohon maaf saldo anda tidak mencukupi"
-                ], 400);
+                    "message" => "Data Transaksi tidak ditemukan",
+                ], 404);
             }
 
-            // UPDATE KOMISI RESELLER
-            $firstCommission = $user->commission;
-            $updatedCommission = $firstCommission - $totalAmount;
-            $dataToUpdate = [
-                "commission" => $updatedCommission
-            ];
-            $user->update($dataToUpdate);
+            // SIMPAN BUKTI PERMASALAHAN
+            if ($request->file('proof_of_constrain')) {
+                $data['proof_of_constrain'] = $request->file('proof_of_constrain')->store('assets/trx-compensation', 'public');
+            }
 
-            // SIMPAN TRANSAKSI KOMISI
-            $trx = TrxCommission::create([
-                "code" => "TRXCM" . strtoupper(Str::random(5)),
-                "amount" => $data["amount"],
-                "admin" => $admin,
-                "total_amount" => $totalAmount,
-                "bank_name" => $data["bank_name"],
-                "bank_account" => $data["bank_account"],
-                "user_id" => $user->id,
+            $payload = [
+                "code" => "TRXCP" . strtoupper(Str::random(5)),
+                "user_id" => auth()->user()->id,
                 "status" => "PENDING",
-                "remark" => $data["notes"]
-            ]);
+                "description" => $data["description"],
+                "proof_of_constrain" => $data["proof_of_constrain"],
+                "trx_product_id" => $dataTrx->id
+            ];
 
-            // SIMPAN MUTASI WITHDRAW
-            Mutation::create([
-                "code" => "MUTAT" . strtoupper(Str::random(5)),
-                "amount" => $totalAmount,
-                "type" => "W", // withdraw
-                "first_commission" => $firstCommission,
-                "last_commission" => $updatedCommission,
-                "trx_commission_id" => $trx->id,
-                "user_id" => $user->id
-            ]);
-
-            DB::commit();
+            TrxCompensation::create($payload);
             return response()->json([
                 "status" => "success",
-                "message" => "Withdraw berhasil diajukan, silahkan tunggu admin untuk memproses"
+                "message" => "Komplain berhasil dibuat dan akan segera di proses oleh admin"
             ]);
         } catch (\Throwable $err) {
-            DB::rollBack();
+            if ($request->file("proof_of_constrain")) {
+                $uploadedImg = "public/assets/trx-compensation/" . $request->file("proof_of_constrain")->hashName();
+                if (Storage::exists($uploadedImg)) {
+                    Storage::delete($uploadedImg);
+                }
+            }
             return response()->json([
                 "status" => "error",
-                "message" => $err->getMessage()
+                "message" => $err->getMessage(),
             ], 500);
         }
     }
@@ -295,7 +273,7 @@ class TrxCommissionController extends Controller
     public function getDetail($id)
     {
         try {
-            $data = TrxCommission::where('id', $id)->first();
+            $data = TrxCompensation::where('id', $id)->first();
 
             if (!$data) {
                 return response()->json([
@@ -304,10 +282,8 @@ class TrxCommissionController extends Controller
                 ], 404);
             }
 
-            $data["proof_of_payment"] = $data->proof_of_payment ? Storage::url($data->proof_of_payment) : null;
-            $data["amount"] = ' Rp. ' . number_format($data->amount, 0, ',', '.');
-            $data["admin"] = ' Rp. ' . number_format($data->admin, 0, ',', '.');
-            $data["total_amount"] = ' Rp. ' . number_format($data->total_amount, 0, ',', '.');
+            $data["proof_of_constrain"] = $data->proof_of_constrain ? Storage::url($data->proof_of_constrain) : null;
+            $data["proof_of_solution"] = $data->proof_of_solution ? Storage::url($data->proof_of_solution) : null;
 
             return response()->json([
                 "status" => "success",
@@ -324,17 +300,16 @@ class TrxCommissionController extends Controller
     public function changeStatus(Request $request)
     {
         try {
-            DB::beginTransaction();
             $data = $request->all();
             $rules = [
                 "id" => "required|integer",
                 "status" => "required|string|in:PROCESS,SUCCESS,REJECT,CANCEL",
-                "proof_of_payment" => "nullable",
+                "proof_of_solution" => "nullable",
                 "remark" => "nullable"
             ];
 
-            if ($request->file('proof_of_payment')) {
-                $rules['proof_of_payment'] .= '|image|max:2048|mimes:giv,svg,jpeg,png,jpg';
+            if ($request->file('proof_of_solution')) {
+                $rules['proof_of_solution'] .= '|image|max:2048|mimes:giv,svg,jpeg,png,jpg';
             }
 
             $messages = [
@@ -342,9 +317,9 @@ class TrxCommissionController extends Controller
                 "id.integer" => "Type Withdrawe tidak valid",
                 "status.required" => "Status harus diisi",
                 "status.in" => "Status tidak sesuai",
-                "proof_of_payment.image" => "Gambar yang di upload tidak valid",
-                "proof_of_payment.max" => "Ukuran gambar maximal 2MB",
-                "proof_of_payment.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                "proof_of_solution.image" => "Gambar yang di upload tidak valid",
+                "proof_of_solution.max" => "Ukuran gambar maximal 2MB",
+                "proof_of_solution.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
             ];
 
             $validator = Validator::make($data, $rules, $messages);
@@ -365,11 +340,11 @@ class TrxCommissionController extends Controller
                 ], 403);
             }
 
-            $dataTrx = TrxCommission::find($data["id"]);
+            $dataTrx = TrxCompensation::find($data["id"]);
             if (!$dataTrx) {
                 return response()->json([
                     "status" => "error",
-                    "message" => "Data Withdraw tidak ditemukan !"
+                    "message" => "Data Komplain tidak ditemukan !"
                 ], 404);
             }
 
@@ -389,43 +364,20 @@ class TrxCommissionController extends Controller
                 ], 404);
             }
 
-            // JIKA REJECT / CANCEL . REFUND SALDO KOMISI RESELLER DAN BUAT DATA MUTASI REFUND
-            if (in_array($data["status"], ["REJECT", "CANCEL"])) {
-                $firstCommission = $reseller->commission;
-                $lastCommission = $firstCommission + $dataTrx->total_amount;
-
-                // SIMPAN MUTASI KOMISI
-                $dataMutasi = [
-                    "code" => "MUTAT" . strtoupper(Str::random(5)),
-                    "amount" => $dataTrx->total_amount,
-                    "type" => "R", // refund,
-                    "first_commission" => $firstCommission,
-                    "last_commission" => $lastCommission,
-                    "trx_commission_id" => $dataTrx->id,
-                    "user_id" => $reseller->id,
-                ];
-                Mutation::create($dataMutasi);
-                // UPDATE SALDO RESELLER
-                $updateReseller = ["commission" => $lastCommission];
-                $reseller->update($updateReseller);
-            }
-
-            // SIMPAN BUKTI REFUND JIKA ADA
-            unset($data["proof_of_payment"]);
-            if ($request->file("proof_of_payment")) {
-                $data["proof_of_payment"] = $request->file("proof_of_payment")->store("assets/trx-commission", "public");
+            // SIMPAN BUKTI SOLUSI JIKA ADA
+            unset($data["proof_of_solution"]);
+            if ($request->file("proof_of_solution")) {
+                $data["proof_of_solution"] = $request->file("proof_of_solution")->store("assets/trx-compensation", "public");
             }
 
             $dataTrx->update($data);
-            DB::commit();
             return response()->json([
                 "status" => "success",
                 "message" => "Status Transaksi berhasil diperbarui"
             ]);
         } catch (\Throwable $err) {
-            DB::rollBack();
-            if ($request->file("proof_of_payment")) {
-                $uploadedImg = "public/assets/trx-commission/" . $request->file("proof_of_payment")->hashName();
+            if ($request->file("proof_of_solution")) {
+                $uploadedImg = "public/assets/trx-compensation/" . $request->file("proof_of_solution")->hashName();
                 if (Storage::exists($uploadedImg)) {
                     Storage::delete($uploadedImg);
                 }

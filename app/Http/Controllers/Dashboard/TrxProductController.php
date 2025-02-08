@@ -118,7 +118,7 @@ class TrxProductController extends Controller
                     $action_success = $item->status == "PENDING" || $item->status == "PROCESS" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", \"SUCCESS\");' href='javascript:void(0);' title='Success'>Success</a>" : "";
                     $action_reject = $item->status == "PENDING" || $item->status == "PROCESS" ? "<a class='dropdown-item' onclick='return changeStatus(\"{$item->id}\", \"REJECT\", \"{$item->payment_type}\");' href='javascript:void(0);' title='Reject'>Reject</a>" : "";
                     $action_reason =  $item->status == "REJECT" && $item->payment_type == "DEBT" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-REASON-REJECT\");' href='javascript:void(0);' title='Alasan Ditolak'>Alasan Ditolak</a>" : "";
-                    $action_show_proof_of_payment = $item->payment_type == "TRANSFER" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-PAYMENT\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Transfer</a>" : "";
+                    $action_show_proof_of_payment = $item->payment_type == "TRANSFER" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-PAYMENT\");' href='javascript:void(0);' title='Bukti Transfer'>Bukti Transfer</a>" : "";
                     $action_show_proof_of_return = $item->status == "REJECT" && $item->payment_type == "TRANSFER" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-RETURN\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Refund</a>" : "";
 
                     $action = " <div class='dropdown-primary dropdown open'>
@@ -145,6 +145,7 @@ class TrxProductController extends Controller
                     $action_reason =  $item->status == "REJECT" && $item->payment_type == "DEBT" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-REASON-REJECT\");' href='javascript:void(0);' title='Alasan Ditolak'>Alasan Ditolak</a>" : "";
                     $action_show_proof_of_payment = $item->payment_type == "TRANSFER" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-PAYMENT\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Transfer</a>" : "";
                     $action_show_proof_of_return = $item->status == "REJECT" && $item->payment_type == "TRANSFER" ? "<a class='dropdown-item' onclick='return getData(\"{$item->id}\", \"SHOW-PROOF-RETURN\");' href='javascript:void(0);' title='Bukti Refund'>Bukti Refund</a>" : "";
+                    $action_compensation = $item->status == "SUCCESS" ? "<a class='dropdown-item' onclick='return complain(\"{$item->id}\");' href='javascript:void(0);' title='Lakukan Komplain'>Lakukan Komplain</a>" : "";
                     $action = " <div class='dropdown-primary dropdown open'>
                                 <button class='btn btn-sm btn-primary dropdown-toggle waves-effect waves-light' id='dropdown-{$item->id}' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'>
                                     Aksi
@@ -154,6 +155,7 @@ class TrxProductController extends Controller
                                     " . $action_reason . "
                                     " . $action_show_proof_of_payment . "
                                     " . $action_show_proof_of_return . "
+                                    " . $action_compensation . "
                                 </div>
                             </div>";
 
@@ -201,7 +203,7 @@ class TrxProductController extends Controller
                 $item["status"] = "<span class='badge " . $classStatus . "'>" . $item["status"] . "</span>";
                 $item['product'] = $product;
                 $item['reseller'] = $reseller;
-                $item['payment_type'] = $item['payment_type'] == "TRANSFER" ? "TRANSFER BANK" : "PIHUTANG";
+                $item['payment_type'] = $item['payment_type'] == "TRANSFER" ? "TRANSFER BANK" : "HUTANG";
                 $item['created'] = Carbon::parse($item->created_at)->addHours(7)->format('Y-m-d H:i:s');
                 $item['updated'] = Carbon::parse($item->updated_at)->addHours(7)->format('Y-m-d H:i:s');
                 if ($item['created'] == $item['updated']) {
@@ -322,7 +324,7 @@ class TrxProductController extends Controller
             $totalProfit = ($profitPerProduct * $qty) - $totalCommission; // total profit = (profit per produk * quantity) - total komisi
 
             // PAYLOAD DATA
-            $data["code"] = strtoupper(Str::random(10));
+            $data["code"] = "TRXPD" . strtoupper(Str::random(5));
             $data["amount"] = $amount;
             $data["commission"] = $totalCommission;
             $data["qty"] = $qty;
@@ -386,7 +388,7 @@ class TrxProductController extends Controller
             // CREATE HISTORY PIHUTANG JIKA METODE BAYAR NYA HUTANG
             if ($data["payment_type"] == "DEBT") {
                 TrxDebt::create([
-                    "code" => strtoupper(Str::random(10)),
+                    "code" => "TRXDB" . strtoupper(Str::random(5)),
                     "user_id" => $user->id,
                     "trx_product_id" => $trxProduct->id,
                     "amount" => $totalAmount,
@@ -394,7 +396,7 @@ class TrxProductController extends Controller
                     "status" => "SUCCESS",
                     "first_debt" => $userFirstDebt,
                     "last_debt" => $userLastDebt,
-                    "remark" => "Pembelian " . $data["qty"] . " Produk " . $product->title . " dengan pembayaran piutang"
+                    "remark" => "Pembelian " . $data["qty"] . " Produk " . $product->title
                 ]);
             }
 
@@ -526,7 +528,7 @@ class TrxProductController extends Controller
             if ($data["status"] == "SUCCESS") {
                 // SIMPAN MUTASI KOMISI
                 $dataMutasi = [
-                    "code" => strtoupper(Str::random(10)),
+                    "code" => "MUTAT" . strtoupper(Str::random(5)),
                     "amount" => $dataTrx->commission,
                     "type" => "C", // commission,
                     "first_commission" => $reseller->commission,

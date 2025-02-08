@@ -354,7 +354,7 @@ class TrxDebtController extends Controller
 
                 // SIMPAN DATA PIUTANG
                 TrxDebt::create([
-                    "code" => strtoupper(Str::random(10)),
+                    "code" => "TRXDB" . strtoupper(Str::random(5)),
                     "user_id" => $reseller->id,
                     "amount" => $data["amount"],
                     "status" => "SUCCESS",
@@ -366,7 +366,7 @@ class TrxDebtController extends Controller
             } else if ($data["type"] == "P") {
                 $resellerLastDebt = $resellerLastDebt - $data["amount"];
                 $dataPiutang = [
-                    "code" => strtoupper(Str::random(10)),
+                    "code" => "TRXDB" . strtoupper(Str::random(5)),
                     "user_id" => $reseller->id,
                     "amount" => $data["amount"],
                     "type" => "P",

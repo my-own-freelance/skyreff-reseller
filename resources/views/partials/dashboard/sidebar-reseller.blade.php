@@ -49,6 +49,12 @@
                         <p>Pihutang</p>
                     </a>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'trx-compensation' ? 'active' : '' }}">
+                    <a href="{{ route('trx-compensation') }}">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>Komplain Transaksi</p>
+                    </a>
+                </li>
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>

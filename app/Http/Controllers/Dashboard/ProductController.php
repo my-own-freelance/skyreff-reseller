@@ -302,7 +302,7 @@ class ProductController extends Controller
             //     $data['image'] = $request->file('image')->store('assets/product', 'public');
             // }
             unset($data['id']);
-            $data["code"] = strtoupper(Str::random(10));
+            $data["code"] = "PROD" . strtoupper(Str::random(6));
 
             // jika code nya di custom
             if ($request->code && $request->code != "") {

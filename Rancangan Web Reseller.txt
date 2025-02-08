@@ -37,7 +37,7 @@ list menu admin :
         - CLAIM COMMISSION (ok)
         - PIUTANG (ok)
         - REWARD
-        - COMPENSATION
+        - COMPENSATION (ok)
         - UPGRADE ACCOUNT
 
     - MUTASI

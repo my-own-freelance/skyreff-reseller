@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('trx_compensation', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
             $table->enum('status', ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
-            $table->string('description'); // keterangan kendala / keluhan
+            $table->text('description'); // keterangan kendala / keluhan
             $table->string('proof_of_constrain')->nullable(); // upload bukti kendala / keluhan
             $table->string('proof_of_solution')->nullable(); // upload bukti solusi dari admin
-            $table->string('remark'); // catatan dari admin ketika reject
+            $table->string('remark')->nullable(); // catatan dari admin ketika reject
             $table->unsignedBigInteger('trx_product_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();

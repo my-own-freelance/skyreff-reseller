@@ -11,6 +11,7 @@ use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\RewardController;
 use App\Http\Controllers\Dashboard\ResellerController;
 use App\Http\Controllers\Dashboard\TrxCommissionController;
+use App\Http\Controllers\Dashboard\TrxCompensationController;
 use App\Http\Controllers\Dashboard\TrxDebtController;
 use App\Http\Controllers\Dashboard\TrxProductController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,7 @@ Route::group(["middleware" => "auth:web"], function () {
     Route::get("/mutation/commission", [MutationController::class, "index"])->name("mutation-commission");
     Route::get("/trx-commission", [TrxCommissionController::class, "index"])->name("trx-commission");
     Route::get("/trx-debt", [TrxDebtController::class, "index"])->name("trx-debt");
+    Route::get("/trx-compensation", [TrxCompensationController::class, "index"])->name("trx-compensation");
 
     // GLOBAL ACCESS
     Route::get("/master/products", [ProductController::class, 'index'])->name('product');
