@@ -16,6 +16,15 @@ Login Page :
  * Level Reseller ( Hidden Auto level 1 )
 
 ---------------------------------------------------------------------------------------------
+kekurangan :
+    - statistik dashboard admin
+    - gatcha reward
+    - setting web admin
+    - setting account reseller
+    - input reseller pada admin tambahi input bank rekening
+    - halaman depan
+    - fitur export csv/excel data transaksi
+
 list menu admin : 
     - MASTER
         - BANNER (ok)
