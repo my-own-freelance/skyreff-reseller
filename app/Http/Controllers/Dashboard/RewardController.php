@@ -94,7 +94,7 @@ class RewardController extends Controller
             $item["duration"] = $duration;
             $item['is_active'] = $is_active;
             $item['title'] = $title;
-            $item['type'] = $item->type == "G" ? "<small class='badge badge-primary'>Global</small>" : "<small class='badge badge-success'>Public</small>";
+            $item['type'] = $item->type == "G" ? "<small class='badge badge-primary'>Global</small>" : "<small class='badge badge-success'>VIP</small>";
             return $item;
         });
 

@@ -4,7 +4,7 @@
     $topbarColor = $config && $config->topbar_color ? $config->topbar_color : 'blue2';
     $sidebarColor = $config && $config->sidebar_color ? $config->sidebar_color : 'white';
     $bgColor = $config && $config->bd_color ? $config->bd_color : 'bg1';
-    $webTitle = $config && $config->web_title ? $config->web_title : 'Web Properti';
+    $webTitle = $config && $config->web_title ? $config->web_title : 'Skyreff';
     $webLogo = $config && $config->web_logo ? url('/') . Storage::url($config->web_logo) : asset('skyreff-logo.jpeg');
     $webDesciption = $config && $config->web_description ? $config->web_description : '';
     $user = Auth::user();

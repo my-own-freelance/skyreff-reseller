@@ -69,7 +69,8 @@ Route::group(["middleware" => "check.auth"], function () {
     Route::get("/trx/compensation/{id}/detail", [TrxCompensationController::class, "getDetail"])->name('trx-compensation.detail');
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "api.check.role:ADMIN"], function () {
-        Route::post("/config/create-update", [WebConfigController::class, "saveUpdateData"])->name('web.update-config');
+        Route::get("/custom-template/detail", [WebConfigController::class, "detail"])->name('web-config.detail');
+        Route::post("/config/create-update", [WebConfigController::class, "saveUpdateData"])->name('web-config.update');
 
         // PREFIX MASTER
         Route::group(["prefix" => "master"], function () {

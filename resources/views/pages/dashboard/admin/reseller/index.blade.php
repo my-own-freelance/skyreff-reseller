@@ -114,6 +114,24 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
+                                            <label for="bank_type">Nama Bank <span
+                                                    class="text-danger">*</span></label>
+                                            <input class="form-control" id="bank_type" type="text"
+                                                name="bank_type" placeholder="masukkan nama bank reseller"
+                                                required />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="bank_account">Nomor Rekening <span
+                                                    class="text-danger">*</span></label>
+                                            <input class="form-control" id="bank_account" type="text"
+                                                name="bank_account" placeholder="masukkan nomor rekening reseller"
+                                                required />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <label for="level">Level <span class="text-danger">*</span></label>
                                             <select class="form-control form-control" id="level" name="level"
                                                 required>
@@ -623,6 +641,8 @@
                         $("#username").val(d.username);
                         $("#username").attr("readonly", true);
                         $("#phone_number").val(d.phone_number);
+                        $("#bank_type").val(d.bank_type);
+                        $("#bank_account").val(d.bank_account);
                         $("#level").val(d.level).change();
                         $("#is_active").val(d.is_active).change();
                         $("#debt_limit").val(formatToRupiah(d.debt_limit));
@@ -661,6 +681,8 @@
             formData.append("username", $("#username").val());
             formData.append("password", $("#password").val());
             formData.append("phone_number", $("#phone_number").val());
+            formData.append("bank_type", $("#bank_type").val());
+            formData.append("bank_account", $("#bank_account").val());
             formData.append("level", $("#level").val());
             formData.append("is_active", $("#is_active").val());
             formData.append("province_id", $("#province_id").val());

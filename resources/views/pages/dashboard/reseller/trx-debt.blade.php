@@ -132,7 +132,7 @@
                                     <th class="all">Hutang Akhir</th>
                                     <th class="all">Trx Ref</th>
                                     <th class="all">Bank Bayar</th>
-                                    <th class="all">Keterangan</th>
+                                    <th class="all">Catatan Pihutang</th>
                                     <th class="all">Tanggal Request</th>
                                     <th class="all">Tanggal Update</th>
                                 </tr>

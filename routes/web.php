@@ -16,6 +16,7 @@ use App\Http\Controllers\Dashboard\TrxCompensationController;
 use App\Http\Controllers\Dashboard\TrxDebtController;
 use App\Http\Controllers\Dashboard\TrxProductController;
 use App\Http\Controllers\Dashboard\UpgradeAccountController;
+use App\Http\Controllers\Dashboard\WebConfigController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -55,6 +56,8 @@ Route::group(["middleware" => "auth:web"], function () {
 
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "web.check.role:ADMIN"], function () {
+        Route::get("/web-config", [WebConfigController::class, "index"])->name("web-config");
+
         // PREFIX MASTER
         Route::group(["prefix" => "master"], function () {
             Route::get("/bank", [BankController::class, 'index'])->name('bank');

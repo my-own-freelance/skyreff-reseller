@@ -127,6 +127,12 @@
                         <p>Owner</p>
                     </a>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'web-config' ? 'active' : '' }}">
+                    <a href="{{ route('web-config') }}">
+                        <i class="fas fa-cogs"></i>
+                        <p>Setting Web</p>
+                    </a>
+                </li>
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>

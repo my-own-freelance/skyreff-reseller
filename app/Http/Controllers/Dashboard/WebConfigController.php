@@ -16,7 +16,7 @@ class WebConfigController extends Controller
         if ($setting) {
             $title = $setting->web_title;
         }
-        return view('pages.admin.setting', compact('title'));
+        return view('pages.dashboard.admin.web-config', compact('title'));
     }
 
     public function detail()
@@ -32,7 +32,7 @@ class WebConfigController extends Controller
             }
 
             if (!$config->web_title) {
-                $config["web_title"] = "Web Properti";
+                $config["web_title"] = "Skyreff";
             }
 
             if (!$config->web_description) {
@@ -42,19 +42,13 @@ class WebConfigController extends Controller
             if ($config->meta_image) {
                 $config['meta_image'] =  url("/") . Storage::url($config->meta_image);
             } else {
-                $config['meta_image'] = asset('frontpage/images/mockup-depan.jpg');
+                $config['meta_image'] = asset('skyreff-logo.jpeg');
             }
 
             if ($config->web_logo) {
                 $config['web_logo'] =  url("/") . Storage::url($config->web_logo);
             } else {
-                $config['web_logo'] = asset('frontpage/images/logo-purple.svg');
-            }
-
-            if ($config->web_logo_white) {
-                $config['web_logo_white'] =  url("/") . Storage::url($config->web_logo_white);
-            } else {
-                $config['web_logo_white'] = asset('frontpage/images/logo-white-1.svg');
+                $config['web_logo'] = asset('skyreff-logo.jpeg');
             }
 
             if ($config['maps_location'] && $config['maps_location'] != "") {
@@ -83,15 +77,15 @@ class WebConfigController extends Controller
         $existCustomData = WebConfig::first();
         if (!$existCustomData) {
             if ($request->file("meta_image")) {
-                $data["meta_image"] = $request->file("meta_image")->store("assets/setting", "public");
+                $data["meta_image"] = $request->file("meta_image")->store("assets/web-config", "public");
             }
 
             if ($request->file("web_logo")) {
-                $data["web_logo"] = $request->file("web_logo")->store("assets/setting", "public");
+                $data["web_logo"] = $request->file("web_logo")->store("assets/web-config", "public");
             }
 
             if ($request->file("web_logo_white")) {
-                $data["web_logo_white"] = $request->file("web_logo_white")->store("assets/setting", "public");
+                $data["web_logo_white"] = $request->file("web_logo_white")->store("assets/web-config", "public");
             }
 
             WebConfig::create($data);
@@ -106,7 +100,7 @@ class WebConfigController extends Controller
             if (Storage::exists($oldImagePath)) {
                 Storage::delete($oldImagePath);
             }
-            $data["meta_image"] = $request->file("meta_image")->store("assets/setting", "public");
+            $data["meta_image"] = $request->file("meta_image")->store("assets/web-config", "public");
         }
 
         if ($request->file("web_logo")) {
@@ -114,7 +108,7 @@ class WebConfigController extends Controller
             if (Storage::exists($oldImagePath)) {
                 Storage::delete($oldImagePath);
             }
-            $data["web_logo"] = $request->file("web_logo")->store("assets/setting", "public");
+            $data["web_logo"] = $request->file("web_logo")->store("assets/web-config", "public");
         }
 
         if ($request->file("web_logo_white")) {
@@ -122,13 +116,13 @@ class WebConfigController extends Controller
             if (Storage::exists($oldImagePath)) {
                 Storage::delete($oldImagePath);
             }
-            $data["web_logo_white"] = $request->file("web_logo_white")->store("assets/setting", "public");
+            $data["web_logo_white"] = $request->file("web_logo_white")->store("assets/web-config", "public");
         }
 
         $existCustomData->update($data);
         return response()->json([
             "status" => 200,
-            "message" => "Settin Web berhasil diubah"
+            "message" => "Konfigurasi Web berhasil diubah"
         ]);
     }
 }

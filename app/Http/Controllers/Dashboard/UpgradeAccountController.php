@@ -77,7 +77,7 @@ class UpgradeAccountController extends Controller
                                 </div>
                             </div>";
 
-                if (in_array($item["status"], ["REJECT", "CANCEL"])) {
+                if (in_array($item["status"], ["REJECT", "CANCEL", "SUCCESS"])) {
                     $action = "";
                 }
 

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('bg_color')->nullable();
             $table->string('web_title')->nullable();
             $table->string('web_logo')->nullable();
-            $table->string('web_logo_white')->nullable();
             $table->string('address')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('email')->nullable();
