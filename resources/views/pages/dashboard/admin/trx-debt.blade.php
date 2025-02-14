@@ -125,6 +125,8 @@
                             <div class="col-md-2">
                                 <div class="pt-3">
                                     <button class="mt-4 btn btn-sm btn-success mr-3" type="submit">Submit</button>
+                                    <button class="mt-4 btn btn-sm btn-primary mr-3" type="button"
+                                        onclick="exportData()">Export</button>
                                 </div>
                             </div>
                         </div>
@@ -517,7 +519,7 @@
                     $("#amount").html(`Nominal : ${data.amount}`);
 
                     // biasanya di payment manual oleh admin
-                    if(data.status == "SUCCESS" && data.type == "P"){
+                    if (data.status == "SUCCESS" && data.type == "P") {
                         $("#reasonReject").html(`Catatan : ${data.remark}`);
                     }
                     if (data.proof_of_payment) {
@@ -613,6 +615,18 @@
                         ?.message);
                 }
             })
+        }
+
+        function exportData() {
+            let dataFilter = {
+                tgl_awal: $("#dateFrom").val(),
+                tgl_akhir: $("#dateTo").val(),
+                type: $("#fType").val(),
+                status: $("#fStatus").val(),
+                user_id: $("#fReseller").val()
+            }
+
+            window.location.href = `{{ route('export.trx-debt') }}?${$.param(dataFilter)}`
         }
     </script>
 @endpush

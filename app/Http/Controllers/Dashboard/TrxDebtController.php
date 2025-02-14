@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exports\TrxDebtExport;
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
 use App\Models\TrxDebt;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TrxDebtController extends Controller
 {
@@ -34,6 +36,11 @@ class TrxDebtController extends Controller
         return view($pageUrl, compact("title", "reseller", "banks"));
     }
 
+    public function export(Request $request)
+    {
+        return Excel::download(new TrxDebtExport($request), 'Transaksi Pihutang.xlsx');
+    }
+    
     // HANDLER API
     public function dataTable(Request $request)
     {

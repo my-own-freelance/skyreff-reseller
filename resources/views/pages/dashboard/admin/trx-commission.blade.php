@@ -24,7 +24,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <h5 class="text-uppercase title">List Transaksi Komisi</h5>
+                        <h5 class="text-uppercase title">List Withdraw Komisi</h5>
                     </div>
                     <div class="card-header-right">
                         <button class="btn btn-mini btn-info mr-1" onclick="return refreshData();">Refresh</button>
@@ -61,6 +61,8 @@
                             <div class="col-md-2">
                                 <div class="pt-3">
                                     <button class="mt-4 btn btn-sm btn-success mr-3" type="submit">Submit</button>
+                                    <button class="mt-4 btn btn-sm btn-primary mr-3" type="button"
+                                        onclick="exportData()">Export</button>
                                 </div>
                             </div>
                         </div>
@@ -431,6 +433,16 @@
                         ?.message);
                 }
             })
+        }
+
+        function exportData() {
+            let dataFilter = {
+                tgl_awal: $("#dateFrom").val(),
+                tgl_akhir: $("#dateTo").val(),
+                status: $("#fStatus").val(),
+            }
+
+            window.location.href = `{{ route('export.trx-commission') }}?${$.param(dataFilter)}`
         }
     </script>
 @endpush

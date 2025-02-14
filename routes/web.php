@@ -86,6 +86,14 @@ Route::group(["middleware" => "auth:web"], function () {
 
         // UPGRADE ACCOUNT
         Route::get("/trx-upgrade", [UpgradeAccountController::class, "index"])->name("trx-upgrade");
+
+        // EXPORT TO EXCEL
+        Route::group(["prefix" => "export/trx"], function () {
+            Route::get("/product", [TrxProductController::class, 'export'])->name("export.trx-product");
+            Route::get("/commission", [TrxCommissionController::class, 'export'])->name("export.trx-commission");
+            Route::get("/debt", [TrxDebtController::class, 'export'])->name("export.trx-debt");
+            Route::get("/compensation", [TrxCompensationController::class, 'export'])->name("export.trx-compensation");
+        });
     });
 
     // ONLY RESELLER

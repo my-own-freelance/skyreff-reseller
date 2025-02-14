@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exports\TrxProductsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
 use App\Models\Mutation;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TrxProductController extends Controller
 {
@@ -33,6 +35,11 @@ class TrxProductController extends Controller
         }
 
         return view($pageUrl, compact("title", "categories", "banks"));
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new TrxProductsExport($request), 'Transaksi Produk.xlsx');
     }
 
     // API

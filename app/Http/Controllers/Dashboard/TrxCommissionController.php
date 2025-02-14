@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exports\TrxCommissionExport;
 use App\Http\Controllers\Controller;
 use App\Models\Mutation;
 use App\Models\TrxCommission;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TrxCommissionController extends Controller
 {
@@ -34,6 +36,11 @@ class TrxCommissionController extends Controller
         $bank_account = $user->bank_account ?? "";
 
         return view("pages.dashboard.reseller.request-wd", compact("title", "balance", "bank_type", "bank_account"));
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new TrxCommissionExport($request), 'Transaksi Withdraw Komisi.xlsx');
     }
 
     // API
@@ -206,7 +213,7 @@ class TrxCommissionController extends Controller
             ], 500);
         }
     }
-    
+
     public function create(Request $request)
     {
         try {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Exports\TrxCompensationExport;
 use App\Http\Controllers\Controller;
 use App\Models\TrxCompensation;
 use App\Models\TrxProduct;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TrxCompensationController extends Controller
 {
@@ -27,6 +29,10 @@ class TrxCompensationController extends Controller
         return view($pageUrl, compact("title"));
     }
 
+    public function export(Request $request)
+    {
+        return Excel::download(new TrxCompensationExport($request), 'Transaksi Komplain Produk.xlsx');
+    }
     // HANDLER API
     public function dataTable(Request $request)
     {
@@ -44,12 +50,6 @@ class TrxCompensationController extends Controller
             $user = auth()->user();
             if ($user->role == "RESELLER") {
                 $query->where('user_id', $user->id);
-            }
-
-            // filter code trx
-            if ($request->query("search")) {
-                $searchValue = $request->query("search")['value'];
-                $query->where('code', 'like', '%' . $searchValue . '%');
             }
 
             // filter status
@@ -160,7 +160,7 @@ class TrxCompensationController extends Controller
                 $trx = "<small> 
                                 <strong>Trx Code</strong> :" . ($item->TrxProduct ? $item->TrxProduct->code : '-') .  "
                                 <br>
-                                <strong>Product</strong> :" . ($item->TrxProduct && $item->TrxProduct->Product ? $item->TrxProduct->Product->title : '-') . "
+                                <strong>Product</strong> :" . ($item->TrxProduct ? ($item->TrxProduct->Product ? $item->TrxProduct->Product->title : '-') : '-') . "
                                 <br>
                             </small>";
                 $item["trx_prod"] = $item->TrxProduct;

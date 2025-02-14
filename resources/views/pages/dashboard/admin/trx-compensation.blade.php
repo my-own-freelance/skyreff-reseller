@@ -61,6 +61,8 @@
                             <div class="col-md-2">
                                 <div class="pt-3">
                                     <button class="mt-4 btn btn-sm btn-success mr-3" type="submit">Submit</button>
+                                    <button class="mt-4 btn btn-sm btn-primary mr-3" type="button"
+                                        onclick="exportData()">Export</button>
                                 </div>
                             </div>
                         </div>
@@ -366,6 +368,17 @@
                         ?.message);
                 }
             })
+        }
+
+
+        function exportData() {
+            let dataFilter = {
+                tgl_awal: $("#dateFrom").val(),
+                tgl_akhir: $("#dateTo").val(),
+                status: $("#fStatus").val(),
+            }
+
+            window.location.href = `{{ route('export.trx-compensation') }}?${$.param(dataFilter)}`
         }
     </script>
 @endpush
