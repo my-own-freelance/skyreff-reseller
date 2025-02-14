@@ -20,6 +20,19 @@
 @endpush
 @section('content')
     <div class="row mb-5">
+        <div class="col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <ul>
+                            <li><small><b>Nominal </b>= Total terima bersih yang di peroleh reseller.</small></li>
+                            <li><small><b>Admin </b>= Total admin setiap penarikan reseller.</small></li>
+                            <li><small><b>Total </b>= Total nominal penarikan saldo komisi reseller.</small></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-12" id="boxTable">
             <div class="card">
                 <div class="card-header">

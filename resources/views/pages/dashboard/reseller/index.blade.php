@@ -28,7 +28,7 @@
         <div class="col-md-4 col-lg-4">
             <div class="card">
                 <div class="card-body p-3 text-center">
-                    <h2 class="mt-2"><b class="text2_primary" style="font-weight: 900;">SALDO EFEKTIF</b></h2>
+                    <h2 class="mt-2"><b class="text2_primary" style="font-weight: 900;">SALDO KOMISI</b></h2>
                     <h1><i class="fas fa-money-bill-wave" style="font-size: 300%;"></i></h1>
                     <h4><b style="font-size:150%;" id="w3_balance">{{ $data['commission'] }}</b></h4>
                     <div class="text-muted mb-3">Penarikan Tersedia</div>
@@ -39,8 +39,9 @@
                             <i class="fa fa-external-link-alt"></i>
                         </a>
                     </div>
-                    <div class="separator-dashed"></div><a class="btn btn-primary text-white btn-block"
-                        href="{{ route('trx-commission.request-wd') }}"> Tarik Saldo Efektif</a>
+                    <div class="separator-dashed"></div>
+                    <a class="btn btn-primary text-white btn-block" href="{{ route('trx-commission.request-wd') }}"> Tarik
+                        Saldo Komisi</a>
                 </div>
             </div>
         </div>
@@ -78,7 +79,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="card card-primary">
-                        <div class="card-body skew-shadow">
+                        <div class="card-body bubble-shadow">
                             <h1 class="mt-4">{{ $data['month_commission'] }}</h1>
                             <h3 class="mt-3">Komisi Bulan Ini</h3>
                             <div class="pull-right">

@@ -19,6 +19,19 @@
 @endpush
 @section('content')
     <div class="row mb-5">
+        <div class="col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <ul>
+                            <li><small><b>Nominal </b>= Total terima bersih yang di peroleh reseller.</small></li>
+                            <li><small><b>Admin </b>= Total admin setiap penarikan reseller.</small></li>
+                            <li><small><b>Total </b>= Total nominal penarikan saldo komisi reseller.</small></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-12" id="boxTable">
             <div class="card">
                 <div class="card-header">
@@ -27,8 +40,9 @@
                     </div>
                     <div class="card-header-right">
                         <button class="btn btn-mini btn-info mr-1" onclick="return refreshData();">Refresh</button>
-                        <a class="btn btn-mini btn-primary text-white" href="{{ route('trx-commission.request-wd') }}" style="padding:3px !important;">
-                            <i class="fa fa-money-bill-wave text-white"> Withdraw</i> 
+                        <a class="btn btn-mini btn-primary text-white" href="{{ route('trx-commission.request-wd') }}"
+                            style="padding:3px !important;">
+                            <i class="fa fa-money-bill-wave text-white"> Withdraw</i>
                         </a>
                     </div>
                     <form class="navbar-left navbar-form mr-md-1 mt-3" id="formFilter">

@@ -377,6 +377,7 @@
         }
 
         function closeForm() {
+            $("#formCheckout").find("form")[0].reset();
             $("#boxTable").fadeIn(200);
             $("#boxDetail").slideUp(200);
         }
@@ -509,6 +510,9 @@
                     closeForm();
                     showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
                     refreshData()
+                    setTimeout(() => {
+                        window.location.href = "{{ route('trx-product') }}"
+                    }, 3000)
                 },
                 error: function(err) {
                     console.log("error :", err);
