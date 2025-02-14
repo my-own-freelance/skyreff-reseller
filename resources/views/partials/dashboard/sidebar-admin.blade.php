@@ -49,6 +49,12 @@
                         <p>Kategori Produk</p>
                     </a>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'akrab' ? 'active' : '' }}">
+                    <a href="{{ route('akrab') }}">
+                        <i class="fas fa-store"></i>
+                        <p>Akrab</p>
+                    </a>
+                </li>
                 <li class="nav-item ml-3 {{ $routename == 'product' ? 'active' : '' }}">
                     <a href="{{ route('product') }}">
                         <i class="fas fa-cubes"></i>

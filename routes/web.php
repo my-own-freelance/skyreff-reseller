@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Dashboard\AkrabController;
 use App\Http\Controllers\Dashboard\BankController;
 use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\DashboardController;
@@ -65,6 +66,7 @@ Route::group(["middleware" => "auth:web"], function () {
             Route::get("/information", [InformationController::class, 'index'])->name('information');
             Route::get("/product-category", [ProductCategoryController::class, 'index'])->name('product-category');
             Route::get("/reward", [RewardController::class, 'index'])->name('reward');
+            Route::get("/akrab", [AkrabController::class, 'index'])->name('akrab');
         });
 
         // PREFIX MANAGE

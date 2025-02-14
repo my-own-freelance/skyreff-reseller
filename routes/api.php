@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Dashboard\AkrabController;
 use App\Http\Controllers\Dashboard\BankController;
 use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\DashboardController;
@@ -139,6 +140,9 @@ Route::group(["middleware" => "check.auth"], function () {
                 Route::post("update-status", [RewardController::class, "updateStatus"])->name('reward.change-status');
                 Route::delete("delete", [RewardController::class, "destroy"])->name('reward.destroy');
             });
+
+            // ASPRI
+            Route::get('/akrab', [AkrabController::class, 'getStockData'])->name("akrab.list");
         });
 
         // PREFIX MANAGE
