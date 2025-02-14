@@ -12,8 +12,8 @@
         <div class="col-md-12">
             <div class="card card-primary text-white">
                 <div class="card-body">
-                    <h1 class="fw-bold">PAKET REGULAR</h1>
-                    <h5 class="op-8">Jenis paket yang aktif untuk akun reseller anda adalah Regular</h5>
+                    <h1 class="fw-bold">PAKET {{ $data['level'] }}</h1>
+                    <h5 class="op-8">Jenis paket yang aktif untuk akun reseller anda adalah {{ $data['level'] }}</h5>
                     @if ($data['level'] == 'REGULAR')
                         <div class="pull-right mt-2">
                             <button class="btn btn-block btn-sm" onclick="upgradeAccount()">

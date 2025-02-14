@@ -88,6 +88,7 @@ Route::group(["middleware" => "auth:web"], function () {
 
     // ONLY RESELLER
     Route::group(["middleware" => "web.check.role:RESELLER"], function () {
+        Route::get("/account", [ResellerController::class, "indexAccount"])->name("reseller.account");
         Route::get("/trx-commission/request-wd", [TrxCommissionController::class, "requestWithdraw"])->name("trx-commission.request-wd");
     });
 });

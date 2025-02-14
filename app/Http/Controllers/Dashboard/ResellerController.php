@@ -42,6 +42,11 @@ class ResellerController extends Controller
         return view("pages.dashboard.admin.reseller.deleted");
     }
 
+    public function indexAccount()
+    {
+        $title = "Pengaturan Akun";
+        return view("pages.dashboard.reseller.account", compact('title'));
+    }
 
     // HANDLER API
     public function resellerDataTable(Request $request)
@@ -316,7 +321,7 @@ class ResellerController extends Controller
                     "message" => "Kecamatan tidak ditemukan",
                 ], 400);
             }
-            
+
             if ($request->file('image')) {
                 $data['image'] = $request->file('image')->store('assets/user', 'public');
             }
@@ -472,7 +477,7 @@ class ResellerController extends Controller
 
             return response()->json([
                 "status" => "success",
-                "message" => "Berhasil menambahkan data pengguna"
+                "message" => "Berhasil memperbarui data pengguna"
             ]);
         } catch (\Exception $err) {
             if ($request->file("image")) {
@@ -564,6 +569,159 @@ class ResellerController extends Controller
                 "message" => "Data berhasil direstore"
             ]);
         } catch (\Exception $err) {
+            return response()->json([
+                "status" => "error",
+                "message" => $err->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getDetailAccount()
+    {
+        try {
+            $reseller = User::find(auth()->user()->id);
+
+            if (!$reseller) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Data tidak ditemukan",
+                ], 404);
+            }
+
+            if ($reseller->image) {
+                $reseller["image"] = url("/") . Storage::url($reseller->image);
+            }
+
+            return response()->json([
+                "status" => "success",
+                "data" => $reseller
+            ]);
+        } catch (\Exception $err) {
+            return response()->json([
+                "status" => "error",
+                "message" => $err->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateAccountReseller(Request $request)
+    {
+        try {
+            $data = $request->all();
+            $data["phone_number"] = preg_replace('/^08/', '628', $data['phone_number']);
+            $rules = [
+                "name" => "required|string",
+                "password" => "nullable",
+                "phone_number" => "required|string|digits_between:10,15",
+                "bank_type" => "required|string",
+                "bank_account" => "required|string",
+                "image" => "nullable",
+                "province_id" => "required|integer",
+                "district_id" => "required|integer",
+                "sub_district_id" => "required|integer",
+                "address" => "required|string",
+            ];
+
+            if ($data && $data['password'] != "") {
+                $rules['password'] .= "|string|min:5";
+            }
+
+            if ($request->file('image')) {
+                $rules['image'] .= '|image|max:1024|mimes:giv,svg,jpeg,png,jpg';
+            }
+
+            $messages = [
+                "username.required" => "Username harus diisi",
+                "username.unique" => "Username sudah digunakan",
+                "phone_number.required" => "Nomor telepon harus diisi",
+                "phone_number.digits_between" => "Nomor telepon harus memiliki panjang antara 10 hingga 15 karakter",
+                "bank_type.required" => "Nama Bank harus diisi",
+                "bank_account.required" => "Nomor Rekening harus diisi",
+                "password.min" => "Password minimal 5 karakter",
+                "image.image" => "Gambar yang di upload tidak valid",
+                "image.max" => "Ukuran gambar maximal 1MB",
+                "image.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                "province_id.required" => "Provinsi harus diisi",
+                "province_id.integer" => "Provinsi tidak valid",
+                "district_id.required" => "Kabupaten harus diisi",
+                "district_id.integer" => "Kabupaten tidak valid",
+                "sub_district_id.required" => "Kecamatan harus diisi",
+                "sub_district_id.integer" => "Kecamatan tidak valid",
+                "address.required" => "Alamat harus diisi",
+                "description.required" => "Deskripsi harus diisi"
+            ];
+
+            $validator = Validator::make($request->all(), $rules, $messages);
+            if ($validator->fails()) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => $validator->errors()->first(),
+                ], 400);
+            }
+
+            $user = User::where('role', 'RESELLER')->where('id', auth()->user()->id)->first();
+            if (!$user) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Data tidak ditemukan"
+                ], 404);
+            }
+
+            // cek provinsi
+            $province = Province::find($request->province_id);
+            if (!$province) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Provinsi tidak ditemukan",
+                ], 400);
+            }
+
+            // cek kabupaten
+            $district = District::find($request->district_id);
+            if (!$district) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Kabupaten tidak ditemukan",
+                ], 400);
+            }
+
+            // cek kecamatan
+            $subDistrict = SubDistrict::find($request->sub_district_id);
+            if (!$subDistrict) {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Kecamatan tidak ditemukan",
+                ], 400);
+            }
+
+            if ($data['password'] && $data['password'] != "") {
+                $data['password'] = Hash::make($data['password']);
+            } else {
+                unset($data['password']);
+            }
+
+            // agar username tidak bisa diganti
+            unset($data['username']);
+
+            $data['phone_number'] = preg_replace('/^08/', '628', $data['phone_number']);
+
+            // delete undefined data image
+            unset($data["image"]);
+            if ($request->file("image")) {
+                $oldImagePath = "public/" . $user->image;
+                if (Storage::exists($oldImagePath)) {
+                    Storage::delete($oldImagePath);
+                }
+                $data["image"] = $request->file("image")->store("assets/user", "public");
+            }
+
+            $user->update($data);
+
+            return response()->json([
+                "status" => "success",
+                "message" => "Berhasil mengubah data pengguna"
+            ]);
+        } catch (\Throwable $err) {
             return response()->json([
                 "status" => "error",
                 "message" => $err->getMessage()

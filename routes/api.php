@@ -177,6 +177,9 @@ Route::group(["middleware" => "check.auth"], function () {
 
     // ONLY RESELLER ACCESS
     Route::group(["middleware" => "api.check.role:RESELLER"], function () {
+        // UPDATE ACCOUNT
+        Route::get("/account/detail", [ResellerController::class, "getDetailAccount"])->name("reseller.detail-account");
+        Route::post("/account/update", [ResellerController::class, "updateAccountReseller"])->name("reseller.update-account");
         // PREFIX TRANSACTION
         Route::group(["prefix" => "trx"], function () {
             //  PRODUCT
@@ -185,7 +188,6 @@ Route::group(["middleware" => "check.auth"], function () {
             Route::post('/commission/create', [TrxCommissionController::class, "create"])->name("trx-commission.create");
             // COMPENSATION
             Route::post('/compensation/create', [TrxCompensationController::class, "create"])->name("trx-compensation.create");
-
             // UPGRADE RESELLER
             Route::post("/trx-upgrade/create", [UpgradeAccountController::class, "create"])->name('trx-upgrade.create');
         });

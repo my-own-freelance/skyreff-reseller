@@ -12,10 +12,6 @@ class WebConfigController extends Controller
     public function index()
     {
         $title = "Setting Website";
-        $setting = WebConfig::first();
-        if ($setting) {
-            $title = $setting->web_title;
-        }
         return view('pages.dashboard.admin.web-config', compact('title'));
     }
 
