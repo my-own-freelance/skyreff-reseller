@@ -32,7 +32,7 @@ class WebConfigController extends Controller
             }
 
             if (!$config->web_description) {
-                $config["web_description"] = "Situs Jual Beli Properti Terbaik";
+                $config["web_description"] = "Situs Jual Beli Produk Digital";
             }
 
             if ($config->meta_image) {

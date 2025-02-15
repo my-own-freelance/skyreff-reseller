@@ -88,7 +88,8 @@
                                 <select id="reseller_list" name="reseller_list[]" class="form-control" multiple="multiple">
                                     <option value="">Pilih Reseller</option>
                                     @foreach ($resellers as $reseller)
-                                        <option value = "{{ $reseller->id }}">{{ $reseller->name }}</option>
+                                        <option value = "{{ $reseller->id }}">
+                                            {{ $reseller->name }} ({{$reseller->code}})</option>
                                     @endforeach
                                 </select>
                             </div>

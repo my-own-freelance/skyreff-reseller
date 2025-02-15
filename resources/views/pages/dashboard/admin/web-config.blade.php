@@ -153,14 +153,6 @@
                                                 <small class="text-danger">Max ukuran 1MB</small>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group form-group-default">
-                                                <label>Logo (Putih)</label>
-                                                <input class="form-control" id="web_logo_white" type="file"
-                                                    name="web_logo_white" placeholder="upload logo putih" />
-                                                <small class="text-danger">Max ukuran 1MB</small>
-                                            </div>
-                                        </div>
                                         <div class="col-md-12">
                                             <div class="form-group form-group-default">
                                                 <label>Deskripsi Web/Aplikasi</label>

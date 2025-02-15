@@ -18,6 +18,7 @@ use App\Http\Controllers\Dashboard\TrxCommissionController;
 use App\Http\Controllers\Dashboard\TrxCompensationController;
 use App\Http\Controllers\Dashboard\TrxDebtController;
 use App\Http\Controllers\Dashboard\TrxProductController;
+use App\Http\Controllers\Dashboard\TrxRewardController;
 use App\Http\Controllers\Dashboard\UpgradeAccountController;
 use App\Http\Controllers\Dashboard\WebConfigController;
 use Illuminate\Http\Request;
@@ -68,6 +69,9 @@ Route::group(["middleware" => "check.auth"], function () {
     Route::get("/trx/compensation/datatable", [TrxCompensationController::class, "dataTable"])->name('trx-compensation.datatable');
     Route::post("/trx/compensation/update-status", [TrxCompensationController::class, "changeStatus"])->name('trx-compensation.change-status');
     Route::get("/trx/compensation/{id}/detail", [TrxCompensationController::class, "getDetail"])->name('trx-compensation.detail');
+    Route::get("/trx/reward/datatable", [TrxRewardController::class, "dataTable"])->name('trx-reward.datatable');
+    Route::get("/trx/reward/{id}/detail", [TrxRewardController::class, "getDetail"])->name('trx-reward.detail');
+
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "api.check.role:ADMIN"], function () {
         Route::get("/statistic-chart", [DashboardController::class, "getStatisticChart"])->name("statistic-chart");
@@ -172,6 +176,7 @@ Route::group(["middleware" => "check.auth"], function () {
 
         // PREFIX TRX
         Route::group(["prefix" => "trx"], function () {
+            Route::post("reward/update-status", [TrxRewardController::class, "changeStatus"])->name('trx-reward.change-status');
             // UPGRADE ACCOUNT
             Route::group(["prefix" => "upgrade"], function () {
                 Route::get("datatable", [UpgradeAccountController::class, "dataTable"])->name('trx-upgrade.datatable');
@@ -195,6 +200,8 @@ Route::group(["middleware" => "check.auth"], function () {
             Route::post('/compensation/create', [TrxCompensationController::class, "create"])->name("trx-compensation.create");
             // UPGRADE RESELLER
             Route::post("/trx-upgrade/create", [UpgradeAccountController::class, "create"])->name('trx-upgrade.create');
+            // REWARD
+            Route::post("/trx-reward/create", [TrxRewardController::class, "create"])->name('trx-reward.create');
         });
     });
 });

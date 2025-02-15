@@ -82,7 +82,7 @@
                 <li class="nav-item ml-3 {{ $routename == 'trx-commission' ? 'active' : '' }}">
                     <a href="{{ route('trx-commission') }}">
                         <i class="fas fa-wallet"></i>
-                        <p>Commission</p>
+                        <p>Withdraw</p>
                     </a>
                 </li>
                 <li class="nav-item ml-3 {{ $routename == 'trx-debt' ? 'active' : '' }}">
@@ -95,6 +95,12 @@
                     <a href="{{ route('trx-compensation') }}">
                         <i class="fas fa-clipboard-list"></i>
                         <p>Komplain Transaksi</p>
+                    </a>
+                </li>
+                <li class="nav-item ml-3 {{ $routename == 'trx-reward' ? 'active' : '' }}">
+                    <a href="{{ route('trx-reward') }}">
+                        <i class="fas fa-gift"></i>
+                        <p>Hadiah</p>
                     </a>
                 </li>
                 <li class="nav-item ml-3 {{ $routename == 'trx-upgrade' ? 'active' : '' }}">

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('proof_of_acception')->nullable(); // bukti reward diberikan oleh admin
             $table->string('remark')->nullable(); // alasan admin reject
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('reward_id');
+            $table->unsignedBigInteger('reward_id')->nullable(); // bisa null untuk tambah data trx jika reseller zonk dapat reward
             $table->timestamps();
             $table->softDeletes();
 
