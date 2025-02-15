@@ -86,46 +86,54 @@
     <div class="row">
         <div class="col-sm-6 col-lg-3">
             <div class="card p-3">
-                <div class="d-flex align-items-center">
-                    <span class="stamp stamp-md background_primary mr-3"><i class="fas fa-cubes"></i></span>
-                    <div>
-                        <h5 class="mb-1"><b>{{ $data['total_product'] }}</b></h5>
-                        <small class="text-muted">Total Produk</small>
+                <a href="{{ route('product') }}" style="text-decoration: none; color: inherit;">
+                    <div class="d-flex align-items-center">
+                        <span class="stamp stamp-md background_primary mr-3"><i class="fas fa-cubes"></i></span>
+                        <div>
+                            <h5 class="mb-1"><b>{{ $data['total_product'] }}</b></h5>
+                            <small class="text-muted">Total Produk</small>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         <div class="col-sm-6 col-lg-3">
             <div class="card p-3">
-                <div class="d-flex align-items-center">
-                    <span class="stamp stamp-md bg-success mr-3"><i class="fas fa-shopping-cart"></i></span>
-                    <div>
-                        <h5 class="mb-1"><b>{{ $data['total_trx'] }}</b></h5>
-                        <small class="text-muted">Transaksi Bulanan</small>
+                <a href="{{ route('trx-product') }}" style="text-decoration: none; color: inherit;">
+                    <div class="d-flex align-items-center">
+                        <span class="stamp stamp-md bg-success mr-3"><i class="fas fa-shopping-cart"></i></span>
+                        <div>
+                            <h5 class="mb-1"><b>{{ $data['total_trx'] }}</b></h5>
+                            <small class="text-muted">Transaksi Bulanan</small>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         <div class="col-sm-6 col-lg-3">
             <div class="card p-3">
-                <div class="d-flex align-items-center">
-                    <span class="stamp stamp-md bg-info mr-3"><i class="fas fa-user-tag"></i></span>
-                    <div>
-                        <h5 class="mb-1"><b>{{ $data['total_reseller'] }}</b></h5>
-                        <small class="text-muted">Total Reseller</small>
+                <a href="{{ route('reseller') }}" style="text-decoration: none; color: inherit;">
+                    <div class="d-flex align-items-center">
+                        <span class="stamp stamp-md bg-info mr-3"><i class="fas fa-user-tag"></i></span>
+                        <div>
+                            <h5 class="mb-1"><b>{{ $data['total_reseller'] }}</b></h5>
+                            <small class="text-muted">Total Reseller</small>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         <div class="col-sm-6 col-lg-3">
             <div class="card p-3">
-                <div class="d-flex align-items-center">
-                    <span class="stamp stamp-md bg-danger mr-3"><i class="fas fa-clipboard-list"></i></span>
-                    <div>
-                        <h5 class="mb-1"><b>{{ $data['total_compensation'] }}</b></h5>
-                        <small class="text-muted">Pengajuan Komplain</small>
+                <a href="{{ route('trx-compensation') }}" style="text-decoration: none; color: inherit;">
+                    <div class="d-flex align-items-center">
+                        <span class="stamp stamp-md bg-danger mr-3"><i class="fas fa-clipboard-list"></i></span>
+                        <div>
+                            <h5 class="mb-1"><b>{{ $data['total_compensation'] }}</b></h5>
+                            <small class="text-muted">Pengajuan Komplain</small>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
