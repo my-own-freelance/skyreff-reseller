@@ -66,11 +66,11 @@
                     <div class="card card-primary">
                         <div class="card-body bubble-shadow">
                             <div class="row">
-                                <div class="col-md-6" style="border-right: 2px solid #dedede">
+                                <div class="col-6" style="border-right: 2px solid #dedede">
                                     <h1 class="mt-4" style="font-size: 16px">{{ $data['debt_all_reseller'] }}</h1>
                                     <h3 class="mt-3" style="font-size: 14px">Total Hutang</h3>
                                 </div>
-                                <div class="col-md-6" style="text-align: right !important">
+                                <div class="col-6" style="text-align: right !important">
                                     <h1 class="mt-4" style="font-size: 16px">{{ $data['commission_all_reseller'] }}</h1>
                                     <h3 class="mt-3" style="font-size: 14px">Total Komisi</h3>
                                 </div>
