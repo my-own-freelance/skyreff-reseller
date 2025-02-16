@@ -19,6 +19,7 @@ use App\Http\Controllers\Dashboard\TrxProductController;
 use App\Http\Controllers\Dashboard\TrxRewardController;
 use App\Http\Controllers\Dashboard\UpgradeAccountController;
 use App\Http\Controllers\Dashboard\WebConfigController;
+use App\Http\Controllers\FrontPage\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,9 +33,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get("/logout", [AuthController::class, "logout"])->name("logout");
 

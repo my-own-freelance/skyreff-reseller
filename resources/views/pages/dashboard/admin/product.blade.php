@@ -94,7 +94,7 @@
                                 <tr>
                                     <th class="all">#</th>
                                     <th class="all">Gambar</th>
-                                    <th class="all">Judul</th>
+                                    <th class="all">Produk</th>
                                     <th class="all">Kutipan</th>
                                     <th class="all">Kategori</th>
                                     <th class="all">Harga</th>

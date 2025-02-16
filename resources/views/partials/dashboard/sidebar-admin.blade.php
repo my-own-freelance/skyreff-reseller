@@ -82,7 +82,7 @@
                 <li class="nav-item ml-3 {{ $routename == 'trx-commission' ? 'active' : '' }}">
                     <a href="{{ route('trx-commission') }}">
                         <i class="fas fa-wallet"></i>
-                        <p>Withdraw</p>
+                        <p>Tarik Komisi</p>
                     </a>
                 </li>
                 <li class="nav-item ml-3 {{ $routename == 'trx-debt' ? 'active' : '' }}">
