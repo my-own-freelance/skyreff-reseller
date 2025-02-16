@@ -226,10 +226,10 @@ class TrxCommissionController extends Controller
             ];
 
             $messages = [
-                "amount.integer" => "Nominal Withdraw tidak valid",
-                "amount.min" => "Nominal Withdraw minimal Rp.100.000",
-                "amount.max" => "Nominal Withdraw maksimal Rp.1.000.000",
-                "amount.requred" => "Nominal Withdraw harus diisi",
+                "amount.integer" => "Nominal Penarikan tidak valid",
+                "amount.min" => "Nominal Penarikan minimal Rp.100.000",
+                "amount.max" => "Nominal Penarikan maksimal Rp.1.000.000",
+                "amount.requred" => "Nominal Penarikan harus diisi",
                 "bank_name.required" => "Nama Bank harus diisi",
                 "bank_account" => "No Rekening harus diisi"
             ];
@@ -288,7 +288,7 @@ class TrxCommissionController extends Controller
             DB::commit();
             return response()->json([
                 "status" => "success",
-                "message" => "Withdraw berhasil diajukan, silahkan tunggu admin untuk memproses"
+                "message" => "Penarikan berhasil diajukan, silahkan tunggu admin untuk memproses"
             ]);
         } catch (\Throwable $err) {
             DB::rollBack();
@@ -345,8 +345,8 @@ class TrxCommissionController extends Controller
             }
 
             $messages = [
-                "id.required" => "Data Withdrawe harus dipilih",
-                "id.integer" => "Type Withdrawe tidak valid",
+                "id.required" => "Data Penarikan harus dipilih",
+                "id.integer" => "Type Penarikan tidak valid",
                 "status.required" => "Status harus diisi",
                 "status.in" => "Status tidak sesuai",
                 "proof_of_payment.image" => "Gambar yang di upload tidak valid",
@@ -376,7 +376,7 @@ class TrxCommissionController extends Controller
             if (!$dataTrx) {
                 return response()->json([
                     "status" => "error",
-                    "message" => "Data Withdraw tidak ditemukan !"
+                    "message" => "Data Penarikan tidak ditemukan !"
                 ], 404);
             }
 
@@ -384,7 +384,7 @@ class TrxCommissionController extends Controller
             if (in_array($dataTrx->status, ['REJECT', 'CANCEL'])) {
                 return response()->json([
                     "status" => "error",
-                    "message" => "Status withdraw sudah tidak bisa diubah"
+                    "message" => "Status Penarikan sudah tidak bisa diubah"
                 ], 400);
             }
 

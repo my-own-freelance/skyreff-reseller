@@ -17,6 +17,7 @@ use App\Http\Controllers\Dashboard\TrxCompensationController;
 use App\Http\Controllers\Dashboard\TrxDebtController;
 use App\Http\Controllers\Dashboard\TrxProductController;
 use App\Http\Controllers\Dashboard\TrxRewardController;
+use App\Http\Controllers\Dashboard\TrxTopupController;
 use App\Http\Controllers\Dashboard\UpgradeAccountController;
 use App\Http\Controllers\Dashboard\WebConfigController;
 use App\Http\Controllers\FrontPage\HomeController;
@@ -52,6 +53,7 @@ Route::group(["middleware" => "auth:web"], function () {
     Route::get("/trx-debt", [TrxDebtController::class, "index"])->name("trx-debt");
     Route::get("/trx-compensation", [TrxCompensationController::class, "index"])->name("trx-compensation");
     Route::get("/trx-reward", [TrxRewardController::class, "index"])->name("trx-reward");
+    Route::get("/trx-topup", [TrxTopupController::class, "index"])->name("trx-topup");
 
     // GLOBAL ACCESS
     Route::get("/master/products", [ProductController::class, 'index'])->name('product');
@@ -95,6 +97,7 @@ Route::group(["middleware" => "auth:web"], function () {
             Route::get("/debt", [TrxDebtController::class, 'export'])->name("export.trx-debt");
             Route::get("/compensation", [TrxCompensationController::class, 'export'])->name("export.trx-compensation");
             Route::get("/reward", [TrxRewardController::class, 'export'])->name("export.trx-reward");
+            Route::get("/topup", [TrxTopupController::class, 'export'])->name("export.trx-topup");
         });
     });
 

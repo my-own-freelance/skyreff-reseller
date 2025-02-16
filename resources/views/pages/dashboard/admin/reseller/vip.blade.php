@@ -37,6 +37,7 @@
                         <th class="all">Username</th>
                         <th class="all">Kode</th>
                         <th class="all">Phone</th>
+                        <th class="all">Saldo</th>
                         <th class="all">Limit Piutang</th>
                         <th class="all">Total Piutang</th>
                         <th class="all">Komisi</th>
@@ -47,7 +48,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="10" class="text-center"><small>Tidak Ada Data</small></td>
+                        <td colspan="11" class="text-center"><small>Tidak Ada Data</small></td>
                     </tr>
                 </tbody>
             </table>

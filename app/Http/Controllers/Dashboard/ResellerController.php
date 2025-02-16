@@ -132,6 +132,7 @@ class ResellerController extends Controller
             $item['debt_limit'] = 'Rp. ' . number_format($item->debt_limit, 0, ',', '.');
             $item['total_debt'] = 'Rp. ' . number_format($item->total_debt, 0, ',', '.');
             $item['commission'] = 'Rp. ' . number_format($item->commission, 0, ',', '.');
+            $item['balance'] = 'Rp. ' . number_format($item->balance, 0, ',', '.');
             $item['created'] = Carbon::parse($item->created_at)->addHours(7)->format('Y-m-d H:i:s');
             $item['code'] = $code;
             return $item;
@@ -248,6 +249,7 @@ class ResellerController extends Controller
                 "bank_account" => "required|string",
                 "is_active" => "required|string|in:Y,N",
                 "level" => "required|string|in:REGULAR,VIP",
+                "balance" => "required|integer|min:0",
                 "debt_limit" => "required|integer|min:0",
                 "image" => "required|image|max:2048|mimes:giv,svg,jpeg,png,jpg",
                 "province_id" => "required|integer",
@@ -270,6 +272,9 @@ class ResellerController extends Controller
                 "is_active.in" => "Status tidak sesuai",
                 "level.required" => "Level harus diisi",
                 "level.in" => "Level tidak valid",
+                "balance.required" => "Saldo Awal harus diisi",
+                "balance.integer" => "Saldo Awal tidak valid",
+                "balance.min" => "Saldo Awal tidak boleh minus",
                 "debt_limit.required" => "Limit pihutang harus diisi",
                 "debt_limit.integer" => "Limit pihutang tidak valid",
                 "debt_limit.min" => "Limit pihutang tidak boleh minus",
@@ -363,6 +368,7 @@ class ResellerController extends Controller
                 "bank_account" => "required|string",
                 "is_active" => "required|string|in:Y,N",
                 "level" => "required|string|in:REGULAR,VIP",
+                "balance" => "required|integer|min:0",
                 "debt_limit" => "required|integer|min:0",
                 "image" => "nullable",
                 "province_id" => "required|integer",
@@ -393,6 +399,9 @@ class ResellerController extends Controller
                 "is_active.in" => "Status tidak sesuai",
                 "level.required" => "Level harus diisi",
                 "level.in" => "Level tidak valid",
+                "balance.required" => "Saldo Awal harus diisi",
+                "balance.integer" => "Saldo Awal tidak valid",
+                "balance.min" => "Saldo Awal tidak boleh minus",
                 "debt_limit.required" => "Limit pihutang harus diisi",
                 "debt_limit.integer" => "Limit pihutang tidak valid",
                 "debt_limit.min" => "Limit pihutang tidak boleh minus",

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('bank_type')->nullable();
             $table->string('bank_account')->nullable();
             $table->enum('level', ['REGULAR', 'VIP'])->nullable();
+            $table->integer('balance')->default(0);
             $table->integer('debt_limit')->default(0);
             $table->integer('total_debt')->default(0);
             $table->integer('commission')->default(0);

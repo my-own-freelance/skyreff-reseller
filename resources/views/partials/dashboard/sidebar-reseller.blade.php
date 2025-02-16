@@ -43,6 +43,12 @@
                     </span>
                     <h4 class="text-section">Transaction</h4>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'trx-topup' ? 'active' : '' }}">
+                    <a href="{{ route('trx-topup') }}">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <p>Topup Saldo</p>
+                    </a>
+                </li>
                 <li class="nav-item ml-3 {{ $routename == 'trx-product' ? 'active' : '' }}">
                     <a href="{{ route('trx-product') }}">
                         <i class="fas fa-shopping-cart"></i>

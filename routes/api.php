@@ -19,6 +19,7 @@ use App\Http\Controllers\Dashboard\TrxCompensationController;
 use App\Http\Controllers\Dashboard\TrxDebtController;
 use App\Http\Controllers\Dashboard\TrxProductController;
 use App\Http\Controllers\Dashboard\TrxRewardController;
+use App\Http\Controllers\Dashboard\TrxTopupController;
 use App\Http\Controllers\Dashboard\UpgradeAccountController;
 use App\Http\Controllers\Dashboard\WebConfigController;
 use Illuminate\Http\Request;
@@ -55,22 +56,33 @@ Route::group(["middleware" => "check.auth"], function () {
     Route::get("/statik-session", [DashboardController::class, "getStatikSession"])->name("statik-session");
     Route::get("/master/product/datatable", [ProductController::class, "dataTable"])->name('product.datatable');
     Route::get("/master/product/{id}/detail", [ProductController::class, "getDetail"])->name('product.detail');
+    // PRODUCT
     Route::get("/trx/product/datatable", [TrxProductController::class, "dataTable"])->name('trx-product.datatable');
     Route::post("/trx/product/update-status", [TrxProductController::class, "changeStatus"])->name('trx-product.change-status');
     Route::get("/trx/product/{id}/detail", [TrxProductController::class, "getDetail"])->name('trx-product.detail');
+    // MUTATION
     Route::get("/mutation/commission/datatable", [MutationController::class, "dataTable"])->name('mutation-commission.datatable');
+    // COMMISSION
     Route::get("/trx/commission/datatable", [TrxCommissionController::class, "dataTable"])->name('trx-commission.datatable');
     Route::post("/trx/commission/update-status", [TrxCommissionController::class, "changeStatus"])->name('trx-commission.change-status');
     Route::get("/trx/commission/{id}/detail", [TrxCommissionController::class, "getDetail"])->name('trx-commission.detail');
+    // DEBT
     Route::get("/trx/debt/datatable", [TrxDebtController::class, "dataTable"])->name('trx-debt.datatable');
     Route::post("/trx/debt/create", [TrxDebtController::class, "create"])->name('trx-debt.create');
     Route::post("/trx/debt/update-status", [TrxDebtController::class, "changeStatus"])->name('trx-debt.change-status');
     Route::get("/trx/debt/{id}/detail", [TrxDebtController::class, "getDetail"])->name('trx-debt.detail');
+    // COMPENSTAION
     Route::get("/trx/compensation/datatable", [TrxCompensationController::class, "dataTable"])->name('trx-compensation.datatable');
     Route::post("/trx/compensation/update-status", [TrxCompensationController::class, "changeStatus"])->name('trx-compensation.change-status');
     Route::get("/trx/compensation/{id}/detail", [TrxCompensationController::class, "getDetail"])->name('trx-compensation.detail');
+    // REWARD
     Route::get("/trx/reward/datatable", [TrxRewardController::class, "dataTable"])->name('trx-reward.datatable');
     Route::get("/trx/reward/{id}/detail", [TrxRewardController::class, "getDetail"])->name('trx-reward.detail');
+    // TOPUP
+    Route::get("/trx/topup/datatable", [TrxTopupController::class, "dataTable"])->name('trx-topup.datatable');
+    Route::post("/trx/topup/create", [TrxTopupController::class, "create"])->name('trx-topup.create');
+    Route::post("/trx/topup/update-status", [TrxTopupController::class, "changeStatus"])->name('trx-topup.change-status');
+    Route::get("/trx/topup/{id}/detail", [TrxTopupController::class, "getDetail"])->name('trx-topup.detail');
 
     Route::get('/master/akrab', [AkrabController::class, 'getStockData'])->name("akrab.list");
     // ONLY ADMIN ACCESS

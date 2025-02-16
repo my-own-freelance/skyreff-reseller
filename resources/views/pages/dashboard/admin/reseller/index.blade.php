@@ -114,11 +114,9 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label for="bank_type">Nama Bank <span
-                                                    class="text-danger">*</span></label>
-                                            <input class="form-control" id="bank_type" type="text"
-                                                name="bank_type" placeholder="masukkan nama bank reseller"
-                                                required />
+                                            <label for="bank_type">Nama Bank <span class="text-danger">*</span></label>
+                                            <input class="form-control" id="bank_type" type="text" name="bank_type"
+                                                placeholder="masukkan nama bank reseller" required />
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -150,6 +148,18 @@
                                                 <option value="Y">Enable</option>
                                                 <option value="N">Disable</option>
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="balance">Saldo Awal <span class="text-danger">*</span></label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp</span>
+                                                </div>
+                                                <input class="form-control" id="balance" type="text" min="0"
+                                                    name="balance" placeholder="masukkan saldo awal" required />
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -214,7 +224,8 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label for="sub_district_id">Kecamatan <span class="text-danger">*</span></label>
+                                            <label for="sub_district_id">Kecamatan <span
+                                                    class="text-danger">*</span></label>
                                             <select class="form-control form-control" id="sub_district_id"
                                                 name="sub_district_id" required>
                                                 <option value = "">Pilih Kecamatan</option>
@@ -358,6 +369,8 @@
                 }, {
                     data: "level"
                 }, {
+                    data: "balance"
+                }, {
                     data: "debt_limit"
                 }, {
                     data: "total_debt"
@@ -399,6 +412,8 @@
                 }, {
                     data: "phone_number"
                 }, {
+                    data: "balance"
+                }, {
                     data: "debt_limit"
                 }, {
                     data: "total_debt"
@@ -439,6 +454,8 @@
                     data: "code"
                 }, {
                     data: "phone_number"
+                }, {
+                    data: "balance"
                 }, {
                     data: "debt_limit"
                 }, {
@@ -482,6 +499,8 @@
                     data: "phone_number"
                 }, {
                     data: "level"
+                }, {
+                    data: "balance"
                 }, {
                     data: "debt_limit"
                 }, {
@@ -619,7 +638,7 @@
             return parseInt(rupiah.replace(/[^,\d]/g, ''), 10);
         }
 
-        $('#debt_limit').on('keyup', function() {
+        $('#debt_limit,#balance').on('keyup', function() {
             let value = $(this).val().replace(/[^,\d]/g, '');
             $(this).val(formatToRupiah(value));
         });
@@ -645,6 +664,7 @@
                         $("#bank_account").val(d.bank_account);
                         $("#level").val(d.level).change();
                         $("#is_active").val(d.is_active).change();
+                        $("#balance").val(formatToRupiah(d.balance));
                         $("#debt_limit").val(formatToRupiah(d.debt_limit));
                         $("#address").val(d.address);
 
@@ -658,10 +678,11 @@
 
                         $("#password").attr("required", false);
                         $("#uploadImg2").attr("required", false);
-                        if(d.image){
+                        if (d.image) {
                             $(".img-upload-preview").attr("src", d.image);
-                        }else {
-                            $(".img-upload-preview").attr("src", "{{ asset('dashboard/img/no-image.jpg') }}");
+                        } else {
+                            $(".img-upload-preview").attr("src",
+                                "{{ asset('dashboard/img/no-image.jpg') }}");
                         }
                     })
                 },
@@ -693,6 +714,10 @@
 
             if (!isNaN(removeRupiahFormat($('#debt_limit').val()))) {
                 formData.append("debt_limit", removeRupiahFormat($("#debt_limit").val()));
+            }
+
+            if (!isNaN(removeRupiahFormat($('#balance').val()))) {
+                formData.append("balance", removeRupiahFormat($("#balance").val()));
             }
 
             saveData(formData, $("#formEditable").attr("data-action"));

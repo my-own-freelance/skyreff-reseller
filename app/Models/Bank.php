@@ -22,5 +22,9 @@ class Bank extends Model
         return $this->hasMany(TrxDebt::class);
     }
 
+    public function TrxTopups()
+    {
+        return $this->hasMany(TrxTopup::class);
+    }
 
 }

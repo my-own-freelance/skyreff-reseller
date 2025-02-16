@@ -76,6 +76,10 @@ class User extends Authenticatable
         return $this->hasMany(TrxDebt::class);
     }
 
+    public function TrxPopups()
+    {
+        return $this->hasMany(TrxTopup::class);
+    }
 
     public function Province()
     {
