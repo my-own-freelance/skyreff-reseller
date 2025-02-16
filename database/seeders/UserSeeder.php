@@ -25,8 +25,8 @@ class UserSeeder extends Seeder
 
         User::create([
             "code" => "ADMCOREOKE",
-            "name" => "code admin",
-            "username" => "codeadmin",
+            "name" => "core admin",
+            "username" => "coreadmin",
             "password" => Hash::make("rahasia"),
             "is_active" => "Y",
             "role" => "ADMIN"
