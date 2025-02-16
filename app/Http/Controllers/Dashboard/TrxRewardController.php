@@ -165,7 +165,7 @@ class TrxRewardController extends Controller
                 return $item;
             });
 
-            $queryTotal = TrxReward::whereBetween('created_at', [$tglAwal, $tglAkhir]);
+            $queryTotal = TrxReward::whereBetween('created_at', [$tglAwal, $tglAkhir])->whereNot("reward_id", null);
             if ($user->role == "RESELLER") {
                 $queryTotal->where('user_id', $user->id);
             }
@@ -199,7 +199,7 @@ class TrxRewardController extends Controller
             // cari data transaksi hari ini
             $tglAwal = Carbon::now('UTC')->startOfDay()->subHour(7)->toDateTimeString(); // dikurangi 7 jam mengikuti waktu utc
             $tglAkhir = Carbon::now('UTC')->endOfDay()->subHour(7)->toDateTimeString(); // dikurangi 7 jam mengikuti waktu utc
-            $alreadyClaim = TrxReward::whereBetween('created_at', [$tglAwal, $tglAkhir])->first();
+            $alreadyClaim = TrxReward::whereBetween('created_at', [$tglAwal, $tglAkhir])->where('user_id', $userId)->first();
             if ($alreadyClaim) {
                 return response()->json([
                     "status" => "error",
@@ -231,7 +231,7 @@ class TrxRewardController extends Controller
                 DB::commit();
                 return response()->json([
                     "status" => "success",
-                    "message" => "Opps, Sayang sekali kamu sedang ZONKK!!!",
+                    "message" => "Opps, Mohon maaf anda belum beruntung!!!",
                     "remark" => "Reward Kosong",
                     "waktu" => $waktuSekarang
                 ], 400);
@@ -255,7 +255,7 @@ class TrxRewardController extends Controller
                 DB::commit();
                 return response()->json([
                     'success' => false,
-                    'message' => 'Opps, Sayang sekali kamu sedang ZONKK!!!',
+                    'message' => 'Opps, Mohon maaf anda belum beruntung!!!',
                     "remark" => "Reward yg tersedia sudah pernah di claim semua",
                     "waktu" => $waktuSekarang
                 ], 400);

@@ -25,10 +25,16 @@
                     </span>
                     <h4 class="text-section">Master</h4>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'akrab' ? 'active' : '' }}">
+                    <a href="{{ route('akrab') }}">
+                        <i class="fas fa-store"></i>
+                        <p>Paket Akrab</p>
+                    </a>
+                </li>
                 <li class="nav-item ml-3 {{ $routename == 'product' ? 'active' : '' }}">
                     <a href="{{ route('product') }}">
                         <i class="fas fa-cubes"></i>
-                        <p>Product</p>
+                        <p>List Product</p>
                     </a>
                 </li>
                 <li class="nav-section">

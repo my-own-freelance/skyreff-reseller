@@ -11,7 +11,9 @@ class AkrabController extends Controller
     public function index()
     {
         $title = "Data Akrab";
-        return view("pages.dashboard.admin.akrab", compact('title'));
+        $user = auth()->user();
+        $pageUrl = $user->role == "ADMIN" ? "pages.dashboard.admin.akrab" : "pages.dashboard.reseller.akrab";
+        return view($pageUrl, compact('title'));
     }
 
     public function getStockData()

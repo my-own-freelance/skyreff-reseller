@@ -56,6 +56,7 @@ Route::group(["middleware" => "auth:web"], function () {
 
     // GLOBAL ACCESS
     Route::get("/master/products", [ProductController::class, 'index'])->name('product');
+    Route::get("/master/akrab", [AkrabController::class, 'index'])->name('akrab');
 
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "web.check.role:ADMIN"], function () {
@@ -68,7 +69,6 @@ Route::group(["middleware" => "auth:web"], function () {
             Route::get("/information", [InformationController::class, 'index'])->name('information');
             Route::get("/product-category", [ProductCategoryController::class, 'index'])->name('product-category');
             Route::get("/reward", [RewardController::class, 'index'])->name('reward');
-            Route::get("/akrab", [AkrabController::class, 'index'])->name('akrab');
         });
 
         // PREFIX MANAGE

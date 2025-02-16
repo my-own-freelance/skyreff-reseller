@@ -72,6 +72,7 @@ Route::group(["middleware" => "check.auth"], function () {
     Route::get("/trx/reward/datatable", [TrxRewardController::class, "dataTable"])->name('trx-reward.datatable');
     Route::get("/trx/reward/{id}/detail", [TrxRewardController::class, "getDetail"])->name('trx-reward.detail');
 
+    Route::get('/master/akrab', [AkrabController::class, 'getStockData'])->name("akrab.list");
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "api.check.role:ADMIN"], function () {
         Route::get("/statistic-chart", [DashboardController::class, "getStatisticChart"])->name("statistic-chart");
@@ -145,9 +146,6 @@ Route::group(["middleware" => "check.auth"], function () {
                 Route::post("update-status", [RewardController::class, "updateStatus"])->name('reward.change-status');
                 Route::delete("delete", [RewardController::class, "destroy"])->name('reward.destroy');
             });
-
-            // ASPRI
-            Route::get('/akrab', [AkrabController::class, 'getStockData'])->name("akrab.list");
         });
 
         // PREFIX MANAGE
