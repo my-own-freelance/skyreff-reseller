@@ -14,19 +14,38 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::create([
-        //     "code" => "sa12345",
-        //     "name" => "superadmin",
-        //     "username" => "superadmin",
-        //     "password" => Hash::make("rahasia"),
-        //     "is_active" => "Y",
-        //     "role" => "ADMIN"
-        // ]);
+        User::create([
+            "code" => "ADMSUPEROK",
+            "name" => "superadmin",
+            "username" => "superadmin",
+            "password" => Hash::make("rahasia"),
+            "is_active" => "Y",
+            "role" => "ADMIN"
+        ]);
 
         User::create([
-            "code" => "re12345",
-            "name" => "reseller",
-            "username" => "reseller",
+            "code" => "ADMCOREOKE",
+            "name" => "code admin",
+            "username" => "codeadmin",
+            "password" => Hash::make("rahasia"),
+            "is_active" => "Y",
+            "role" => "ADMIN"
+        ]);
+
+        User::create([
+            "code" => "RESREDHAAF",
+            "name" => "Redha",
+            "username" => "redha",
+            "password" => Hash::make("rahasia"),
+            "is_active" => "Y",
+            "role" => "RESELLER",
+            "level" => "VIP"
+        ]);
+
+        User::create([
+            "code" => "RESAKHARIS",
+            "name" => "Kharis",
+            "username" => "kharis",
             "password" => Hash::make("rahasia"),
             "is_active" => "Y",
             "role" => "RESELLER",

@@ -229,7 +229,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="3" class="text-center">File Regulasi Kosong</td>
+                                        <td colspan="7" class="text-center">Produk Kosong</td>
                                     </tr>
                                 @endforelse
                             </tbody>
