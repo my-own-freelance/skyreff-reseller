@@ -270,7 +270,7 @@
                 }, {
                     data: "amount",
                     render: function(data, type, row) {
-                        return convertToRupiah(data);
+                        return `<span class="text-success">+ ${convertToRupiah(data)}</span>`;
                     }
                 }, {
                     data: "bank"
@@ -306,8 +306,8 @@
                                 amount += r.amount;
                             });
 
-                            $(api.column(3).footer()).html('TOTAL');
-                            $(api.column(4).footer()).html(convertToRupiah(amount));
+                            $(api.column(2).footer()).html('TOTAL');
+                            $(api.column(3).footer()).html(convertToRupiah(amount));
                         }
                     })
                 },

@@ -71,6 +71,11 @@ class User extends Authenticatable
         return $this->hasMany(Mutation::class);
     }
 
+    public function MutationBalances()
+    {
+        return $this->hasMany(MutationBalance::class);
+    }
+
     public function TrxDebts()
     {
         return $this->hasMany(TrxDebt::class);

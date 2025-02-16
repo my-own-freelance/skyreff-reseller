@@ -16,7 +16,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <h5 class="text-uppercase title">List Mutasi Komisi</h5>
+                        <h5 class="text-uppercase title">List Mutasi Topup</h5>
                     </div>
                     <div class="card-header-right">
                         <button class="btn btn-mini btn-info mr-1" onclick="return refreshData();">Refresh</button>
@@ -42,21 +42,9 @@
                                     <label for="fType">Filter Tipe</label>
                                     <select class="form-control" id="fType" name="fType">
                                         <option value="">All</option>
-                                        <option value="C">Komisi</option>
-                                        <option value="W">Penarikan</option>
+                                        <option value="C">Topup</option>
+                                        <option value="D">Transaksi</option>
                                         <option value="R">Refund</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="fReseller">Filter Reseller</label>
-                                    <select class="form-control" id="fReseller" name="fReseller">
-                                        <option value="">All</option>
-                                        @foreach ($reseller as $res)
-                                            <option value="{{ $res->id }}">({{ $res->code }}) {{ $res->name }}
-                                            </option>
-                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -70,22 +58,21 @@
                 </div>
                 <div class="card-block">
                     <div class="table-responsive mt-3">
-                        <table class="table table-striped table-bordered nowrap dataTable" id="commissionDataTable">
+                        <table class="table table-striped table-bordered nowrap dataTable" id="mutataionTopupDataTable">
                             <thead>
                                 <tr>
                                     <th class="all">Created At</th>
                                     <th class="all">Code</th>
                                     <th class="all">Tipe</th>
-                                    <th class="all">Reseller</th>
                                     <th class="all">Nominal</th>
-                                    <th class="all">Komisi Awal</th>
-                                    <th class="all">Komisi Akhir</th>
+                                    <th class="all">Saldo Awal</th>
+                                    <th class="all">Saldo Akhir</th>
                                     <th class="all">Ref Code</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="8" class="text-center"><small>Tidak Ada Data</small></td>
+                                    <td colspan="7" class="text-center"><small>Tidak Ada Data</small></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -99,14 +86,9 @@
     <script src="{{ asset('/dashboard/js/plugin/datatables/datatables.min.js') }}"></script>
     <script src="{{ asset('/dashboard/js/plugin/moment/moment.min.js') }}"></script>
     <script src="{{ asset('/dashboard/js/plugin/datepicker/bootstrap-datetimepicker.min.js') }}"></script>
-    <script src="{{ asset('dashboard/js/plugin/select2/select2.full.min.js') }}"></script>
 
     <script>
         let dTable = null;
-
-        $("#fReseller").select2({
-            theme: "bootstrap"
-        })
 
         $(function() {
             $('#dateFrom').datetimepicker({
@@ -121,10 +103,10 @@
         })
 
         function dataTable(filter) {
-            let url = "{{ route('mutation-commission.datatable') }}";
+            let url = "{{ route('mutation-topup.datatable') }}";
             if (filter) url += "?" + filter;
 
-            dTable = $("#commissionDataTable").DataTable({
+            dTable = $("#mutataionTopupDataTable").DataTable({
                 searching: true,
                 orderng: true,
                 lengthChange: true,
@@ -142,13 +124,11 @@
                 }, {
                     data: "type"
                 }, {
-                    data: "reseller"
-                }, {
                     data: "amount"
                 }, {
-                    data: "first_commission",
+                    data: "first_balance",
                 }, {
-                    data: "last_commission"
+                    data: "last_balance"
                 }, {
                     data: "ref_code"
                 }],
@@ -166,7 +146,6 @@
                 tgl_awal: $("#dateFrom").val(),
                 tgl_akhir: $("#dateTo").val(),
                 type: $("#fType").val(),
-                user_id: $("#fReseller").val()
             }
 
             dTable.clear();

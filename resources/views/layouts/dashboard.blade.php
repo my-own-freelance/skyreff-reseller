@@ -93,7 +93,7 @@
                 },
                 success: function(resp) {
                     let data = resp.data;
-                    $("#w1_balanceReseller").html(convertToRupiah(data.commission));
+                    $("#w1_balanceReseller").html(convertToRupiah(data.balance));
                 },
                 error: function(err) {
                     console.log("error get static session :", err)

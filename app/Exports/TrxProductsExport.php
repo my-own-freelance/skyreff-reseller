@@ -28,6 +28,9 @@ class TrxProductsExport implements FromCollection, WithHeadings, WithMapping
             "User" => function ($query) {
                 $query->select("id", "code", "name");
             },
+            "Bank" => function ($query) {
+                $query->select("id", "title", "account");
+            },
         ]);
 
         // Filter kode transaksi
@@ -66,7 +69,7 @@ class TrxProductsExport implements FromCollection, WithHeadings, WithMapping
         $query->whereBetween('created_at', [$tglAwal, $tglAkhir]);
 
         return  $query->orderBy('id', 'desc')
-        ->get();
+            ->get();
     }
 
     public function headings(): array
@@ -85,6 +88,7 @@ class TrxProductsExport implements FromCollection, WithHeadings, WithMapping
             "Komisi",
             "Profit",
             "Tipe Bayar",
+            "Bank Tujuan",
             "Tgl Trx",
             "Tgl Update"
         ];
@@ -105,7 +109,8 @@ class TrxProductsExport implements FromCollection, WithHeadings, WithMapping
             $trx->total_amount,
             $trx->commission,
             $trx->profit,
-            $trx->payment_type == 'TRANSFER' ? 'TF BANK' : 'Hutang',
+            $trx->payment_type == 'TRANSFER' ? 'TF BANK' : ($trx->payment_type == 'BALANCE' ? 'SALDO' : 'Hutang'),
+            $trx->Bank ? $trx->Bank->title . " (" . $trx->Bank->account . ")" : "",
             Carbon::parse($trx->created_at)->addHours(7)->format('Y-m-d H:i:s'),
             Carbon::parse($trx->updated_at)->addHours(7)->format('Y-m-d H:i:s'),
         ];

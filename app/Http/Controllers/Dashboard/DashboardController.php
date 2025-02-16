@@ -40,6 +40,7 @@ class DashboardController extends Controller
                 "debt_limit" => 'Rp. ' . number_format($reseller->debt_limit, 0, ',', '.'),
                 "total_debt" => 'Rp. ' . number_format($reseller->total_debt, 0, ',', '.'),
                 "commission" => 'Rp. ' . number_format($reseller->commission, 0, ',', '.'),
+                "balance" => 'Rp. ' . number_format($reseller->balance, 0, ',', '.'),
                 "wd_commission" => 'Rp. ' . number_format($wdCommisson, 0, ',', '.'),
                 "month_commission" => 'Rp. ' . number_format($commissionThisMonth, 0, ',', '.'),
                 "level" => $reseller->level,
@@ -48,6 +49,7 @@ class DashboardController extends Controller
         } else {
             $totalAmount = 0;
             $transfer = 0;
+            $balance = 0;
             $debt = 0;
             $profit = 0;
             $commission = 0;
@@ -61,25 +63,29 @@ class DashboardController extends Controller
                 $profit += $trx->profit;
                 if ($trx->payment_type == "TRANSFER") {
                     $transfer += $trx->total_amount;
-                } else {
+                } else if ($trx->payment_type == "DEBT") {
                     $debt += $trx->total_amount;
+                } else {
+                    $balance += $trx->total_amount;
                 }
             }
 
             $reqWd = TrxCommission::where('status', 'PENDING')->sum('amount') ?? 0;
-            $reseller = User::where("role", "RESELLER")->where("total_debt", ">", 0)
-                ->selectRaw("SUM(total_debt) as total_debt, SUM(commission) as total_commission")
+            $reseller = User::where("role", "RESELLER")
+                ->selectRaw("SUM(balance) as total_balance, SUM(total_debt) as total_debt, SUM(commission) as total_commission")
                 ->first();
 
             $data = [
                 "trx_total_amount" => 'Rp. ' . number_format($totalAmount, 0, ',', '.'),
                 "trx_transfer" => 'Rp. ' . number_format($transfer, 0, ',', '.'),
+                "trx_balance" => 'Rp. ' . number_format($balance, 0, ',', '.'),
                 "trx_debt" => 'Rp. ' . number_format($debt, 0, ',', '.'),
                 "trx_profit" => 'Rp. ' . number_format($profit, 0, ',', '.'),
                 "trx_commission" => 'Rp. ' . number_format($commission, 0, ',', '.'),
                 "req_wd" => 'Rp. ' . number_format($reqWd, 0, ',', '.'),
                 "debt_all_reseller" => 'Rp. ' . number_format($reseller->total_debt, 0, ',', '.'),
                 "commission_all_reseller" => 'Rp. ' . number_format($reseller->total_commission, 0, ',', '.'),
+                "balance_all_reseller" => 'Rp. ' . number_format($reseller->total_balance, 0, ',', '.'),
                 "total_product" => Product::count(),
                 "total_trx" => TrxProduct::whereBetween("created_at", [$tglAwal, $tglAkhir])->count(),
                 "total_reseller" => User::where("role", "RESELLER")->count(),
@@ -124,6 +130,7 @@ class DashboardController extends Controller
             $statistics = TrxProduct::selectRaw('
                     MONTH(created_at) as month,
                     SUM(total_amount) as total_sales,
+                    SUM(CASE WHEN payment_type = "BALANCE" THEN total_amount ELSE 0 END) as balance_sales,
                     SUM(CASE WHEN payment_type = "TRANSFER" THEN total_amount ELSE 0 END) as transfer_sales,
                     SUM(CASE WHEN payment_type = "DEBT" THEN total_amount ELSE 0 END) as debt_sales,
                     SUM(profit) as total_profit
@@ -138,12 +145,14 @@ class DashboardController extends Controller
             // Menyusun hasil agar tetap mencakup semua bulan, meskipun tidak ada transaksi
             $totalSalesData = [];
             $transferSalesData = [];
+            $balanceSalesData = [];
             $debtSalesData = [];
             $profitData = [];
 
             foreach ($months as $month) {
                 $totalSalesData[] = $statistics[$month]->total_sales ?? 0;
                 $transferSalesData[] = $statistics[$month]->transfer_sales ?? 0;
+                $balanceSalesData[] = $statistics[$month]->balance_sales ?? 0;
                 $debtSalesData[] = $statistics[$month]->debt_sales ?? 0;
                 $profitData[] = $statistics[$month]->total_profit ?? 0;
             }
@@ -172,6 +181,17 @@ class DashboardController extends Controller
                     "borderWidth" => 2,
                     "data" => $transferSalesData
                 ],
+                [
+                    "label" => "Saldo",
+                    "borderColor" => "#6610f2",
+                    "pointBackgroundColor" => "rgba(102, 16, 242, 0.6)",
+                    "pointRadius" => 0,
+                    "backgroundColor" => "rgba(102, 16, 242, 0.4)",
+                    "legendColor" => "#6610f2",
+                    "fill" => true,
+                    "borderWidth" => 2,
+                    "data" => $balanceSalesData
+                ],                
                 [
                     "label" => "Hutang",
                     "borderColor" => "#f3545d",

@@ -28,6 +28,11 @@ class TrxProduct extends Model
         return $this->hasMany(Mutation::class);
     }
 
+    public function MutationBalances()
+    {
+        return $this->hasMany(MutationBalance::class);
+    }
+
     public function Product()
     {
         return $this->belongsTo(Product::class);

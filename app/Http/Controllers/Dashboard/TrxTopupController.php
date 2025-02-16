@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Exports\TrxTopupExport;
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
+use App\Models\MutationBalance;
 use App\Models\TrxTopup;
 use App\Models\User;
 use Carbon\Carbon;
@@ -240,6 +241,11 @@ class TrxTopupController extends Controller
                 $messages["proof_of_payment.image"] = "Bukti pembayaran tidak valid";
                 $messages["proof_of_payment.max"] = "Bukti pembayaran maximal 2MB";
                 $messages["proof_of_payment.mimes"] = "Format Bukti pembayaran harus giv/svg/jpeg/png/jpg";
+            } else {
+                $rules["user_id"] = "required|integer";
+
+                $messages["user_id.requied"] = "Reseller harus dipilih";
+                $messages["user_id.integer"] = "Reseller tidak valid";
             }
 
             $validator = Validator::make($data, $rules, $messages);
@@ -248,6 +254,18 @@ class TrxTopupController extends Controller
                     "status" => "error",
                     "message" => $validator->errors()->first(),
                 ], 400);
+            }
+
+            // cek data reseeler dulu
+            $reseller = User::find(auth()->user()->id); // by default ambil dari auth jika yg login adalah user
+            if ($user->role == "ADMIN") {
+                $reseller = User::find($data["user_id"]);
+                if (!$reseller) {
+                    return response()->json([
+                        "status" => "error",
+                        "message" => "Reseller tidak ditemukan",
+                    ], 404);
+                }
             }
 
             // CEK DATA BANK
@@ -267,7 +285,7 @@ class TrxTopupController extends Controller
                 "bank_id" => $data["bank_id"] ?? null,
                 "user_id" => $user->id,
                 "status" => $user->role == "ADMIN" ? "SUCCESS" : "PENDING",
-                "remark" => $user->role == "ADMIN" ? ($data["remark"] ?? "Topup langsung oleh admin") : $data["remark"]
+                "remark" => $user->role == "ADMIN" ? ($data["remark"] ?? "Topup langsung oleh admin") : $data["remark"] ?? "" 
             ];
 
             // SIMPAN BUKTI BAYAR
@@ -276,7 +294,20 @@ class TrxTopupController extends Controller
             }
 
             // SIMPAN TRANSAKSI TOPUP
-            TrxTopup::create($dataTopup);
+            $trx = TrxTopup::create($dataTopup);
+            if ($user->role == "ADMIN") {
+                // SIMPAN MUTASI TOPUP
+                $dataMutasi = [
+                    "code" => "MUTBA" . strtoupper(Str::random(5)),
+                    "amount" => $data["amount"],
+                    "type" => "C", // CREDIT MASUK,
+                    "first_balance" => $reseller->balance,
+                    "last_balance" => $reseller->balance + $data["amount"],
+                    "trx_topup_id" => $trx->id,
+                    "user_id" => $reseller->id,
+                ];
+                MutationBalance::create($dataMutasi);
+            }
 
             DB::commit();
             return response()->json([
@@ -404,6 +435,17 @@ class TrxTopupController extends Controller
 
             // JIKA ADMIN MENYUKSESKAN REQUEST TOPUP. UPDATE SALDONYA
             if ($data["status"] == "SUCCESS") {
+                // SIMPAN MUTASI TOPUP
+                $dataMutasi = [
+                    "code" => "MUTBA" . strtoupper(Str::random(5)),
+                    "amount" => $dataTrx->amount,
+                    "type" => "C", // CREDIT MASUK,
+                    "first_balance" => $reseller->balance,
+                    "last_balance" => $reseller->balance + $dataTrx->amount,
+                    "trx_topup_id" => $dataTrx->id,
+                    "user_id" => $reseller->id,
+                ];
+                MutationBalance::create($dataMutasi);
                 $updateReseller = ["balance" => $reseller->balance + $dataTrx->amount];
                 $reseller->update($updateReseller);
             }

@@ -121,6 +121,12 @@
                     </span>
                     <h4 class="text-section">Mutation</h4>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'mutation-topup' ? 'active' : '' }}">
+                    <a href="{{ route('mutation-topup') }}">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <p>Saldo Reseller</p>
+                    </a>
+                </li>
                 <li class="nav-item ml-3 {{ $routename == 'mutation-commission' ? 'active' : '' }}">
                     <a href="{{ route('mutation-commission') }}">
                         <i class="fas fa-wallet"></i>
@@ -149,6 +155,12 @@
                     <a href="{{ route('web-config') }}">
                         <i class="fas fa-cogs"></i>
                         <p>Setting Web</p>
+                    </a>
+                </li>
+                <li class="nav-item ml-3">
+                    <a href="{{ route('home') }}" target="__blank">
+                        <i class="fas fa-arrow-left"></i>
+                        <p>Website Page</p>
                     </a>
                 </li>
                 <li class="nav-section">

@@ -7,20 +7,24 @@
 @endpush
 @section('content')
     <div class="row">
-        <div class="col-md-4 col-lg-4">
+        <div class="col-md-5 col-lg-5">
             <div class="card">
                 <div class="card-body p-3 text-center">
                     <h2 class="mt-2"><b class="text2_primary" style="font-weight: 900;">ESTIMASI BULANAN</b></h2>
-                    <h1><i class="fas fa-money-bill-wave" style="font-size: 300%;"></i></h1>
+                    <h1 class="text-primary"><i class="fas fa-money-bill-wave" style="font-size: 300%;"></i></h1>
                     <h4><b style="font-size:150%;" id="w3_balance">{{ $data['trx_total_amount'] }}</b></h4>
                     <div class="text-muted mb-3">Pendapatan Bruto</div>
                     <div class="separator-dashed"></div>
                     <div class="row">
-                        <div class="col-md-6" style="border-right: 2px solid #dedede">
+                        <div class="col-md-4" style="border-right: 2px solid #dedede">
                             <h4><b style="font-size:150%;"></b>{{ $data['trx_transfer'] }}</h4>
                             Transfer
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4" style="border-right: 2px solid #dedede">
+                            <h4><b style="font-size:150%;"></b>{{ $data['trx_balance'] }}</h4>
+                            Saldo
+                        </div>
+                        <div class="col-md-4">
                             <h4><b style="font-size:150%;"></b>{{ $data['trx_debt'] }}</h4>
                             Hutang
                         </div>
@@ -30,7 +34,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8 col-sm-12">
+        <div class="col-md-7 col-sm-12">
             <div class="row">
                 <div class="col-md-6">
                     <div class="card card-primary">
@@ -66,13 +70,17 @@
                     <div class="card card-primary">
                         <div class="card-body bubble-shadow">
                             <div class="row">
-                                <div class="col-6" style="border-right: 2px solid #dedede">
-                                    <h1 class="mt-4" style="font-size: 16px">{{ $data['debt_all_reseller'] }}</h1>
-                                    <h3 class="mt-3" style="font-size: 14px">Total Hutang</h3>
+                                <div class="col-4" style="border-right: 2px solid #dedede">
+                                    <h1 class="mt-4" style="font-size: 12px">{{ $data['balance_all_reseller'] }}</h1>
+                                    <h3 class="mt-4" style="font-size: 11px">Total Saldo</h3>
                                 </div>
-                                <div class="col-6" style="text-align: right !important">
-                                    <h1 class="mt-4" style="font-size: 16px">{{ $data['commission_all_reseller'] }}</h1>
-                                    <h3 class="mt-3" style="font-size: 14px">Total Komisi</h3>
+                                <div class="col-4" style="border-right: 2px solid #dedede; text-align: center !important;">
+                                    <h1 class="mt-4" style="font-size: 12px">{{ $data['debt_all_reseller'] }}</h1>
+                                    <h3 class="mt-4" style="font-size: 11px">Total Hutang</h3>
+                                </div>
+                                <div class="col-4" style="text-align: right !important">
+                                    <h1 class="mt-4" style="font-size: 12px">{{ $data['commission_all_reseller'] }}</h1>
+                                    <h3 class="mt-4" style="font-size: 11px">Total Komisi</h3>
                                 </div>
                             </div>
                             <div class="text-center mt-4"><small>Estimasi Reseller</small></div>

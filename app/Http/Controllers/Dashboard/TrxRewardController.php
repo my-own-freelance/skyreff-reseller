@@ -280,7 +280,10 @@ class TrxRewardController extends Controller
             return response()->json([
                 "status" => "success",
                 "message" => "Selamat anda mendapatkan reward " . $selectedReward->title,
-                "waktu" => $waktuSekarang,
+                "data" => [
+                    "image" => Storage::url($dataReward->image),
+                    "title" => $dataReward->title
+                ]
             ]);
         } catch (\Throwable $err) {
             DB::rollBack();

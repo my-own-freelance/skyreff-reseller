@@ -131,6 +131,65 @@
         {{-- BOX DETAIL --}}
         <div class="col-md-12" style="display: none" id="boxDetail">
             <div class="row">
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="icon-big text-center">
+                                        <i class="flaticon-chart-pie text-success"></i>
+                                    </div>
+                                </div>
+                                <div class="col-7 col-stats">
+                                    <div class="numbers">
+                                        <p class="card-category">Saldo Aktif</p>
+                                        <h4 class="card-title" id="balance">Rp. 0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="icon-big text-center">
+                                        <i class="flaticon-chart-pie text-info"></i>
+                                    </div>
+                                </div>
+                                <div class="col-7 col-stats">
+                                    <div class="numbers">
+                                        <p class="card-category">Limit Hutang</p>
+                                        <h4 class="card-title" id="limitDebt">Rp. 0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="icon-big text-center">
+                                        <i class="flaticon-chart-pie text-danger"></i>
+                                    </div>
+                                </div>
+                                <div class="col-7 col-stats">
+                                    <div class="numbers">
+                                        <p class="card-category">Total Hutang</p>
+                                        <h4 class="card-title" id="debtTotal">Rp. 0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 {{-- DETAIL SECTION --}}
                 <div class="col-md-8">
                     <div class="card">
@@ -220,6 +279,7 @@
                                             <select class="form-control form-control" id="cpPaymentType"
                                                 name="cpPaymentType" required>
                                                 <option value = "">Pilih Metode Bayar</option>
+                                                <option value = "BALANCE">SALDO</option>
                                                 <option value = "DEBT">HUTANG</option>
                                                 <option value = "TRANSFER">TRANSFER</option>
                                             </select>
@@ -382,6 +442,24 @@
             $("#boxDetail").slideUp(200);
         }
 
+        function getStatikSession() {
+            $.ajax({
+                url: "{{ route('statik-session') }}",
+                header: {
+                    'Content-Type': 'application/json'
+                },
+                success: function(resp) {
+                    let data = resp.data;
+                    $("#balance").html(convertToRupiah(data.balance));
+                    $("#limitDebt").html(convertToRupiah(data.debt_limit));
+                    $("#debtTotal").html(convertToRupiah(data.total_debt));
+                },
+                error: function(err) {
+                    console.log("error get static session :", err)
+                }
+            })
+        }
+
         function loadCheckout(id) {
             $.ajax({
                 url: "{{ route('product.detail', ['id' => ':id']) }}".replace(':id', id),
@@ -391,6 +469,7 @@
                     let data = res.data;
                     $("#boxDetail").fadeIn(200, function() {
                         $("#boxTable").slideUp(200);
+                        getStatikSession()
                         // RESET RENDERER WRAPPER
                         $(".info-detail-wrapper").empty();
                         $(".description-wrapper").empty();
@@ -460,7 +539,7 @@
         $('#cpPaymentType').change(function() {
             let type = $(this).val();
 
-            if (type == 'DEBT') {
+            if (type == 'DEBT' || type == 'BALANCE') {
                 $('#divCBank').slideUp(200, function() {
                     $("#cpBank").attr("required", false);
                 })

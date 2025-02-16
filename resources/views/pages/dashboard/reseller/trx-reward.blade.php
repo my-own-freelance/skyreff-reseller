@@ -158,6 +158,8 @@
     <script src="{{ asset('/dashboard/js/plugin/datatables/datatables.min.js') }}"></script>
     <script src="{{ asset('/dashboard/js/plugin/moment/moment.min.js') }}"></script>
     <script src="{{ asset('/dashboard/js/plugin/datepicker/bootstrap-datetimepicker.min.js') }}"></script>
+    {{-- <script src="{{ asset('/dashboard/js/plugin/sweetalert/sweetalert.min.js') }}"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script>
         let dTable = null;
@@ -240,7 +242,8 @@
                     },
                     success: function(res) {
                         $btn.html(originalText).prop('disabled', false);
-                        showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
+                        // showMessage("success", "flaticon-alarm-1", "Sukses", res.message);
+                        succesClaim(res.data)
                         refreshData();
                     },
                     error: function(err) {
@@ -296,5 +299,24 @@
             $("#reason").html("");
             $("#proofImg").attr("src", "");
         });
+
+        function succesClaim(reward) {
+            Swal.fire({
+                title: 'Selamat! 🎉',
+                html: `
+                    <p>Anda berhasil mengklaim reward berikut:</p>
+                    <div style="text-align: center;">
+                        <img src="${reward.image}" alt="${reward.title}" style="width: 250px; height: 250px; object-fit: cover; border-radius: 10px; margin-bottom: 10px;">
+                        <h3 style="color: #6610f2; font-weight: bold;">${reward.title}</h3>
+                    </div>
+                `,
+                icon: 'success',
+                showConfirmButton: true,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#28a745',
+                timer: 5000,
+                timerProgressBar: true,
+            });
+        }
     </script>
 @endpush

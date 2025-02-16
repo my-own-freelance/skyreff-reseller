@@ -75,7 +75,6 @@ class TrxDebtController extends Controller
                 $query->where('user_id', strtoupper($request->query('user_id')));
             }
 
-
             // filter type
             if ($request->query('type') && $request->query('type') != '') {
                 $query->where('type', strtoupper($request->query('type')));

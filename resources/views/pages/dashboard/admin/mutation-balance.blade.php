@@ -16,7 +16,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <h5 class="text-uppercase title">List Mutasi Komisi</h5>
+                        <h5 class="text-uppercase title">List Mutasi Topup</h5>
                     </div>
                     <div class="card-header-right">
                         <button class="btn btn-mini btn-info mr-1" onclick="return refreshData();">Refresh</button>
@@ -42,8 +42,8 @@
                                     <label for="fType">Filter Tipe</label>
                                     <select class="form-control" id="fType" name="fType">
                                         <option value="">All</option>
-                                        <option value="C">Komisi</option>
-                                        <option value="W">Penarikan</option>
+                                        <option value="C">Topup</option>
+                                        <option value="D">Transaksi</option>
                                         <option value="R">Refund</option>
                                     </select>
                                 </div>
@@ -70,7 +70,7 @@
                 </div>
                 <div class="card-block">
                     <div class="table-responsive mt-3">
-                        <table class="table table-striped table-bordered nowrap dataTable" id="commissionDataTable">
+                        <table class="table table-striped table-bordered nowrap dataTable" id="mutationTopupDataTable">
                             <thead>
                                 <tr>
                                     <th class="all">Created At</th>
@@ -78,8 +78,8 @@
                                     <th class="all">Tipe</th>
                                     <th class="all">Reseller</th>
                                     <th class="all">Nominal</th>
-                                    <th class="all">Komisi Awal</th>
-                                    <th class="all">Komisi Akhir</th>
+                                    <th class="all">Saldo Awal</th>
+                                    <th class="all">Saldo Akhir</th>
                                     <th class="all">Ref Code</th>
                                 </tr>
                             </thead>
@@ -121,10 +121,10 @@
         })
 
         function dataTable(filter) {
-            let url = "{{ route('mutation-commission.datatable') }}";
+            let url = "{{ route('mutation-topup.datatable') }}";
             if (filter) url += "?" + filter;
 
-            dTable = $("#commissionDataTable").DataTable({
+            dTable = $("#mutationTopupDataTable").DataTable({
                 searching: true,
                 orderng: true,
                 lengthChange: true,
@@ -146,9 +146,9 @@
                 }, {
                     data: "amount"
                 }, {
-                    data: "first_commission",
+                    data: "first_balance",
                 }, {
-                    data: "last_commission"
+                    data: "last_balance"
                 }, {
                     data: "ref_code"
                 }],

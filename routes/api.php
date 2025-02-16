@@ -8,6 +8,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\LocationController;
 use App\Http\Controllers\Dashboard\MutationController;
+use App\Http\Controllers\Dashboard\MutationBalanceController;
 use App\Http\Controllers\Dashboard\OwnerController;
 use App\Http\Controllers\Dashboard\ProductCategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
@@ -62,6 +63,7 @@ Route::group(["middleware" => "check.auth"], function () {
     Route::get("/trx/product/{id}/detail", [TrxProductController::class, "getDetail"])->name('trx-product.detail');
     // MUTATION
     Route::get("/mutation/commission/datatable", [MutationController::class, "dataTable"])->name('mutation-commission.datatable');
+    Route::get("/mutation/topup/datatable", [MutationBalanceController::class, "dataTable"])->name('mutation-topup.datatable');
     // COMMISSION
     Route::get("/trx/commission/datatable", [TrxCommissionController::class, "dataTable"])->name('trx-commission.datatable');
     Route::post("/trx/commission/update-status", [TrxCommissionController::class, "changeStatus"])->name('trx-commission.change-status');

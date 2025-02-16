@@ -21,4 +21,9 @@ class TrxTopup extends Model
     {
         return $this->belongsTo(Bank::class);
     }
+
+    public function MutationBalances()
+    {
+        return $this->hasMany(MutationBalance::class);
+    }
 }

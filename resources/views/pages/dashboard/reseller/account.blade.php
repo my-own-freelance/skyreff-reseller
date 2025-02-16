@@ -21,9 +21,10 @@
                             <div class="col-md-8">
                                 <div class="card card-primary">
                                     <div class="card-body skew-shadow">
-                                        <h5 class="mt-3">Total Komisi : <span id="totalComission"></span></h5>
-                                        <h5 class="mt-3">Limit Hutang : <span id="debtLimit"></span></h5>
-                                        <h5 class="mt-3">Total Hutang : <span id="totalDebt"></span></h5>
+                                        <h5 class="mt-2">Saldo Aktif : <span id="totalBalance"></span></h5>
+                                        <h5 class="mt-2">Total Komisi : <span id="totalComission"></span></h5>
+                                        <h5 class="mt-2">Limit Hutang : <span id="debtLimit"></span></h5>
+                                        <h5 class="mt-2">Total Hutang : <span id="totalDebt"></span></h5>
                                     </div>
                                 </div>
                             </div>
@@ -145,6 +146,7 @@
                 dataType: "json",
                 success: function(data) {
                     let d = data.data;
+                    $("#totalBalance").html(convertToRupiah(d.balance));
                     $("#totalComission").html(convertToRupiah(d.commission));
                     $("#debtLimit").html(convertToRupiah(d.debt_limit));
                     $("#totalDebt").html(convertToRupiah(d.total_debt));

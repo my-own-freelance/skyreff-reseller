@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\MutationController;
+use App\Http\Controllers\Dashboard\MutationBalanceController;
 use App\Http\Controllers\Dashboard\OwnerController;
 use App\Http\Controllers\Dashboard\ProductCategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
@@ -49,6 +50,7 @@ Route::group(["middleware" => "auth:web"], function () {
     Route::get("/reseller", [DashboardController::class, "index"])->name("dashboard.reseller");
     Route::get("/trx/product", [TrxProductController::class, "index"])->name("trx-product");
     Route::get("/mutation/commission", [MutationController::class, "index"])->name("mutation-commission");
+    Route::get("/mutation/topup", [MutationBalanceController::class, "index"])->name("mutation-topup");
     Route::get("/trx-commission", [TrxCommissionController::class, "index"])->name("trx-commission");
     Route::get("/trx-debt", [TrxDebtController::class, "index"])->name("trx-debt");
     Route::get("/trx-compensation", [TrxCompensationController::class, "index"])->name("trx-compensation");

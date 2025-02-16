@@ -28,10 +28,20 @@
         <div class="col-md-4 col-lg-4">
             <div class="card">
                 <div class="card-body p-3 text-center">
-                    <h2 class="mt-2"><b class="text2_primary" style="font-weight: 900;">SALDO KOMISI</b></h2>
-                    <h1><i class="fas fa-money-bill-wave" style="font-size: 300%;"></i></h1>
-                    <h4><b style="font-size:150%;" id="w3_balance">{{ $data['commission'] }}</b></h4>
-                    <div class="text-muted mb-3">Penarikan Tersedia</div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h2 class="mt-2"><b class="text2_primary" style="font-weight: 900;">SALDO TOPUP</b></h2>
+                            <h1 class="text-success"><i class="fas fa-money-bill-wave" style="font-size: 230%;"></i></h1>
+                            <h4><b style="font-size:150%;" id="w3_balance">{{ $data['balance'] }}</b></h4>
+                            <div class="text-muted">Saldo Tersedia</div>
+                        </div>
+                        <div class="col-md-6" style="border-right: 2px solid #dedede">
+                            <h2 class="mt-2"><b class="text2_primary" style="font-weight: 900;">SALDO KOMISI</b></h2>
+                            <h1 class="text-primary"><i class="fas fa-money-bill-wave" style="font-size: 230%;"></i></h1>
+                            <h4><b style="font-size:150%;" id="w3_balance">{{ $data['commission'] }}</b></h4>
+                            <div class="text-muted">Penarikan Tersedia</div>
+                        </div>
+                    </div>
                     <div class="separator-dashed"></div>
                     <h4><b style="font-size:150%;" id="w3_wd_pending">{{ $data['wd_commission'] }}</b></h4>
                     <div class="text-muted">Penarikan Menunggu Konfirmasi

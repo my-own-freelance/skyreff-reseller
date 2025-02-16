@@ -6,6 +6,7 @@ use App\Exports\TrxProductsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
 use App\Models\Mutation;
+use App\Models\MutationBalance;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\TrxDebt;
@@ -212,7 +213,7 @@ class TrxProductController extends Controller
                 $item["status"] = "<span class='badge " . $classStatus . "'>" . $item["status"] . "</span>";
                 $item['product'] = $product;
                 $item['reseller'] = $reseller;
-                $item['payment_type'] = $item['payment_type'] == "TRANSFER" ? "TRANSFER BANK" : "HUTANG";
+                $item['payment_type'] = $item['payment_type'] == "TRANSFER" ? "TRANSFER BANK" : ($item['payment_type'] == "BALANCE" ? "SALDO" : "HUTANG");
                 $item['created'] = Carbon::parse($item->created_at)->addHours(7)->format('Y-m-d H:i:s');
                 $item['updated'] = Carbon::parse($item->updated_at)->addHours(7)->format('Y-m-d H:i:s');
                 if ($item['created'] == $item['updated']) {
@@ -257,7 +258,7 @@ class TrxProductController extends Controller
             $rules = [
                 "product_id" => "required|integer",
                 "qty" => "required|integer|min:1",
-                "payment_type" => "required|string|in:TRANSFER,DEBT"
+                "payment_type" => "required|string|in:BALANCE,TRANSFER,DEBT"
             ];
 
             $messages = [
@@ -345,6 +346,7 @@ class TrxProductController extends Controller
             // CEK TIPE BAYAR DEBT
             $userFirstDebt = $user->total_debt;
             $userLastDebt = $user->total_debt;
+            $userBalance = $user->balance;
             if ($data["payment_type"] == "DEBT") {
                 // CEK LIMIT DEBT
                 $limitDebt = $user->debt_limit;
@@ -371,6 +373,18 @@ class TrxProductController extends Controller
                 $updateUser["total_debt"] = $totalDebt + $totalAmount;
                 $user->update($updateUser);
                 $userLastDebt = $user->total_debt; // update main value variabel
+            } else if ($data["payment_type"] == "BALANCE") {
+                // CEK BALANCE RESELLER
+                if ($user->balance < $totalAmount) {
+                    return response()->json([
+                        "status" => "error",
+                        "message" => "Maaf saldo anda tidak cukup untuk transaksi ini",
+                    ], 400);
+                }
+
+                // UPDATE BALANCE USER
+                $updateUser["balance"] = $userBalance - $totalAmount;
+                $user->update($updateUser);
             } else {
                 // CEK TIPE BAYAR TF
                 // CEK DATA BANK
@@ -409,6 +423,18 @@ class TrxProductController extends Controller
                 ]);
             }
 
+            // CREATE MUTASI DEBIT PEMBELIAN PRODUK DENGAN SALDO
+            if ($data["payment_type"] == "BALANCE") {
+                MutationBalance::create([
+                    "code" => "MUTBA" . strtoupper(Str::random(5)),
+                    "amount" => $totalAmount,
+                    "type" => "D", // DEBIT UNTUK TRANSAKSI,
+                    "first_balance" => $userBalance,
+                    "last_balance" => $userBalance - $totalAmount,
+                    "trx_product_id" => $trxProduct->id,
+                    "user_id" => $user->id,
+                ]);
+            }
             DB::commit();
             return response()->json([
                 "status" => "success",
@@ -551,15 +577,8 @@ class TrxProductController extends Controller
                 $reseller->update($updateReseller);
             }
 
-            // JIKA REJECT/CANCEL DAN TIPE NYA PIHUTANG, UPDATE NOMINAL PIHUTANGNYA DAN UPDATE STOCK PRODUK
-            if (in_array($data["status"], ["REJECT", "CANCEL"]) && $dataTrx->payment_type == "DEBT") {
-                // PIHUTNG RESELLER
-                $totalDebtBefore = $reseller->total_debt;
-                $totalDebtAfter = $totalDebtBefore - $dataTrx->total_amount;
-                $updateReseller = ["total_debt" => $totalDebtAfter];
-                $reseller->update($updateReseller);
-
-
+            // JIKA REJECT/CANCEL UPDATE STOCK PRODUK
+            if (in_array($data["status"], ["REJECT", "CANCEL"])) {
                 // STOCK PRODUK
                 $product = Product::find($dataTrx->product_id);
                 $updatedStock = [
@@ -567,8 +586,32 @@ class TrxProductController extends Controller
                 ];
                 $product->update($updatedStock);
 
-                // UPDATE STATUS PIUTANG PIUTANG
-                TrxDebt::where("trx_product_id", $dataTrx->id)->update(["status" => $data["status"]]);
+                //JIKA TIPE BAYAR NYA PIHUTANG, UPDATE NOMINAL PIHUTANGNYA DAN 
+                if ($dataTrx->payment_type == "DEBT") {
+                    // PIHUTNG RESELLER
+                    $totalDebtBefore = $reseller->total_debt;
+                    $totalDebtAfter = $totalDebtBefore - $dataTrx->total_amount;
+                    $updateReseller = ["total_debt" => $totalDebtAfter];
+                    $reseller->update($updateReseller);
+
+                    // UPDATE STATUS PIUTANG PIUTANG
+                    TrxDebt::where("trx_product_id", $dataTrx->id)->update(["status" => $data["status"]]);
+                } else if ($dataTrx->payment_type == "BALANCE") {
+                    // CREATE MUTASI DEBIT PEMBELIAN PRODUK DENGAN SALDO
+                    MutationBalance::create([
+                        "code" => "MUTBA" . strtoupper(Str::random(5)),
+                        "amount" => $dataTrx->total_amount,
+                        "type" => "R", // REFUND SALDO,
+                        "first_balance" => $reseller->balance,
+                        "last_balance" => $reseller->balance + $dataTrx->total_amount,
+                        "trx_product_id" => $dataTrx->id,
+                        "user_id" => $reseller->id,
+                    ]);
+
+                    // UPDATE BALANCE USER
+                    $updaterReseller["balance"] = $reseller->balance + $dataTrx->total_amount;
+                    $reseller->update($updaterReseller);
+                }
             }
 
             // SIMPAN BUKTI REFUND JIKA ADA

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('total_amount')->default(0);
             $table->integer('profit')->default(0);
             $table->enum('status', ['PENDING', 'PROCESS', 'SUCCESS', 'REJECT', 'CANCEL'])->default('PENDING');
-            $table->enum('payment_type', ['TRANSFER', 'DEBT'])->default('TRANSFER');
+            $table->enum('payment_type', ['BALANCE','TRANSFER', 'DEBT'])->default('TRANSFER');
             $table->string('proof_of_payment')->nullable(); // upload bukti pembayaran jika type nya tf
             $table->string('proof_of_return')->nullable(); // upload bukti pengembalian uang kita sudah terlanjut di tf dan admin menolak transaksi
             $table->string('remark')->nullable(); // keterangan untuk admin ketika reject trx

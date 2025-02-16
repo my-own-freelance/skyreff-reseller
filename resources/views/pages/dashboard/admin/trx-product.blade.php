@@ -22,67 +22,88 @@
         <div class="col-md-4">
             <div class="card card-dark card-primary">
                 <div class="card-body bubble-shadow">
-                    <h1 id="w1_totalEstimated">Rp. 0</h1>
+                    <h1 id="w1_totalEstimated" style="font-size: 32px" class="mt-5">Rp. 0</h1>
                     <h5></h5>
-                    <div class="pull-right">
+                    <div class="pull-right mt-5">
                         <h3 class="fw-bold">Total Estimasi Pendapatan</h3>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-sm-6 col-md-3">
-            <div class="card card-stats card-round">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-3">
-                            <div class="icon-big text-center">
-                                <i class="flaticon-chart-pie text-primary"></i>
-                            </div>
-                        </div>
-                        <div class="col-9 col-stats">
-                            <div class="numbers">
-                                <p class="card-category">Estimasi Pembayaran Transfer</p>
-                                <h4 class="card-title" id="w1_estTransfer">Rp. 0</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-6 col-md-3">
-            <div class="card card-stats card-round">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-3">
-                            <div class="icon-big text-center">
-                                <i class="flaticon-chart-pie text-warning"></i>
-                            </div>
-                        </div>
-                        <div class="col-9 col-stats">
-                            <div class="numbers">
-                                <p class="card-category">Estimasi Pembayaran Hutang</p>
-                                <h4 class="card-title" id="w1_estDebt">Rp. 0</h4>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-sm-6 col-md-6">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="icon-big text-center">
+                                        <i class="flaticon-chart-pie text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-stats">
+                                    <div class="numbers">
+                                        <p class="card-category">Estimasi Pembayaran Transfer</p>
+                                        <h4 class="card-title" id="w1_estTransfer">Rp. 0</h4>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-2">
-            <div class="card card-stats card-round">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-3">
-                            <div class="icon-big text-center">
-                                <i class="flaticon-chart-pie text-success"></i>
+                <div class="col-sm-6 col-md-6">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="icon-big text-center">
+                                        <i class="flaticon-chart-pie text-danger"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-stats">
+                                    <div class="numbers">
+                                        <p class="card-category">Estimasi Pembayaran Hutang</p>
+                                        <h4 class="card-title" id="w1_estDebt">Rp. 0</h4>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-9 col-stats">
-                            <div class="numbers">
-                                <p class="card-category">Estimasi Profit</p>
-                                <h4 class="card-title" id="w1_estProfit">Rp. 0</h4>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="icon-big text-center">
+                                        <i class="flaticon-chart-pie text-secondary"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-stats">
+                                    <div class="numbers">
+                                        <p class="card-category">Estimasi Pembayaran Saldo</p>
+                                        <h4 class="card-title" id="w1_estBalance">Rp. 0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <div class="card card-stats card-round">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="icon-big text-center">
+                                        <i class="flaticon-chart-pie text-success"></i>
+                                    </div>
+                                </div>
+                                <div class="col-9 col-stats">
+                                    <div class="numbers">
+                                        <p class="card-category">Estimasi Profit</p>
+                                        <h4 class="card-title" id="w1_estProfit">Rp. 0</h4>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -221,6 +242,7 @@
                                     <label for="fPaymentType">Filter Pembayaran</label>
                                     <select class="form-control" id="fPaymentType" name="fPaymentType">
                                         <option value="">All</option>
+                                        <option value="BALANCE">Saldo</option>
                                         <option value="TRANSFER">Transfer</option>
                                         <option value="DEBT">Pihutang</option>
                                     </select>
@@ -448,6 +470,7 @@
                                 totEstTransfer = 0,
                                 totEstDebt = 0,
                                 totEstProfit = 0,
+                                totEstBalance = 0,
                                 totTrx = 0,
                                 totTrxSuccess = 0,
                                 totTrxPending = 0,
@@ -471,8 +494,11 @@
                                     totEstProfit += r.profit;
                                     if (r.trx_payment == "TRANSFER") {
                                         totEstTransfer += r.total_amount;
-                                    } else {
+                                    } else if(r.trx_payment == "DEBT"){
                                         totEstDebt += r.total_amount;
+                                    } else {
+                                        console.log("SINI")
+                                        totEstBalance += r.total_amount;
                                     }
                                 }
 
@@ -495,6 +521,7 @@
                             $("#w1_estTransfer").html(convertToRupiah(totEstTransfer));
                             $("#w1_estDebt").html(convertToRupiah(totEstDebt));
                             $("#w1_estProfit").html(convertToRupiah(totEstProfit));
+                            $("#w1_estBalance").html(convertToRupiah(totEstBalance));
                             $("#w1_totalTrx").html(totTrx);
                             $("#w1_trxSuccess").html(totTrxSuccess);
                             $("#w1_trxPending").html(totTrxPending);

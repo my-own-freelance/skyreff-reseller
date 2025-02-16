@@ -3,22 +3,22 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Mutation;
+use App\Models\MutationBalance;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class MutationController extends Controller
+class MutationBalanceController extends Controller
 {
     public function index()
     {
-        $title = "Mutasi Komisi";
+        $title = "Mutasi Saldo";
         $user = Auth::user();
         $reseller = [];
-        $pageUrl = "pages.dashboard.reseller.mutation-commission";
+        $pageUrl = "pages.dashboard.reseller.mutation-balance";
         if ($user->role == "ADMIN") {
-            $pageUrl = "pages.dashboard.admin.mutation-commission";
+            $pageUrl = "pages.dashboard.admin.mutation-balance";
             $reseller = User::where("role", "RESELLER")->select("id", "name", "code")->orderBy("name", "asc")->get();
         }
 
@@ -28,14 +28,14 @@ class MutationController extends Controller
     // HANDLER API
     public function dataTable(Request $request)
     {
-        $query = Mutation::with([
+        $query = MutationBalance::with([
             "User" => function ($query) {
                 $query->select("id", "name", "code");
             },
             "TrxProduct" => function ($query) {
                 $query->select("id", "code");
             },
-            "TrxCommission" => function ($query) {
+            "TrxTopup" => function ($query) {
                 $query->select("id", "code");
             }
         ]);
@@ -89,27 +89,27 @@ class MutationController extends Controller
         $user = auth()->user();
         $output = $data->map(function ($item) use ($user) {
             $item["amount"] = ($item["type"] == "C" || $item["type"] == "R") ? "<span class='text-success'>+ Rp. " . number_format($item->amount, 0, ',', '.') . "</span>" : "<span class='text-danger'>- Rp. " . number_format($item->amount, 0, ',', '.') . "</span>";
-            $item["first_commission"] = "Rp. "  . number_format($item->first_commission, 0, ',', '.');
-            $item["last_commission"] = "Rp. "  . number_format($item->last_commission, 0, ',', '.');
+            $item["first_balance"] = "Rp. "  . number_format($item->first_balance, 0, ',', '.');
+            $item["last_balance"] = "Rp. "  . number_format($item->last_balance, 0, ',', '.');
             $item['created'] = Carbon::parse($item->created_at)->addHours(7)->format('Y-m-d H:i:s');
 
             $item["ref_code"] = "";
 
-            if ($item["type"] == "C" && $item["TrxProduct"]) {
+            if ($item["type"] == "C" && $item["TrxTopup"]) {
+                $item["ref_code"] = $item->TrxTopup->code;
+            } else if (($item["type"] == "D" || $item['type'] == "R") && $item["TrxProduct"]) {
                 $item["ref_code"] = $item->TrxProduct->code;
-            } else if (($item["type"] == "W" || $item['type'] == "R") && $item["TrxCommission"]) {
-                $item["ref_code"] = $item->TrxCommission->code;
             }
 
             switch ($item["type"]) {
                 case "C":
-                    $item["type"] = "<span class='badge badge-success'>COMMISSION</span>";
+                    $item["type"] = "<span class='badge badge-success'>TOPUP</span>";
                     break;
                 case "R":
                     $item["type"] = "<span class='badge badge-secondary'>REFUND</span>";
                     break;
-                case "W":
-                    $item["type"] = "<span class='badge badge-info'>WITHDRAW</span>";
+                case "D":
+                    $item["type"] = "<span class='badge badge-info'>TRANSAKSI</span>";
                     break;
                 default:
                     $item["type"] = "<span class='badge badge-error'>UNKNOWN</span>";
@@ -131,7 +131,7 @@ class MutationController extends Controller
             return $item;
         });
 
-        $queryTotal = Mutation::whereBetween('created_at', [$tglAwal, $tglAkhir]);
+        $queryTotal = MutationBalance::whereBetween('created_at', [$tglAwal, $tglAkhir]);
         if ($user->role == "RESELLER") {
             $queryTotal->where('user_id', $user->id);
         }

@@ -55,6 +55,7 @@
                                     <label for="fPaymentType">Filter Pembayaran</label>
                                     <select class="form-control" id="fPaymentType" name="fPaymentType">
                                         <option value="">All</option>
+                                        <option value="BALANCE">Saldo</option>
                                         <option value="TRANSFER">Transfer</option>
                                         <option value="DEBT">Hutang</option>
                                     </select>
