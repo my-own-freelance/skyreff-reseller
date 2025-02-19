@@ -218,7 +218,7 @@
                             </div>
                             <hr>
                             <div class="row mt-3">
-                                <div class="col-md-6">
+                                <div class="col-md-8">
                                     <h4 class="font-weight-bold">Detail Produk</h4>
                                     <div class="info-detail-wrapper">
                                         {{-- rendered detail information --}}
@@ -500,7 +500,7 @@
                         $(".info-detail-wrapper").append(generateInfoDetail("Komisi",
                             `Rp. ${formatToRupiah(data.commission)}`));
                         $(".info-detail-wrapper").append(generateInfoDetail("Stok",
-                            `${data.stock} Produk tersedia`));
+                            `${data.stock} Produk`));
 
 
                         // DESCRIPTION PROPERTY
