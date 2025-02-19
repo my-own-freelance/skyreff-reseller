@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\AkrabController;
 use App\Http\Controllers\Dashboard\BankController;
 use App\Http\Controllers\Dashboard\BannerController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\ExternalPacketController;
 use App\Http\Controllers\Dashboard\InformationController;
 use App\Http\Controllers\Dashboard\MutationController;
 use App\Http\Controllers\Dashboard\MutationBalanceController;
@@ -60,6 +61,7 @@ Route::group(["middleware" => "auth:web"], function () {
     // GLOBAL ACCESS
     Route::get("/master/products", [ProductController::class, 'index'])->name('product');
     Route::get("/master/akrab", [AkrabController::class, 'index'])->name('akrab');
+    Route::get("/master/xlotp", [ExternalPacketController::class, 'xlotp'])->name('xlotp');
 
     // ONLY ADMIN ACCESS
     Route::group(["middleware" => "web.check.role:ADMIN"], function () {

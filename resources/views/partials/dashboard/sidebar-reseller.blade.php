@@ -37,6 +37,12 @@
                         <p>List Product</p>
                     </a>
                 </li>
+                <li class="nav-item ml-3 {{ $routename == 'xlotp' ? 'active' : '' }}">
+                    <a href="{{ route('xlotp') }}">
+                        <i class="fas fa-spinner"></i>
+                        <p>XL OTP</p>
+                    </a>
+                </li>
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">
                         <i class="fa fa-ellipsis-h"></i>
