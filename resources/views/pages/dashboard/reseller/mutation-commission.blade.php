@@ -65,9 +65,9 @@
                                     <th class="all">Code</th>
                                     <th class="all">Tipe</th>
                                     <th class="all">Nominal</th>
-                                    <th class="all">Komisi Awal</th>
-                                    <th class="all">Komisi Akhir</th>
-                                    <th class="all">Ref Code</th>
+                                    <th class="">Komisi Awal</th>
+                                    <th class="">Komisi Akhir</th>
+                                    <th class="">Ref Code</th>
                                 </tr>
                             </thead>
                             <tbody>

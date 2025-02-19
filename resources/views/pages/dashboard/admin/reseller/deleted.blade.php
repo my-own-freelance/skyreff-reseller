@@ -20,13 +20,13 @@
                                 <th class="all">Kode</th>
                                 <th class="all">Phone</th>
                                 <th class="all">Level</th>
-                                <th class="all">Saldo</th>
-                                <th class="all">Limit Piutang</th>
-                                <th class="all">Total Piutang</th>
-                                <th class="all">Komisi</th>
+                                <th class="">Saldo</th>
+                                <th class="">Limit Piutang</th>
+                                <th class="">Total Piutang</th>
+                                <th class="">Komisi</th>
                                 <th class="all">Status</th>
-                                <th class="all">Alamat</th>
-                                <th class="all">Tanggal Daftar</th>
+                                <th class="">Alamat</th>
+                                <th class="">Tanggal Daftar</th>
                             </tr>
                         </thead>
                         <tbody>

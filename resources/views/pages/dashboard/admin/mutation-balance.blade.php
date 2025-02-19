@@ -78,9 +78,9 @@
                                     <th class="all">Tipe</th>
                                     <th class="all">Reseller</th>
                                     <th class="all">Nominal</th>
-                                    <th class="all">Saldo Awal</th>
-                                    <th class="all">Saldo Akhir</th>
-                                    <th class="all">Ref Code</th>
+                                    <th class="">Saldo Awal</th>
+                                    <th class="">Saldo Akhir</th>
+                                    <th class="">Ref Code</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -32,7 +32,7 @@
                                     <th class="all">Tipe</th>
                                     <th class="all">Status</th>
                                     <th class="all">Subject</th>
-                                    <th class="all">Message</th>
+                                    <th class="">Message</th>
                                 </tr>
                             </thead>
                             <tbody>

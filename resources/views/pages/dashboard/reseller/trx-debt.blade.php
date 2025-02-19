@@ -130,11 +130,11 @@
                                     <th class="all">Nominal</th>
                                     <th class="all">Hutang Awal</th>
                                     <th class="all">Hutang Akhir</th>
-                                    <th class="all">Trx Ref</th>
-                                    <th class="all">Bank Bayar</th>
-                                    <th class="all">Catatan Pihutang</th>
-                                    <th class="all">Tanggal Request</th>
-                                    <th class="all">Tanggal Update</th>
+                                    <th class="">Trx Ref</th>
+                                    <th class="">Bank Bayar</th>
+                                    <th class="">Catatan Pihutang</th>
+                                    <th class="">Tanggal Request</th>
+                                    <th class="">Tanggal Update</th>
                                 </tr>
                             </thead>
                             <tbody>

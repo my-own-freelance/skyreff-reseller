@@ -99,9 +99,9 @@
                                     <th class="all">Status</th>
                                     <th class="all">Nominal</th>
                                     <th class="all">Bank Bayar</th>
-                                    <th class="all">Catatan</th>
-                                    <th class="all">Tanggal Request</th>
-                                    <th class="all">Tanggal Update</th>
+                                    <th class="">Catatan</th>
+                                    <th class="">Tanggal Request</th>
+                                    <th class="">Tanggal Update</th>
                                 </tr>
                             </thead>
                             <tbody>

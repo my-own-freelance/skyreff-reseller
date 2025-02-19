@@ -94,8 +94,8 @@
                                     <th class="all">Nominal</th>
                                     <th class="all">Admin</th>
                                     <th class="all">Total</th>
-                                    <th class="all">Tanggal Request</th>
-                                    <th class="all">Tanggal Update</th>
+                                    <th class="">Tanggal Request</th>
+                                    <th class="">Tanggal Update</th>
                                 </tr>
                             </thead>
                             <tbody>

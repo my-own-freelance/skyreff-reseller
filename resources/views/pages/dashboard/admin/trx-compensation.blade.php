@@ -78,14 +78,14 @@
                                     <th class="all">Status</th>
                                     <th class="all">Reseller</th>
                                     <th class="all">Trx Ref</th>
-                                    <th class="all">Kendala</th>
-                                    <th class="all">Tanggal Request</th>
-                                    <th class="all">Tanggal Update</th>
+                                    <th class="">Kendala</th>
+                                    <th class="">Tanggal Request</th>
+                                    <th class="">Tanggal Update</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="7" class="text-center"><small>Tidak Ada Data</small></td>
+                                    <td colspan="8" class="text-center"><small>Tidak Ada Data</small></td>
                                 </tr>
                             </tbody>
                         </table>
