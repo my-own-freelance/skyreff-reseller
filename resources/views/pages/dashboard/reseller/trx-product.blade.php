@@ -10,6 +10,12 @@
             margin: 0 auto;
             object-fit: contain;
         }
+
+        .wrap-text {
+            max-width: 500px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
     </style>
 @endpush
 @section('content')
@@ -95,17 +101,19 @@
                                     <th class="all">Qty</th>
                                     <th class="all">Total</th>
                                     <th class="all">Komisi</th>
-                                    <th class="all">Tipe Bayar</th>
-                                    <th class="all">Tanggal Trx</th>
-                                    <th class="all">Tanggal Update</th>
+                                    <th class="">Tipe Bayar</th>
+                                    <th class="">Catatan</th>
+                                    <th class="">Tanggal Trx</th>
+                                    <th class="">Tanggal Update</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="11" class="text-center"><small>Tidak Ada Data</small></td>
+                                    <td colspan="12" class="text-center"><small>Tidak Ada Data</small></td>
                                 </tr>
                             </tbody>
                             <tfoot style="border-top: 1px solid #dedede;">
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -245,6 +253,14 @@
                     }
                 }, {
                     data: "payment_type"
+                }, {
+                    data: "notes",
+                    "render": function(data, type, row, meta) {
+                        if (type === 'display') {
+                            return `<div class="wrap-text">${data || ""}</div>`;
+                        }
+                        return data;
+                    }
                 }, {
                     data: "created"
                 }, {

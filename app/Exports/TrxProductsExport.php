@@ -89,6 +89,7 @@ class TrxProductsExport implements FromCollection, WithHeadings, WithMapping
             "Profit",
             "Tipe Bayar",
             "Bank Tujuan",
+            "Catatan",
             "Tgl Trx",
             "Tgl Update"
         ];
@@ -111,6 +112,7 @@ class TrxProductsExport implements FromCollection, WithHeadings, WithMapping
             $trx->profit,
             $trx->payment_type == 'TRANSFER' ? 'TF BANK' : ($trx->payment_type == 'BALANCE' ? 'SALDO' : 'Hutang'),
             $trx->Bank ? $trx->Bank->title . " (" . $trx->Bank->account . ")" : "",
+            $trx->notes ?? "",
             Carbon::parse($trx->created_at)->addHours(7)->format('Y-m-d H:i:s'),
             Carbon::parse($trx->updated_at)->addHours(7)->format('Y-m-d H:i:s'),
         ];

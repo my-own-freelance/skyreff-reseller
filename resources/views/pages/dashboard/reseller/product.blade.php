@@ -260,7 +260,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="cpQty">Jumlah <span class="text-danger">*</span></label>
+                                            <label for="cpQty">Jumlah Pesanan<span class="text-danger">*</span></label>
                                             <input class="form-control" id="cpQty" type="number" name="qty"
                                                 min="1" placeholder="masukkan masukan jumlah pesanan" required />
                                         </div>
@@ -272,6 +272,10 @@
                                                 </div>
                                                 <input class="form-control" id="cpTotalAmount" type="text" readonly />
                                             </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cNotes">Catatan <span class="text-danger">*</span></label>
+                                            <input class="form-control" id="cNotes" type="text" name="cNotes"placeholder="berikan catatan pesanan anda" required />
                                         </div>
                                         <div class="form-group">
                                             <label for="cpPaymentType">Metode Bayar <span
@@ -563,6 +567,7 @@
             let formData = new FormData();
             formData.append("product_id", $("#cpProductId").val());
             formData.append("qty", $("#cpQty").val());
+            formData.append("notes", $("#cNotes").val());
             formData.append("payment_type", paymentType);
 
             if (paymentType == "TRANSFER") {

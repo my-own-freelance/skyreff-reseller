@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('payment_type', ['BALANCE','TRANSFER', 'DEBT'])->default('TRANSFER');
             $table->string('proof_of_payment')->nullable(); // upload bukti pembayaran jika type nya tf
             $table->string('proof_of_return')->nullable(); // upload bukti pengembalian uang kita sudah terlanjut di tf dan admin menolak transaksi
+            $table->string('notes')->nullable(); // keterangan pembeli untuk admin
             $table->string('remark')->nullable(); // keterangan untuk admin ketika reject trx
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('user_id');

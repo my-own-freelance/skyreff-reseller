@@ -100,12 +100,13 @@
                                     <th class="all">Harga</th>
                                     <th class="all">Komisi</th>
                                     <th class="all">Stock</th>
+                                    <th class="all">Terjual</th>
                                     <th class="all">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="9" class="text-center"><small>Tidak Ada Data</small></td>
+                                    <td colspan="10" class="text-center"><small>Tidak Ada Data</small></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -370,6 +371,8 @@
                     data: "commission"
                 }, {
                     data: "stock"
+                },{
+                    data: "total_sale"
                 }, {
                     data: "is_active"
                 }],

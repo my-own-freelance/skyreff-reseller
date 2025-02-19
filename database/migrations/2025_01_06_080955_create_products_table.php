@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('commission_vip')->default(0);
             $table->enum('is_active', ['Y', 'N'])->default('N');
             $table->integer('stock')->default(0);
+            $table->integer('total_sale')->default(0);
             $table->string('excerpt')->nullable();
             $table->text('description')->nullable();
             $table->unsignedBigInteger('product_category_id');

@@ -258,7 +258,8 @@ class TrxProductController extends Controller
             $rules = [
                 "product_id" => "required|integer",
                 "qty" => "required|integer|min:1",
-                "payment_type" => "required|string|in:BALANCE,TRANSFER,DEBT"
+                "payment_type" => "required|string|in:BALANCE,TRANSFER,DEBT",
+                "notes" => "required|string|max:255",
             ];
 
             $messages = [
@@ -267,7 +268,9 @@ class TrxProductController extends Controller
                 "qty.required" => "Jumlah Pesanan harus diisi",
                 "qty.min" => "Jumlah pesanan minimal 1 Produk",
                 "payment_type.required" => "Metode Bayar harus diisi",
-                "payment_type.in" => "Metode Bayar tidak valid"
+                "payment_type.in" => "Metode Bayar tidak valid",
+                "notes.required" => "Catatan harus diisi",
+                "notes.max" => "Catatan terlalu panjang"
             ];
 
             if ($data["payment_type"] == "TRANSFER") {
@@ -401,11 +404,12 @@ class TrxProductController extends Controller
                 }
             }
 
-            // UPDATE STOK PRODUK
-            $updateStockProduct = [
-                "stock" => $product->stock - $data["qty"]
+            // UPDATE STOK DAN TOTAL SALE PRODUK
+            $updateProduct = [
+                "stock" => $product->stock - $data["qty"],
+                "total_sale" => $product->total_sale + $data["qty"]
             ];
-            $product->update($updateStockProduct);
+            $product->update($updateProduct);
 
             $trxProduct = TrxProduct::create($data);
             // CREATE HISTORY PIHUTANG JIKA METODE BAYAR NYA HUTANG
@@ -579,12 +583,13 @@ class TrxProductController extends Controller
 
             // JIKA REJECT/CANCEL UPDATE STOCK PRODUK
             if (in_array($data["status"], ["REJECT", "CANCEL"])) {
-                // STOCK PRODUK
+                // UPDATE STOCK DAN TOTAL SALE PRODUK
                 $product = Product::find($dataTrx->product_id);
-                $updatedStock = [
-                    "stock" => $product->stock + $dataTrx->qty
+                $updatedProduct = [
+                    "stock" => $product->stock + $dataTrx->qty,
+                    "total_sale" => $product->total_sale - $dataTrx->qty
                 ];
-                $product->update($updatedStock);
+                $product->update($updatedProduct);
 
                 //JIKA TIPE BAYAR NYA PIHUTANG, UPDATE NOMINAL PIHUTANGNYA DAN 
                 if ($dataTrx->payment_type == "DEBT") {
