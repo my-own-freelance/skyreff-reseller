@@ -424,7 +424,7 @@
 
                 if (status == "SHOW-PROOF-PAYMENT") {
                     $("#modalDetailTitle").html("BUKTI PEMBAYARAN TOPUP")
-                    $("#bankTarget").html(`TUJUAN : ${data.bank != "" ? data.bank : "Dibayar Manual Oleh Admin"}`);
+                    $("#bankTarget").html(`TUJUAN : ${data.bank_payment != "" ? data.bank_payment : "Dibayar Manual Oleh Admin"}`);
                     $("#amount").html(`Nominal : ${data.amount}`);
 
                     // biasanya di payment manual oleh admin

@@ -347,11 +347,12 @@ class TrxTopupController extends Controller
             $data["proof_of_payment"] = $data->proof_of_payment ? Storage::url($data->proof_of_payment) : null;
             $data["proof_of_return"] = $data->proof_of_return ? Storage::url($data->proof_of_return) : null;
             $data["amount"] = ' Rp. ' . number_format($data->amount, 0, ',', '.');
-            $data["bank"] = "";
-            if ($data->Bank && $data->type == "P") {
-                $data["bank"] = "<strong>" . $data->Bank->title . " (" . $data->Bank->account . ")</strong>";
+            $data["bank_payment"] = "";
+            if ($data->bank) {
+                $data["bank_payment"] = "<strong>" . $data->Bank->title . " (" . $data->Bank->account . ")</strong>";
             }
             unset($data["Bank"]);
+            unset($data["bank"]);
 
             return response()->json([
                 "status" => "success",

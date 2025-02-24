@@ -143,7 +143,7 @@ class TrxProductController extends Controller
                                 </div>
                             </div>";
 
-                    if ($item->status == "CANCEL") {
+                    if ($item->status == "CANCEL" || ($item->status == "SUCCESS" && $item->payment_type != "TRANSFER")) {
                         $action = "";
                     }
 
@@ -167,7 +167,7 @@ class TrxProductController extends Controller
                                 </div>
                             </div>";
 
-                    if ($item->status == "CANCEL") {
+                    if ($item->status == "CANCEL" || ($item->status == "SUCCESS" && $item->payment_type != "TRANSFER")) {
                         $action = "";
                     }
                     $item["action"] = $action;

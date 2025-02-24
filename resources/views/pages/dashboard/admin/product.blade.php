@@ -58,7 +58,7 @@
                     </div>
                     <form class="navbar-left navbar-form mr-md-1 mt-3" id="formFilter">
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="fProductCategoryId">Filter Kategori</label>
                                     <select class="form-control" id="fProductCategoryId" name="fProductCategoryId">
@@ -69,7 +69,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="fStatus">Filter Status</label>
                                     <select class="form-control" id="fStatus" name="fStatus">

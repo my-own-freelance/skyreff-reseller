@@ -17,13 +17,13 @@ class ProductController extends Controller
     public function index()
     {
         $title = "Master Produk";
-        $categories = ProductCategory::all();
+        $categories = ProductCategory::orderBy('title', 'asc')->get();
         $user = Auth::user();
         $pageUrl = "pages.dashboard.admin.product";
         $banks = Bank::all();
 
         if ($user->role == "RESELLER") {
-            $categories = ProductCategory::where("is_active", "Y")->get();
+            $categories = ProductCategory::where("is_active", "Y")->orderBy('title', 'asc')->get();
             $pageUrl = "pages.dashboard.reseller.product";
         }
 
