@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -275,14 +276,14 @@ class TrxProductController extends Controller
 
             if ($data["payment_type"] == "TRANSFER") {
                 $rules["bank_id"] = "required|integer";
-                $rules["proof_of_payment"] = "required|image|max:2048|mimes:giv,svg,jpeg,png,jpg";
+                $rules["proof_of_payment"] = "required|image|max:2048|mimes:gif,svg,jpeg,png,jpg";
 
-                $messages["bank_id.requied"] = "Bank Pembayaran harus dipilih";
+                $messages["bank_id.required"] = "Bank Pembayaran harus dipilih";
                 $messages["bank_id.integer"] = "Bank Pambayaran tidak valid";
                 $messages["proof_of_payment.required"] = "Bukti pembayaran harus diisi";
                 $messages["proof_of_payment.image"] = "Bukti pembayaran tidak valid";
                 $messages["proof_of_payment.max"] = "Bukti pembayaran maximal 2MB";
-                $messages["proof_of_payment.mimes"] = "Format Bukti pembayaran harus giv/svg/jpeg/png/jpg";
+                $messages["proof_of_payment.mimes"] = "Format Bukti pembayaran harus gif/svg/jpeg/png/jpg";
             }
 
             $validator = Validator::make($data, $rules, $messages);
@@ -312,7 +313,7 @@ class TrxProductController extends Controller
             if ($product->stock <= 0 || $product->stock < $data["qty"]) {
                 return response()->json([
                     "status" => "error",
-                    "message" => "Stok Produk tidak mencukupi jumlah pesanan anda",
+                    "message" => "Stok Produk hanya tersedia " . $product->stock . " item, mohon sesuaikan jumlah pesanan anda",
                 ], 400);
             }
 
@@ -440,9 +441,38 @@ class TrxProductController extends Controller
                 ]);
             }
             DB::commit();
+
+            // NOTIF FOR ADMIN AND RESELLER
+            $paymentType = $trxProduct->payment_type;
+            $paymentType = $paymentType == "DEBT" ? "HUTANG" : ($paymentType == "BALANCE" ? "SALDO AKUN" : "TRANSFER");
+            $admin = User::where('role', "ADMIN")->where("is_active", "Y")->first();
+            $payloadAdmin = [
+                "to" => $admin->phone_number,
+                "message" => "*Informasi Transaksi Baru* \n\nNama Reseller : " . $user->name . "\nReseller Code : " . $user->code . "\nTrx Code : " . $trxProduct->code . "\nProduk :" . $product->title . "\nHarga Satuan : Rp. " .  number_format($trxProduct->amount, 0, ',', '.') . "\nJumlah: " . $trxProduct->qty . " Produk \nTotal Bayar : Rp. " . number_format($trxProduct->total_amount, 0, ',', '.') . "\nKomisi : Rp. " . number_format($trxProduct->commission, 0, ',', '.') . "\nKeuntungan Admin : Rp. " . number_format($trxProduct->profit, 0, ',', '.') . "\nPembayaran : " . $paymentType . "\nStatus : Sukses Diajukan \nCatatan : " . $trxProduct->notes . " \n\n*Segera proses transaksi yang masuk demi meningkatkan kepuasan pelanggan*"
+            ];
+
+            $payloadReseller = [
+                "to" => $user->phone_number,
+                "message" => "*Transaksi Sukses Terkirim* \n\nTrx Code : " . $trxProduct->code . "\nProduk : " . $product->title . "\nHarga Satuan : Rp. " .  number_format($trxProduct->amount, 0, ',', '.') . "\nJumlah: " . $trxProduct->qty . " Produk \nTotal Bayar : Rp. " . number_format($trxProduct->total_amount, 0, ',', '.') . "\nKomisi : Rp. " . number_format($trxProduct->commission, 0, ',', '.') . "\nPembayaran : " . $paymentType . "\nStatus : Sukses Diajukan \n\n*Terimakasih atas transaksi yang terlah dilakukan, silahkan tunggu admin memproses transaksi anda*"
+            ];
+
+            $sendNotif = [$payloadAdmin, $payloadReseller];
+            foreach ($sendNotif as $data) {
+                try {
+                    $payload = [
+                        "appkey"   => "fb595ba0-39cb-4a49-8d2d-b899615c0ee5",
+                        "authkey"  => "nRmX6T1rIGnB3C9Q7fcbilDI4QjK9YBpBw0nTqVSmCIItN9Tct",
+                        "to"       => $data["to"],
+                        "message"  => $data["message"]
+                    ];
+                    Http::post('https://app.wapanels.com/api/create-message', $payload);
+                } catch (\Throwable $err) {
+                }
+            }
+
             return response()->json([
                 "status" => "success",
-                "message" => "Transaksi Produk berhasil dibuat dan akan segera di proses oleh admin"
+                "message" => "Transaksi Produk berhasil dibuat dan akan segera di proses oleh admin",
             ]);
         } catch (\Throwable $err) {
             DB::rollBack();
@@ -518,7 +548,7 @@ class TrxProductController extends Controller
                 "status.in" => "Status tidak sesuai",
                 "proof_of_return.image" => "Gambar yang di upload tidak valid",
                 "proof_of_return.max" => "Ukuran gambar maximal 2MB",
-                "proof_of_return.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                "proof_of_return.mimes" => "Format gambar harus gif/svg/jpeg/png/jpg",
             ];
 
             $validator = Validator::make($data, $rules, $messages);
@@ -627,6 +657,22 @@ class TrxProductController extends Controller
 
             $dataTrx->update($data);
             DB::commit();
+
+            // SEND NOTIF
+            if ($data["status"] == "SUCCESS") {
+                try {
+                    $product = Product::find($dataTrx->product_id);
+                    $message = "*Informasi Transaksi*\n\nHi *" . $reseller->name . "*, Selamat transaksi anda untuk Produk *" . $product->title . "* dengan Kode Transaksi *" . $dataTrx->code . "* telah selesai di proses admin";
+                    $payload = [
+                        "appkey"   => "fb595ba0-39cb-4a49-8d2d-b899615c0ee5",
+                        "authkey"  => "nRmX6T1rIGnB3C9Q7fcbilDI4QjK9YBpBw0nTqVSmCIItN9Tct",
+                        "to"       => $reseller->phone_number,
+                        "message"  => $message
+                    ];
+                    Http::post('https://app.wapanels.com/api/create-message', $payload);
+                } catch (\Throwable $err) {
+                }
+            }
             return response()->json([
                 "status" => "success",
                 "message" => "Status Transaksi berhasil diperbarui"

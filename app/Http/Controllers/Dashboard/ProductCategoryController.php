@@ -131,7 +131,7 @@ class ProductCategoryController extends Controller
                 "image.required" => "Gambar harus di isi",
                 "image.image" => "Gambar yang di upload tidak valid",
                 "image.max" => "Ukuran gambar maximal 2MB",
-                "image.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                "image.mimes" => "Format gambar harus gif/svg/jpeg/png/jpg",
             ];
 
             $validator = Validator::make($data, $rules, $messages);
@@ -190,7 +190,7 @@ class ProductCategoryController extends Controller
                 "is_active.in" => "Status tidak sesuai",
                 "image.image" => "Gambar yang di upload tidak valid",
                 "image.max" => "Ukuran gambar maximal 2MB",
-                "image.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                "image.mimes" => "Format gambar harus gif/svg/jpeg/png/jpg",
             ];
 
             $validator = Validator::make($data, $rules, $messages);

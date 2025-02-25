@@ -67,6 +67,19 @@
             color: #555;
         }
 
+
+        .spinner-loader {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 3px solid white;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
         /* END INFO DETAIL WRAPPER */
     </style>
 @endpush
@@ -275,7 +288,8 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="cNotes">Catatan <span class="text-danger">*</span></label>
-                                            <input class="form-control" id="cNotes" type="text" name="cNotes"placeholder="berikan catatan pesanan anda" required />
+                                            <input class="form-control" id="cNotes" type="text"
+                                                name="cNotes"placeholder="berikan catatan pesanan anda" required />
                                         </div>
                                         <div class="form-group">
                                             <label for="cpPaymentType">Metode Bayar <span
@@ -308,7 +322,7 @@
                                             <small class="text-danger">Max ukuran 2MB</small>
                                         </div>
 
-                                        <button class="btn btn-secondary btn-block mt-4" type="submit">
+                                        <button class="btn btn-secondary btn-block mt-4" type="submit" id="processPaid">
                                             <span class="btn-label mr-2">
                                                 <i class="far fa-credit-card"></i>
                                             </span>
@@ -584,6 +598,14 @@
         })
 
         function checkoutProduct(data) {
+            let btn = $("#processPaid");
+            let originalText = btn.html();
+            // Ubah tombol jadi loader
+            btn.html(
+                `<span class="spinner-loader"></span> <span class="loading-text">Memproses...</span>`
+            ).prop(
+                'disabled', true);
+
             $.ajax({
                 url: "{{ route('trx-product.create') }}",
                 contentType: false,
@@ -602,6 +624,7 @@
                     console.log("error :", err);
                     showMessage("danger", "flaticon-error", "Peringatan", err.message || err.responseJSON
                         ?.message);
+                    btn.html(originalText).prop("disabled", false);
                 }
             })
         }

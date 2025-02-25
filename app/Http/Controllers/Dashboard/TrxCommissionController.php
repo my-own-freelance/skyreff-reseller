@@ -351,7 +351,7 @@ class TrxCommissionController extends Controller
                 "status.in" => "Status tidak sesuai",
                 "proof_of_payment.image" => "Gambar yang di upload tidak valid",
                 "proof_of_payment.max" => "Ukuran gambar maximal 2MB",
-                "proof_of_payment.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                "proof_of_payment.mimes" => "Format gambar harus gif/svg/jpeg/png/jpg",
             ];
 
             $validator = Validator::make($data, $rules, $messages);

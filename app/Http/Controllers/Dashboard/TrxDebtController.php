@@ -299,7 +299,7 @@ class TrxDebtController extends Controller
                 $messages["proof_of_payment.required"] = "Bukti pembayaran harus diisi";
                 $messages["proof_of_payment.image"] = "Bukti pembayaran tidak valid";
                 $messages["proof_of_payment.max"] = "Bukti pembayaran maximal 2MB";
-                $messages["proof_of_payment.mimes"] = "Format Bukti pembayaran harus giv/svg/jpeg/png/jpg";
+                $messages["proof_of_payment.mimes"] = "Format Bukti pembayaran harus gif/svg/jpeg/png/jpg";
             } else {
                 $rules["user_id"] = "required|integer";
 
@@ -460,7 +460,7 @@ class TrxDebtController extends Controller
                 "status.in" => "Status tidak sesuai",
                 "proof_of_return.image" => "Gambar yang di upload tidak valid",
                 "proof_of_return.max" => "Ukuran gambar maximal 2MB",
-                "proof_of_return.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                "proof_of_return.mimes" => "Format gambar harus gif/svg/jpeg/png/jpg",
             ];
 
             $validator = Validator::make($data, $rules, $messages);

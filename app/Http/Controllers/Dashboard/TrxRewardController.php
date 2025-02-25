@@ -343,7 +343,7 @@ class TrxRewardController extends Controller
                 "status.in" => "Status tidak sesuai",
                 "proof_of_acception.image" => "Gambar yang di upload tidak valid",
                 "proof_of_acception.max" => "Ukuran gambar maximal 2MB",
-                "proof_of_acception.mimes" => "Format gambar harus giv/svg/jpeg/png/jpg",
+                "proof_of_acception.mimes" => "Format gambar harus gif/svg/jpeg/png/jpg",
             ];
 
             $validator = Validator::make($data, $rules, $messages);
